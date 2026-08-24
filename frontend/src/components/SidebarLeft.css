@@ -1,0 +1,96 @@
+/* ===================================================
+   DISASTERCONNECT — PC REDDIT-STYLE LEFT NAV SIDEBAR
+   Visible on desktop (≥ 1060px), hidden on mobile
+=================================================== */
+
+.reddit-sidebar-left {
+  width: 240px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: sticky;
+  top: 60px;
+  max-height: calc(100vh - 70px);
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+/* Scrollbar styling for sidebar */
+.reddit-sidebar-left::-webkit-scrollbar { width: 4px; }
+.reddit-sidebar-left::-webkit-scrollbar-track { background: transparent; }
+.reddit-sidebar-left::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* Section heading */
+.sidebar-section-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  padding: 10px 12px 4px 12px;
+  text-transform: uppercase;
+}
+
+/* Nav item rows */
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: var(--radius-xs);
+  border: none;
+  background: transparent;
+  color: var(--text-body);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+  transition: background var(--transition), color var(--transition);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sidebar-item:hover {
+  background-color: var(--bg-card-alt);
+  color: var(--text-primary);
+}
+
+.sidebar-item.active {
+  background-color: var(--bg-card-alt);
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.sidebar-item.active-alert {
+  background-color: var(--alert-muted);
+  color: var(--alert);
+  font-weight: 700;
+}
+
+.sidebar-item.active-intel {
+  background-color: var(--intel-muted);
+  color: var(--intel);
+  font-weight: 700;
+}
+
+.sidebar-icon {
+  font-size: 17px;
+  flex-shrink: 0;
+  width: 22px;
+  text-align: center;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: var(--border-muted);
+  margin: 6px 12px;
+}
+
+/* Hide on small screens - the slide-out drawer takes over */
+@media (max-width: 1060px) {
+  .reddit-sidebar-left {
+    display: none !important;
+  }
+}

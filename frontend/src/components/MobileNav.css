@@ -1,0 +1,8 @@
+/* Mobile bottom nav disabled — replaced by three-dot header dropdown */
+.mobile-nav {
+  display: none !important;
+}
+
+body {
+  padding-bottom: 0 !important;
+}

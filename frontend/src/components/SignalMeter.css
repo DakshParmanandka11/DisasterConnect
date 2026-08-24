@@ -1,0 +1,84 @@
+﻿/* ===================================================
+   DISASTERCONNECT — COMMUNITY VERIFICATION SIGNAL METER
+=================================================== */
+
+.signal-meter { width: 100%; }
+
+.signal-meter__track {
+  position: relative;
+  height: 10px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  overflow: visible;
+}
+
+.signal-meter--sm .signal-meter__track { height: 7px; }
+
+.signal-meter__fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, var(--signal), var(--alert));
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: var(--radius-full);
+}
+
+.signal-meter.is-crossed .signal-meter__fill {
+  background: linear-gradient(90deg, var(--alert), #FF6B00);
+  box-shadow: 0 0 8px rgba(255, 59, 59, 0.5);
+}
+
+.signal-meter__threshold {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  background-color: var(--text-primary);
+  border-radius: 1px;
+  z-index: 2;
+}
+.signal-meter__threshold::after {
+  content: "40% THRESHOLD";
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+
+.signal-meter--sm .signal-meter__threshold::after { display: none; }
+
+.signal-meter__readout {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 7px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.signal-meter--sm .signal-meter__readout {
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 4px;
+  font-size: 11px;
+}
+
+.signal-meter__pct {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.04em;
+}
+
+.signal-meter.is-crossed .signal-meter__pct {
+  color: var(--alert);
+}

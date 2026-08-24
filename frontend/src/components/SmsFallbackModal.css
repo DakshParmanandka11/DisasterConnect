@@ -1,0 +1,100 @@
+.sms-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  padding: 16px;
+}
+
+.sms-modal-content {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  max-width: 480px;
+  width: 100%;
+  padding: 24px;
+  color: #f8fafc;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.sms-modal-content h3 {
+  margin-top: 0;
+  color: #f59e0b;
+  font-size: 1.25rem;
+}
+
+.sms-intro {
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+.sms-box {
+  background: #0f172a;
+  border: 1px solid #475569;
+  border-radius: 6px;
+  padding: 12px;
+  margin: 16px 0;
+  word-break: break-all;
+  font-family: monospace;
+  color: #38bdf8;
+}
+
+.sms-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.sms-launch-btn {
+  flex: 1;
+  background: #2563eb;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.sms-launch-btn:hover {
+  background: #1d4ed8;
+}
+
+.sms-copy-btn {
+  flex: 1;
+  background: #334155;
+  color: #f1f5f9;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.sms-copy-btn:hover {
+  background: #475569;
+}
+
+.sms-close-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid #475569;
+  color: #94a3b8;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.sms-close-btn:hover {
+  color: #fff;
+  background: #334155;
+}

@@ -1,0 +1,52 @@
+.offline-banner {
+  width: 100%;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: all 0.3s ease;
+}
+
+.offline-banner.is-offline {
+  background: #991b1b;
+  color: #fef2f2;
+  border-bottom: 1px solid #dc2626;
+}
+
+.offline-banner.is-online-sync {
+  background: #065f46;
+  color: #ecfdf5;
+  border-bottom: 1px solid #059669;
+}
+
+.offline-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.offline-icon {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.sync-btn {
+  background: #f59e0b;
+  color: #1e1e1e;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.sync-btn:hover {
+  background: #d97706;
+}
