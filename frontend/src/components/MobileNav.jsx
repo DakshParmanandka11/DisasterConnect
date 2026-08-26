@@ -10,7 +10,7 @@ export default function MobileNav() {
   const p = location.pathname;
   const role = user?.role || null;
 
-  function renderFourthTab() {
+  function renderFifthTab() {
     if (!user) {
       return (
         <Link to="/login" className={`mobile-nav__item ${p === "/login" ? "active" : ""}`}>
@@ -36,25 +36,28 @@ export default function MobileNav() {
       );
     }
     return (
-      <Link to="/ngos" className={`mobile-nav__item ${p === "/ngos" ? "active" : ""}`}>
-        <UsersIcon size={18} className="mobile-nav__icon-svg" />
-        <span className="mobile-nav__label">NGOs</span>
+      <Link to="/" className="mobile-nav__item">
+        <KeyIcon size={18} className="mobile-nav__icon-svg" />
+        <span className="mobile-nav__label">{user.name.split(" ")[0]}</span>
       </Link>
     );
   }
 
   return (
     <nav className="mobile-nav" role="navigation" aria-label="Mobile navigation">
+      {/* Tab 1 — Home */}
       <Link to="/" className={`mobile-nav__item ${p === "/" ? "active" : ""}`}>
         <HomeIcon size={18} className="mobile-nav__icon-svg" />
         <span className="mobile-nav__label">Home</span>
       </Link>
 
+      {/* Tab 2 — Map */}
       <Link to="/map" className={`mobile-nav__item ${p === "/map" ? "active" : ""}`}>
         <MapPinIcon size={18} className="mobile-nav__icon-svg" />
         <span className="mobile-nav__label">Map</span>
       </Link>
 
+      {/* Tab 3 — Symmetrical Center FAB Report */}
       <Link to={user ? "/report/new" : "/login"} className="mobile-nav__item mobile-nav__item--report">
         <div className="mobile-nav__report-fab">
           <AlertTriangleIcon size={18} />
@@ -62,7 +65,14 @@ export default function MobileNav() {
         <span className="mobile-nav__label mobile-nav__label--report">Report</span>
       </Link>
 
-      {renderFourthTab()}
+      {/* Tab 4 — NGOs */}
+      <Link to="/ngos" className={`mobile-nav__item ${p === "/ngos" ? "active" : ""}`}>
+        <UsersIcon size={18} className="mobile-nav__icon-svg" />
+        <span className="mobile-nav__label">NGOs</span>
+      </Link>
+
+      {/* Tab 5 — Profile / Auth */}
+      {renderFifthTab()}
     </nav>
   );
 }
