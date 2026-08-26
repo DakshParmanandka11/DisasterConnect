@@ -7,7 +7,9 @@ const DB_FILE = (process.env.VERCEL || process.env.NODE_ENV === "production")
   ? path.join("/tmp", "disasterconnect_data.json")
   : path.join(__dirname, "data.json");
 
-// Initial seed data if data.json does not exist
+const CLOUD_DB_URL = process.env.CLOUD_DB_URL || process.env.MONGODB_URI || null;
+
+// Initial seed data if database does not exist
 const initialData = {
   users: [
     {
@@ -94,6 +96,7 @@ const initialData = {
 };
 
 let memoryDb = null;
+let cloudSyncing = false;
 
 function readDb() {
   if (memoryDb) return memoryDb;
@@ -120,7 +123,25 @@ function writeDb(data) {
   try {
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), "utf-8");
   } catch (err) {
-    console.error("Error saving data.json:", err.message);
+    console.error("Error saving DB file:", err.message);
+  }
+
+  // Asynchronously sync to Cloud Database if CLOUD_DB_URL / MONGODB_URI is provided
+  if (CLOUD_DB_URL && !cloudSyncing) {
+    cloudSyncing = true;
+    Promise.resolve().then(async () => {
+      try {
+        await fetch(CLOUD_DB_URL, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+      } catch (e) {
+        console.error("Cloud DB write sync error:", e.message);
+      } finally {
+        cloudSyncing = false;
+      }
+    });
   }
 }
 
