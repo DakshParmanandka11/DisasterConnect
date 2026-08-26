@@ -11,24 +11,29 @@ router.post("/register", (req, res) => {
     const { name, email, password, role, home_lat, home_lng, org_name, service_radius_km } = req.body || {};
 
     if (!name || !email || !password) {
-      return res.status(400).json({ error: "name, email, and password are required" });
+      return res.status(400).json({ error: "Name, email, and password are required" });
+    }
+
+    const normalizedEmail = String(email).trim().toLowerCase();
+    if (!normalizedEmail.includes("@")) {
+      return res.status(400).json({ error: "Please enter a valid email address" });
     }
 
     const dbData = readDb();
     if (!dbData.users) dbData.users = [];
     if (!dbData.ngo_profiles) dbData.ngo_profiles = [];
 
-    const normalizedEmail = String(email).trim().toLowerCase();
-    const existing = dbData.users.find((u) => u && u.email && String(u.email).toLowerCase() === normalizedEmail);
+    // Strict duplicate email check
+    const existing = dbData.users.find((u) => u && u.email && String(u.email).trim().toLowerCase() === normalizedEmail);
 
     if (existing) {
-      return res.status(409).json({ error: "An account with this email already exists" });
+      return res.status(409).json({ error: "An account with this email address already exists. Please log in instead." });
     }
 
     const finalRole = role === "ngo" ? "ngo" : role === "moderator" ? "moderator" : "citizen";
 
     if (finalRole === "ngo" && (!home_lat || !home_lng || !org_name)) {
-      return res.status(400).json({ error: "org_name, home_lat, and home_lng are required for NGO accounts" });
+      return res.status(400).json({ error: "Organisation name and location on map are required for NGO accounts" });
     }
 
     const id = uuidv4();
@@ -53,7 +58,7 @@ router.post("/register", (req, res) => {
         org_name: String(org_name).trim(),
         service_lat: home_lat,
         service_lng: home_lng,
-        service_radius_km: service_radius_km || 25,
+        service_radius_km: Number(service_radius_km) || 25,
         verification_status: "approved",
         upi_id: "relief-ngo@upi",
         contact_phone: "+91-9876543210",
@@ -65,7 +70,7 @@ router.post("/register", (req, res) => {
 
     writeDb(dbData);
 
-    const userObj = { id, name: newUser.name, role: finalRole };
+    const userObj = { id, name: newUser.name, email: normalizedEmail, role: finalRole };
     const token = signToken(userObj);
     return res.status(201).json({ token, user: userObj });
   } catch (err) {
@@ -85,16 +90,17 @@ router.post("/login", (req, res) => {
     const dbData = readDb();
     if (!dbData.users) dbData.users = [];
 
-    const user = dbData.users.find((u) => u && u.email && String(u.email).toLowerCase() === normalizedEmail);
+    const user = dbData.users.find((u) => u && u.email && String(u.email).trim().toLowerCase() === normalizedEmail);
 
     if (!user || !user.password_hash || !bcrypt.compareSync(String(password), user.password_hash)) {
-      return res.status(401).json({ error: "Invalid email or password" });
+      return res.status(401).json({ error: "Invalid email or password. Please check your credentials." });
     }
 
-    const token = signToken(user);
+    const userObj = { id: user.id, name: user.name, email: user.email, role: user.role };
+    const token = signToken(userObj);
     return res.json({
       token,
-      user: { id: user.id, name: user.name, role: user.role },
+      user: userObj,
     });
   } catch (err) {
     console.error("Login Error:", err);

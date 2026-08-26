@@ -4,7 +4,14 @@ import { api } from "../api/client";
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem("dc_user");
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch (e) {
+      return null;
+    }
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -12,43 +19,30 @@ export function AuthProvider({ children }) {
     if (token) {
       api
         .me()
-        .then((data) => setUser(data.user))
+        .then((data) => {
+          if (data && data.user) {
+            setUser(data.user);
+            localStorage.setItem("dc_user", JSON.stringify(data.user));
+          }
+        })
         .catch(() => {
-          localStorage.removeItem("dc_token");
-          autoRegisterGuest();
+          // If server fails or offline, keep saved user from localStorage
         })
         .finally(() => setLoading(false));
     } else {
-      autoRegisterGuest();
-    }
-
-    function autoRegisterGuest() {
-      const guestEmail = `citizen_${Math.random().toString(36).substring(2, 9)}@disasterconnect.local`;
-      api
-        .register({
-          name: "Local Citizen",
-          email: guestEmail,
-          password: "guest_password_123",
-          role: "citizen",
-        })
-        .then((data) => {
-          if (data && data.token) {
-            localStorage.setItem("dc_token", data.token);
-            setUser(data.user);
-          }
-        })
-        .catch(() => {})
-        .finally(() => setLoading(false));
+      setLoading(false);
     }
   }, []);
 
-  function login(token, user) {
+  function login(token, userObj) {
     localStorage.setItem("dc_token", token);
-    setUser(user);
+    localStorage.setItem("dc_user", JSON.stringify(userObj));
+    setUser(userObj);
   }
 
   function logout() {
     localStorage.removeItem("dc_token");
+    localStorage.removeItem("dc_user");
     setUser(null);
   }
 
