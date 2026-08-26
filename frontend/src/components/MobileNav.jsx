@@ -10,25 +10,31 @@ export default function MobileNav({ onOpenSms }) {
   const p = location.pathname;
   const role = user?.role || null;
 
-  function FifthTab() {
-    if (!user) return (
-      <Link to="/login" className={`mobile-nav__item ${p === "/login" ? "active" : ""}`}>
-        <KeyIcon size={18} className="mobile-nav__icon-svg" />
-        <span className="mobile-nav__label">Log in</span>
-      </Link>
-    );
-    if (role === "ngo" || role === "admin") return (
-      <Link to="/ngo" className={`mobile-nav__item ${p === "/ngo" ? "active" : ""}`}>
-        <ClipboardIcon size={18} className="mobile-nav__icon-svg" />
-        <span className="mobile-nav__label">Dashboard</span>
-      </Link>
-    );
-    if (role === "moderator") return (
-      <Link to="/moderator" className={`mobile-nav__item ${p === "/moderator" ? "active" : ""}`}>
-        <ShieldIcon size={18} className="mobile-nav__icon-svg" />
-        <span className="mobile-nav__label">Moderate</span>
-      </Link>
-    );
+  function renderFifthTab() {
+    if (!user) {
+      return (
+        <Link to="/login" className={`mobile-nav__item ${p === "/login" ? "active" : ""}`}>
+          <KeyIcon size={18} className="mobile-nav__icon-svg" />
+          <span className="mobile-nav__label">Log in</span>
+        </Link>
+      );
+    }
+    if (role === "ngo" || role === "admin") {
+      return (
+        <Link to="/ngo" className={`mobile-nav__item ${p === "/ngo" ? "active" : ""}`}>
+          <ClipboardIcon size={18} className="mobile-nav__icon-svg" />
+          <span className="mobile-nav__label">Dashboard</span>
+        </Link>
+      );
+    }
+    if (role === "moderator") {
+      return (
+        <Link to="/moderator" className={`mobile-nav__item ${p === "/moderator" ? "active" : ""}`}>
+          <ShieldIcon size={18} className="mobile-nav__icon-svg" />
+          <span className="mobile-nav__label">Moderate</span>
+        </Link>
+      );
+    }
     return (
       <Link to="/ngos" className={`mobile-nav__item ${p === "/ngos" ? "active" : ""}`}>
         <UsersIcon size={18} className="mobile-nav__icon-svg" />
@@ -36,6 +42,13 @@ export default function MobileNav({ onOpenSms }) {
       </Link>
     );
   }
+
+  const handleSmsClick = (e) => {
+    e.preventDefault();
+    if (typeof onOpenSms === "function") {
+      onOpenSms();
+    }
+  };
 
   return (
     <nav className="mobile-nav" role="navigation" aria-label="Mobile navigation">
@@ -56,12 +69,12 @@ export default function MobileNav({ onOpenSms }) {
         <span className="mobile-nav__label mobile-nav__label--report">Report</span>
       </Link>
 
-      <button className="mobile-nav__item" onClick={onOpenSms}>
+      <button type="button" className="mobile-nav__item" onClick={handleSmsClick}>
         <MessageIcon size={18} className="mobile-nav__icon-svg" />
         <span className="mobile-nav__label">SMS SOS</span>
       </button>
 
-      <FifthTab />
+      {renderFifthTab()}
     </nav>
   );
 }

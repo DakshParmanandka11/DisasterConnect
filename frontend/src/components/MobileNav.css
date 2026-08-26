@@ -9,15 +9,17 @@
   height: 56px;
   background: var(--bg-header);
   border-top: 1px solid var(--border);
-  z-index: 900;
+  z-index: 5000;
   align-items: stretch;
   justify-content: space-around;
   padding: 0 4px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+  touch-action: manipulation;
 }
 
 @media (max-width: 768px) {
   .mobile-nav { display: flex; }
-  body { padding-bottom: 56px; }
+  body { padding-bottom: 60px !important; }
 }
 
 .mobile-nav__item {
@@ -29,22 +31,29 @@
   flex: 1;
   text-decoration: none;
   color: var(--text-dim);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 500;
   padding: 4px 2px;
   transition: color var(--transition);
   cursor: pointer;
   border: none;
-  background: none;
+  background: transparent;
   min-width: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  touch-action: manipulation;
 }
 
 .mobile-nav__item:hover,
+.mobile-nav__item:active,
 .mobile-nav__item.active {
   color: var(--primary);
 }
 
-.mobile-nav__icon-svg { flex-shrink: 0; }
+.mobile-nav__icon-svg {
+  flex-shrink: 0;
+  pointer-events: none;
+}
 
 .mobile-nav__label {
   font-size: 9px;
@@ -53,10 +62,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+  pointer-events: none;
 }
 
 /* Report centre button */
-.mobile-nav__item--report { flex: 0 0 auto; }
+.mobile-nav__item--report {
+  flex: 0 0 auto;
+}
 
 .mobile-nav__report-fab {
   width: 40px;
@@ -69,10 +81,13 @@
   color: #fff;
   position: relative;
   top: -8px;
-  transition: background var(--transition);
+  transition: background var(--transition), transform var(--transition);
+  pointer-events: none;
+  box-shadow: 0 3px 8px rgba(239, 68, 68, 0.35);
 }
 
-.mobile-nav__item--report:hover .mobile-nav__report-fab {
+.mobile-nav__item--report:active .mobile-nav__report-fab {
+  transform: scale(0.95);
   background: var(--red-hover);
 }
 

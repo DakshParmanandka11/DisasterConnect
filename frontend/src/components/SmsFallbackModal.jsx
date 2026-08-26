@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { MessageIcon, CopyIcon, CheckIcon, XIcon } from "./Icons";
 import "./SmsFallbackModal.css";
 
-export default function SmsFallbackModal({ reportData, onClose }) {
+export default function SmsFallbackModal({ reportData = {}, onClose }) {
   const [copied, setCopied] = useState(false);
 
   const catCode = (reportData.category || "OTHER").toUpperCase();
@@ -11,23 +12,31 @@ export default function SmsFallbackModal({ reportData, onClose }) {
   const title = (reportData.title || "").replace(/\|/g, "-").slice(0, 30);
   const time = Math.floor(Date.now() / 1000);
 
-  // Formatted compressed SMS string
   const smsString = `ALERT|${catCode}|${sevCode}|${lat},${lng}|${time}|${title}`;
-  const targetNumber = "911100200"; // Centralized emergency broadcast / gateway
+  const targetNumber = "911100200";
   const smsUri = `sms:${targetNumber}?body=${encodeURIComponent(smsString)}`;
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(smsString);
+    navigator.clipboard?.writeText(smsString);
     setCopied(true);
     setTimeout(() => setCopied(false), 3000);
   };
 
   return (
-    <div className="sms-modal-overlay" onClick={onClose}>
-      <div className="sms-modal-content" onClick={(e) => e.stopPropagation()}>
-        <h3>📲 2G / SMS Fallback Dispatch</h3>
+    <div className="sms-overlay" onClick={onClose} role="dialog" aria-modal="true">
+      <div className="sms-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="sms-modal__header">
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <MessageIcon size={16} />
+            <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600 }}>2G / SMS Fallback Dispatch</h3>
+          </div>
+          <button className="sms-modal__close" onClick={onClose} title="Close" aria-label="Close modal">
+            <XIcon size={16} />
+          </button>
+        </div>
+
         <p className="sms-intro">
-          If 3G/4G/5G data networks are completely down, you can transmit this compressed distress payload over basic 2G SMS bands to emergency responders:
+          If 3G/4G/5G mobile data is completely unavailable during an emergency, transmit this compressed distress payload over basic 2G SMS bands to emergency responders:
         </p>
 
         <div className="sms-box">
@@ -35,64 +44,53 @@ export default function SmsFallbackModal({ reportData, onClose }) {
         </div>
 
         <div className="sms-actions">
-          <a href={smsUri} className="sms-launch-btn">
-            💬 One-Tap Launch SMS App
+          <a href={smsUri} className="btn btn-primary btn-sm" style={{ flex: 1, textDecoration: "none" }}>
+            Launch SMS App
           </a>
-          <button className="sms-copy-btn" onClick={handleCopy}>
-            {copied ? "✓ Copied String" : "📋 Copy String"}
+          <button className="btn btn-outline btn-sm" onClick={handleCopy} style={{ gap: 4 }}>
+            {copied ? <CheckIcon size={13} /> : <CopyIcon size={13} />}
+            {copied ? "Copied" : "Copy string"}
           </button>
         </div>
 
-        {/* One-Tap Situation Presets for Panic Situations */}
         <div style={{ marginTop: 14 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#f59e0b", marginBottom: 6 }}>
-            ⚡ One-Tap Emergency Presets (Zero Typing):
+          <div style={{ fontSize: 11, fontWeight: 600, color: "var(--amber)", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+            Emergency Situation Presets:
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
             <a
               href={`sms:911100200?body=${encodeURIComponent(`SOS|FLOOD|CRITICAL|${lat},${lng}|TRAPPED IN FLOOD`)}`}
               className="sms-preset-btn"
-              style={{ background: "rgba(14, 165, 233, 0.2)", border: "1px solid #0ea5e9", color: "#38bdf8", padding: "8px", borderRadius: 6, textDecoration: "none", fontSize: 12, fontWeight: 600, textAlign: "center" }}
             >
-              🌊 Flood / Deluge
+              Flood / Waterlogging
             </a>
             <a
-              href={`sms:911100200?body=${encodeURIComponent(`SOS|FIRE|CRITICAL|${lat},${lng}|WILDFIRE RESCUE NEEDED`)}`}
+              href={`sms:911100200?body=${encodeURIComponent(`SOS|FIRE|CRITICAL|${lat},${lng}|FIRE RESCUE NEEDED`)}`}
               className="sms-preset-btn"
-              style={{ background: "rgba(239, 68, 68, 0.2)", border: "1px solid #ef4444", color: "#fca5a5", padding: "8px", borderRadius: 6, textDecoration: "none", fontSize: 12, fontWeight: 600, textAlign: "center" }}
             >
-              🔥 Wildfire Hazard
+              Fire Hazard
             </a>
             <a
               href={`sms:911100200?body=${encodeURIComponent(`SOS|EARTHQUAKE|CRITICAL|${lat},${lng}|QUAKE DEBRIS TRAPPED`)}`}
               className="sms-preset-btn"
-              style={{ background: "rgba(16, 185, 129, 0.2)", border: "1px solid #10b981", color: "#6ee7b7", padding: "8px", borderRadius: 6, textDecoration: "none", fontSize: 12, fontWeight: 600, textAlign: "center" }}
             >
-              🌋 Earthquake / Quake
+              Earthquake
             </a>
             <a
               href={`sms:911100200?body=${encodeURIComponent(`SOS|BUILDING_COLLAPSE|CRITICAL|${lat},${lng}|STRUCTURAL COLLAPSE`)}`}
               className="sms-preset-btn"
-              style={{ background: "rgba(245, 158, 11, 0.2)", border: "1px solid #f59e0b", color: "#fde047", padding: "8px", borderRadius: 6, textDecoration: "none", fontSize: 12, fontWeight: 600, textAlign: "center" }}
             >
-              🏚️ Building Collapse
+              Structural Collapse
             </a>
           </div>
         </div>
 
-        <div style={{ marginTop: 16, paddingTop: 12, borderTop: "1px dashed #475569", fontSize: 12, color: "#94a3b8" }}>
-          <strong style={{ color: "#38bdf8" }}>📱 Easiest Method for Non-Technical Users (SMS Bot):</strong>
-          <p style={{ margin: "4px 0 0 0", lineHeight: 1.4 }}>
-            Simply text the single word <strong style={{ color: "#ef4444", background: "#334155", padding: "1px 6px", borderRadius: 3 }}>SOS</strong> or <strong style={{ color: "#ef4444", background: "#334155", padding: "1px 6px", borderRadius: 3 }}>HELP</strong> to shortcode <strong className="mono" style={{ color: "#38bdf8" }}>112</strong>.
+        <div className="sms-bot-info">
+          <strong>SMS Bot (Shortcode 112):</strong>
+          <p style={{ margin: "3px 0 0 0" }}>
+            Text <code>SOS</code> or <code>HELP</code> to shortcode <strong>112</strong> for automated triage.
           </p>
-          <div style={{ fontSize: 11, color: "#cbd5e1", marginTop: 4, fontStyle: "italic" }}>
-            The emergency bot will reply automatically with a 1-digit choice menu (1 for Flood, 2 for Fire) and telco towers auto-triangulate your location!
-          </div>
         </div>
-
-        <button className="sms-close-btn" onClick={onClose} style={{ marginTop: 16 }}>
-          Close
-        </button>
       </div>
     </div>
   );
