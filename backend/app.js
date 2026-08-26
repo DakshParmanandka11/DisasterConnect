@@ -7,7 +7,6 @@ require("./db"); // Initialize DB file store
 const authRoutes = require("./routes/auth");
 const reportRoutes = require("./routes/reports");
 const ngoRoutes = require("./routes/ngo");
-const smsRoutes = require("./routes/sms");
 const moderatorRoutes = require("./routes/moderator");
 const { getConfig } = require("./db");
 
@@ -21,7 +20,6 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/ngo", ngoRoutes);
-app.use("/api/sms", smsRoutes);
 app.use("/api/moderator", moderatorRoutes);
 
 app.get("/api/config", (req, res) => {

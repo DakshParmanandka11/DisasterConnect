@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import { useGeolocation } from "../hooks/useGeolocation";
 import { savePendingReport } from "../util/offlineStore";
-import SmsFallbackModal from "../components/SmsFallbackModal";
 import "./NewReport.css";
 
 const CATEGORIES = ["flood", "fire", "earthquake", "tsunami", "landslide", "building_collapse", "other"];
@@ -24,7 +23,6 @@ export default function NewReport() {
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
   const [offlineNotice, setOfflineNotice] = useState(false);
-  const [showSmsModal, setShowSmsModal] = useState(false);
   const fileInputRef = useRef(null);
   const geo = useGeolocation();
   const navigate = useNavigate();
@@ -287,14 +285,6 @@ export default function NewReport() {
             <div style={{ fontSize: 12, marginTop: 4 }}>
               Your report has been queued and will auto-sync when connectivity is restored.
             </div>
-            <button
-              type="button"
-              className="btn btn-outline btn-sm"
-              onClick={() => setShowSmsModal(true)}
-              style={{ marginTop: 10, width: "100%" }}
-            >
-              Send via SMS Fallback
-            </button>
           </div>
         )}
 

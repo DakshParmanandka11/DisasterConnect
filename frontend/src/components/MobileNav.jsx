@@ -1,16 +1,16 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { HomeIcon, MapPinIcon, AlertTriangleIcon, MessageIcon,
+import { HomeIcon, MapPinIcon, AlertTriangleIcon,
          UsersIcon, ClipboardIcon, ShieldIcon, KeyIcon } from "./Icons";
 import "./MobileNav.css";
 
-export default function MobileNav({ onOpenSms }) {
+export default function MobileNav() {
   const { user } = useAuth();
   const location = useLocation();
   const p = location.pathname;
   const role = user?.role || null;
 
-  function renderFifthTab() {
+  function renderFourthTab() {
     if (!user) {
       return (
         <Link to="/login" className={`mobile-nav__item ${p === "/login" ? "active" : ""}`}>
@@ -43,13 +43,6 @@ export default function MobileNav({ onOpenSms }) {
     );
   }
 
-  const handleSmsClick = (e) => {
-    e.preventDefault();
-    if (typeof onOpenSms === "function") {
-      onOpenSms();
-    }
-  };
-
   return (
     <nav className="mobile-nav" role="navigation" aria-label="Mobile navigation">
       <Link to="/" className={`mobile-nav__item ${p === "/" ? "active" : ""}`}>
@@ -69,12 +62,7 @@ export default function MobileNav({ onOpenSms }) {
         <span className="mobile-nav__label mobile-nav__label--report">Report</span>
       </Link>
 
-      <button type="button" className="mobile-nav__item" onClick={handleSmsClick}>
-        <MessageIcon size={18} className="mobile-nav__icon-svg" />
-        <span className="mobile-nav__label">SMS SOS</span>
-      </button>
-
-      {renderFifthTab()}
+      {renderFourthTab()}
     </nav>
   );
 }

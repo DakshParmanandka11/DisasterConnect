@@ -3,12 +3,11 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   HomeIcon, MapPinIcon, AlertTriangleIcon, ShieldIcon, UsersIcon,
-  ClipboardIcon, MessageIcon, SunIcon, MoonIcon, LogOutIcon, KeyIcon,
-  MenuIcon, XIcon, SearchIcon
+  ClipboardIcon, SunIcon, MoonIcon, LogOutIcon, MenuIcon, SearchIcon
 } from "./Icons";
 import "./Navbar.css";
 
-export default function Navbar({ onToggleTaskbar, onOpenSms }) {
+export default function Navbar({ onToggleTaskbar }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,7 +34,6 @@ export default function Navbar({ onToggleTaskbar, onOpenSms }) {
   }, []);
 
   const role = user?.role || null;
-
   const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
 
   return (
@@ -101,13 +99,6 @@ export default function Navbar({ onToggleTaskbar, onOpenSms }) {
               <ShieldIcon size={14} />
               Moderation
             </Link>
-          )}
-
-          {role === "admin" && (
-            <button className="navbar__nav-item" onClick={onOpenSms}>
-              <MessageIcon size={14} />
-              SMS SOS
-            </button>
           )}
 
           {/* Theme Toggle Button visible in main navbar header */}
@@ -188,10 +179,6 @@ export default function Navbar({ onToggleTaskbar, onOpenSms }) {
                   )}
 
                   <div className="navbar__dropdown-divider" />
-
-                  <button className="navbar__dropdown-item" onClick={() => { setMenuOpen(false); onOpenSms(); }}>
-                    <MessageIcon size={14} /> SMS Emergency
-                  </button>
 
                   <button className="navbar__dropdown-item" onClick={toggleTheme}>
                     {theme === "dark" ? <SunIcon size={14} /> : <MoonIcon size={14} />}
