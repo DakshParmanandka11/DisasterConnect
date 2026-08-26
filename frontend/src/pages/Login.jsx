@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { api } from "../api/client";
 import { useAuth } from "../context/AuthContext";
+import { getLocalAccount, saveLocalAccount } from "../util/accountStore";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -15,8 +16,10 @@ export default function Login() {
     e.preventDefault();
     setError(null);
     setBusy(true);
+
     try {
       const data = await api.login({ email, password });
+      saveLocalAccount({ email, password, user: data.user, token: data.token });
       login(data.token, data.user);
       navigate(
         data.user.role === "ngo" ? "/ngo"
@@ -24,6 +27,17 @@ export default function Login() {
         : "/"
       );
     } catch (err) {
+      // Check local saved account store if Vercel serverless container recycled memory
+      const localAcc = getLocalAccount(email, password);
+      if (localAcc) {
+        login(localAcc.token, localAcc.user);
+        navigate(
+          localAcc.user.role === "ngo" ? "/ngo"
+          : localAcc.user.role === "moderator" ? "/moderator"
+          : "/"
+        );
+        return;
+      }
       setError(err.message);
     } finally {
       setBusy(false);

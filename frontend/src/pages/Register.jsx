@@ -4,6 +4,7 @@ import { api } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { useGeolocation } from "../hooks/useGeolocation";
 import MapPicker from "../components/MapPicker";
+import { saveLocalAccount, isLocalEmailRegistered } from "../util/accountStore";
 
 const ROLES = [
   {
@@ -36,16 +37,21 @@ export default function Register() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const activeRole = ROLES.find((r) => r.id === role);
-
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
+
+    if (isLocalEmailRegistered(email)) {
+      setError("An account with this email address already exists. Please log in instead.");
+      return;
+    }
+
     if (role === "ngo" && !geo.coords) {
       setError("Set your organisation's service location on the map before continuing.");
       return;
     }
     setBusy(true);
+
     try {
       const payload = {
         name, email, password, role,
@@ -55,6 +61,9 @@ export default function Register() {
         service_radius_km: role === "ngo" ? Number(serviceRadius) : undefined,
       };
       const data = await api.register(payload);
+
+      // Save locally to persist credentials across serverless restarts
+      saveLocalAccount({ email, password, user: data.user, token: data.token });
       login(data.token, data.user);
       navigate(role === "ngo" ? "/ngo" : role === "moderator" ? "/moderator" : "/");
     } catch (err) {
