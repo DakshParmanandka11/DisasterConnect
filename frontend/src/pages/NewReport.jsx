@@ -302,13 +302,6 @@ export default function NewReport() {
           </p>
         )}
       </form>
-
-      {showSmsModal && (
-        <SmsFallbackModal
-          reportData={{ title, description, category, severity, lat: geo.coords?.lat, lng: geo.coords?.lng }}
-          onClose={() => setShowSmsModal(false)}
-        />
-      )}
     </div>
   );
 }
