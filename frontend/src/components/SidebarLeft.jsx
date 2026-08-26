@@ -61,17 +61,7 @@ export default function SidebarLeft({ activeCategory, onSelectCategory, activeSt
         </Link>
       )}
 
-      {!user && (
-        <>
-          <div className="sidebar-divider" />
-          <Link to="/login" className={`sidebar-item ${location.pathname === "/login" ? "active" : ""}`}>
-            <KeyIcon size={14} /> Log in
-          </Link>
-          <Link to="/register" className="sidebar-item sidebar-item--cta">
-            Sign up
-          </Link>
-        </>
-      )}
+
 
       <div className="sidebar-divider" />
 
