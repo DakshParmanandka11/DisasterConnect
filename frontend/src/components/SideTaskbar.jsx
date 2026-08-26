@@ -85,16 +85,6 @@ export default function SideTaskbar({ isOpen, onClose, activeCategory, onSelectC
                   <ShieldIcon size={14} /> Moderation
                 </Link>
               )}
-              {!user && (
-                <>
-                  <Link to="/login" className={`taskbar-btn ${location.pathname === "/login" ? "active" : ""}`} onClick={onClose}>
-                    <KeyIcon size={14} /> Log in
-                  </Link>
-                  <Link to="/register" className="taskbar-btn taskbar-btn--cta" onClick={onClose}>
-                    Sign up
-                  </Link>
-                </>
-              )}
             </div>
           </div>
 
