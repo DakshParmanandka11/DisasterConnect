@@ -1,7 +1,7 @@
 /* Mobile Bottom Navigation — 5-column symmetrical layout */
 
 .mobile-nav {
-  display: none;
+  display: none !important;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -10,7 +10,6 @@
   background: var(--bg-header);
   border-top: 1px solid var(--border);
   z-index: 5000;
-  display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 4px;
@@ -19,8 +18,12 @@
 }
 
 @media (max-width: 768px) {
-  .mobile-nav { display: flex; }
-  body { padding-bottom: 60px !important; }
+  .mobile-nav {
+    display: flex !important;
+  }
+  body {
+    padding-bottom: 60px !important;
+  }
 }
 
 .mobile-nav__item {
