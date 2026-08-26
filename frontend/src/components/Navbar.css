@@ -147,31 +147,27 @@
   color: var(--red);
 }
 
-/* Theme toggle button in header */
-.navbar__theme-btn {
+/* Compact Icon-Only Theme toggle button in header */
+.navbar__theme-icon-btn {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 4px 8px;
-  border-radius: var(--radius-sm);
-  font-weight: 500;
-  font-size: 12px;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   color: var(--text-muted);
   border: 1px solid var(--border);
   background: var(--bg-card);
   cursor: pointer;
   transition: all var(--transition);
-  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
 }
 
-.navbar__theme-btn:hover {
+.navbar__theme-icon-btn:hover {
   background: var(--bg-card-alt);
-  color: var(--text-primary);
-  border-color: var(--text-muted);
-}
-
-.navbar__theme-label {
-  font-size: 11px;
+  color: var(--primary);
+  border-color: var(--primary-border);
 }
 
 /* Avatar button */

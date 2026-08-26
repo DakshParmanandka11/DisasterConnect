@@ -101,15 +101,14 @@ export default function Navbar({ onToggleTaskbar }) {
             </Link>
           )}
 
-          {/* Theme Toggle Button visible in main navbar header */}
+          {/* Compact Icon-only Theme Toggle Button */}
           <button
-            className="navbar__theme-btn"
+            className="navbar__theme-icon-btn"
             onClick={toggleTheme}
             title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
             aria-label="Toggle dark/light mode"
           >
-            {theme === "dark" ? <SunIcon size={15} /> : <MoonIcon size={15} />}
-            <span className="navbar__theme-label">{theme === "dark" ? "Light" : "Dark"}</span>
+            {theme === "dark" ? <SunIcon size={16} /> : <MoonIcon size={16} />}
           </button>
 
           {!user && (
@@ -177,13 +176,6 @@ export default function Navbar({ onToggleTaskbar }) {
                       <ShieldIcon size={14} /> Moderation
                     </Link>
                   )}
-
-                  <div className="navbar__dropdown-divider" />
-
-                  <button className="navbar__dropdown-item" onClick={toggleTheme}>
-                    {theme === "dark" ? <SunIcon size={14} /> : <MoonIcon size={14} />}
-                    {theme === "dark" ? "Switch to Light mode" : "Switch to Dark mode"}
-                  </button>
 
                   <div className="navbar__dropdown-divider" />
 
