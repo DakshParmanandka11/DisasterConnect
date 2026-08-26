@@ -105,37 +105,8 @@ export default function ReportDetail() {
         ← Back to feed
       </Link>
 
-      <div className="card" style={{ overflow: "hidden", marginBottom: 20 }}>
-        <div style={{ display: "flex" }}>
-          {/* Left Voting Column */}
-          <div className="rp-vote" style={{ padding: "16px 10px", width: 52, minWidth: 52 }}>
-            <button
-              className="rp-vote__btn rp-vote__btn--up"
-              disabled={!canVote || voteBusy}
-              onClick={() => castVote("up")}
-              title="Confirm — I'm within 10 km and can verify"
-            >
-              <svg width="14" height="14" viewBox="0 0 12 12" fill="currentColor">
-                <path d="M6 1L11.196 10H0.804L6 1Z"/>
-              </svg>
-            </button>
-            <span className="rp-vote__score" style={{ fontSize: 13, margin: "6px 0", textAlign: "center" }}>
-              {report.upvotes}
-            </span>
-            <button
-              className="rp-vote__btn rp-vote__btn--down"
-              disabled={!canVote || voteBusy}
-              onClick={() => castVote("down")}
-              title="Doubtful — I'm within 10 km and dispute this"
-            >
-              <svg width="14" height="14" viewBox="0 0 12 12" fill="currentColor">
-                <path d="M6 11L0.804 2H11.196L6 11Z"/>
-              </svg>
-            </button>
-          </div>
-
-          {/* Main Detail Content */}
-          <div className="reddit-post-card__main" style={{ padding: 20 }}>
+      <div className="card" style={{ overflow: "hidden", marginBottom: 20, padding: 20 }}>
+        <div className="reddit-post-card__main">
             <div className="reddit-post-card__meta">
               <span className="reddit-post-card__channel">c/{report.category.replace("_", "")}</span>
               <span>•</span>
@@ -363,6 +334,5 @@ export default function ReportDetail() {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
