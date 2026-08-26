@@ -10,17 +10,30 @@ async function request(path, { method = "GET", body, isForm = false } = {}) {
   if (token) headers["Authorization"] = `Bearer ${token}`;
   if (!isForm && body) headers["Content-Type"] = "application/json";
 
-  const res = await fetch(`${BASE}${path}`, {
-    method,
-    headers,
-    body: isForm ? body : body ? JSON.stringify(body) : undefined,
-  });
+  let res;
+  try {
+    res = await fetch(`${BASE}${path}`, {
+      method,
+      headers,
+      body: isForm ? body : body ? JSON.stringify(body) : undefined,
+    });
+  } catch (netErr) {
+    // Network offline / Airplane mode
+    if (path.startsWith("/reports")) return { reports: [], offline: true };
+    if (path.startsWith("/ngo")) return { notifications: [], offline: true };
+    return { offline: true, error: "Network offline" };
+  }
 
   let data = null;
   try {
     data = await res.json();
   } catch (e) {
     /* no body */
+  }
+
+  if (data && data.offline) {
+    if (path.startsWith("/reports")) return { reports: [], offline: true };
+    if (path.startsWith("/ngo")) return { notifications: [], offline: true };
   }
 
   if (!res.ok) {
@@ -50,6 +63,12 @@ export const api = {
 
   ngoNotifications: () => request("/ngo/notifications"),
   ackNotification: (id) => request(`/ngo/notifications/${id}/ack`, { method: "POST" }),
+
+  getPublicNgos: (userLat, userLng) => {
+    const qs = userLat != null && userLng != null ? `?userLat=${userLat}&userLng=${userLng}` : "";
+    return request(`/ngo/public-list${qs}`);
+  },
+  getReportFundraiser: (reportId) => request(`/ngo/fundraiser/${reportId}`),
 };
 
 export { getToken };

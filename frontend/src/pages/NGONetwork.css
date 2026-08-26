@@ -1,0 +1,326 @@
+/* NGO Network Page */
+
+.ngo-header {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.ngo-header__title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.ngo-header__icon {
+  font-size: 28px;
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ngo-header__sub {
+  color: var(--text-muted);
+  margin: 6px 0 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ngo-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.ngo-stat {
+  background: var(--bg-surface);
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.ngo-stat__value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.ngo-stat__label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.ngo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.ngo-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: border-color var(--transition);
+}
+
+.ngo-card:hover {
+  border-color: var(--border-glow);
+}
+
+.ngo-card__top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.ngo-card__avatar {
+  font-size: 14px;
+  font-weight: 700;
+  background: var(--primary-bg);
+  color: var(--primary);
+  border: 1px solid var(--primary-border);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ngo-card__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.ngo-card__verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--green);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.ngo-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.ngo-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.ngo-field__label {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.ngo-field__val {
+  color: var(--text-primary);
+  font-weight: 600;
+  text-align: right;
+}
+
+.ngo-field__val.highlight {
+  color: var(--blue);
+}
+
+.badge-alert {
+  background: var(--red-bg);
+  color: var(--red);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.badge-idle {
+  background: var(--bg-card-alt);
+  color: var(--text-muted);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.btn-donate-qr {
+  width: 100%;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: opacity 0.15s;
+}
+
+.btn-donate-qr:hover {
+  opacity: 0.9;
+}
+
+.ngo-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.ngo-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  max-width: 420px;
+  width: 100%;
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+}
+
+.ngo-modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ngo-modal__header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.ngo-modal__close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.ngo-modal__desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin: 0 0 16px 0;
+}
+
+.ngo-qr-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  padding: 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.ngo-qr-image {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+}
+
+.ngo-qr-badge {
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #333;
+}
+
+.ngo-upi-box {
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.ngo-upi-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.ngo-upi-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ngo-upi-id {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--green);
+  font-weight: 600;
+}
+
+.ngo-copy-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.ngo-contact-info {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.btn-launch-upi {
+  display: block;
+  text-align: center;
+  background: var(--green);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}

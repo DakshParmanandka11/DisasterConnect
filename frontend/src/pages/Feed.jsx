@@ -6,6 +6,7 @@ import SidebarLeft from "../components/SidebarLeft";
 import SidebarRight from "../components/SidebarRight";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
+import { LayersIcon, AlertTriangleIcon } from "../components/Icons";
 
 export default function Feed({
   activeCategory: propCategory,
@@ -18,7 +19,6 @@ export default function Feed({
   const [localStatus, setLocalStatus] = useState("");
   const [localCategory, setLocalCategory] = useState("");
 
-  // Use props if passed from App.jsx (controlled by taskbar), else use local state
   const statusFilter = propStatus !== undefined ? propStatus : localStatus;
   const setStatusFilter = propSetStatus || setLocalStatus;
   const categoryFilter = propCategory !== undefined ? propCategory : localCategory;
@@ -29,60 +29,67 @@ export default function Feed({
   const [live, setLive] = useState(false);
   const { user } = useAuth();
 
-  useEffect(() => {
-    api.config().then(setConfig).catch(() => {});
-  }, []);
+  useEffect(() => { api.config().then(setConfig).catch(() => {}); }, []);
 
-  useEffect(() => {
-    setLoading(true);
+  function fetchFeed(isInitial = false) {
+    if (isInitial) setLoading(true);
     const params = {};
     if (statusFilter) params.status = statusFilter;
     if (categoryFilter) params.category = categoryFilter;
     api.listReports(params)
-      .then((data) => setReports(data.reports))
-      .finally(() => setLoading(false));
-  }, [statusFilter, categoryFilter]);
+      .then((data) => {
+        if (data && Array.isArray(data.reports)) {
+          setReports(data.reports);
+          setLive(true);
+          setTimeout(() => setLive(false), 1000);
+        }
+      })
+      .catch(() => {})
+      .finally(() => { if (isInitial) setLoading(false); });
+  }
 
   useEffect(() => {
-    function flashLive() {
-      setLive(true);
-      setTimeout(() => setLive(false), 1200);
-    }
-    function upsert(report) {
-      flashLive();
-      setReports((prev) => {
-        const matchesFilter =
-          (!statusFilter || report.status === statusFilter) &&
-          (!categoryFilter || report.category === categoryFilter);
-        const idx = prev.findIndex((r) => r.id === report.id);
-        if (idx === -1) return matchesFilter ? [report, ...prev] : prev;
-        const copy = [...prev];
-        if (matchesFilter) copy[idx] = report;
-        else copy.splice(idx, 1);
-        return copy;
-      });
-    }
-    socket.on("report:new", upsert);
-    socket.on("report:updated", upsert);
-    socket.on("report:flagged", upsert);
-    return () => {
-      socket.off("report:new", upsert);
-      socket.off("report:updated", upsert);
-      socket.off("report:flagged", upsert);
-    };
+    fetchFeed(true);
+    const timer = setInterval(() => fetchFeed(false), 5000);
+    return () => clearInterval(timer);
   }, [statusFilter, categoryFilter]);
 
-  const displayed = [...reports].sort((a, b) =>
+  function getDistanceKm(lat1, lon1, lat2, lon2) {
+    if (lat1 == null || lon1 == null || lat2 == null || lon2 == null) return 0;
+    const R = 6371;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function groupReportsByLocation(list) {
+    const groups = [];
+    const visited = new Set();
+    for (const r of list) {
+      if (visited.has(r.id)) continue;
+      const related = list.filter((other) => {
+        if (visited.has(other.id)) return false;
+        if (r.cluster_id && other.cluster_id && r.cluster_id === other.cluster_id) return true;
+        return getDistanceKm(r.lat, r.lng, other.lat, other.lng) <= 1.0;
+      });
+      related.forEach((item) => visited.add(item.id));
+      groups.push(related);
+    }
+    return groups;
+  }
+
+  const sortedList = [...reports].sort((a, b) =>
     sortOrder === "hot"
       ? (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes)
       : new Date(b.created_at) - new Date(a.created_at)
   );
 
+  const clusteredGroups = groupReportsByLocation(sortedList);
+
   return (
     <div className="container">
       <div className="reddit-grid">
-
-        {/* ── Left navigation sidebar (desktop only, hidden on mobile) ── */}
         <SidebarLeft
           activeCategory={categoryFilter}
           onSelectCategory={setCategoryFilter}
@@ -90,116 +97,211 @@ export default function Feed({
           onSelectStatus={setStatusFilter}
         />
 
-        {/* ── Centre feed column ── */}
         <main className="feed-main-col">
-
-          {/* Hero Report Button Card */}
-          <div style={{
-            background: "var(--bg-card)",
-            border: "1px solid var(--border)",
-            borderRadius: "var(--radius-sm)",
-            padding: "12px 16px",
-            marginBottom: 12,
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-          }}>
-            <div style={{
-              width: 38,
-              height: 38,
-              borderRadius: "50%",
-              background: "var(--alert)",
-              color: "white",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              fontSize: 18,
-            }}>
-              {user ? user.name.charAt(0).toUpperCase() : "👤"}
+          {/* Compose / Report bar */}
+          <div className="feed-compose-bar">
+            <div className="feed-compose-bar__avatar">
+              {user ? user.name.charAt(0).toUpperCase() : "?"}
             </div>
-            <Link to="/report/new" style={{
-              flex: 1,
-              minWidth: 0,
-              background: "var(--bg-input)",
-              border: "1px solid var(--border)",
-              borderRadius: "var(--radius-xs)",
-              padding: "9px 14px",
-              fontSize: 14,
-              color: "var(--text-dim)",
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-              textOverflow: "ellipsis",
-              display: "block",
-            }}>
-              📷 Report a disaster or calamity in your area...
+            <Link
+              to={user ? "/report/new" : "/login"}
+              className="feed-compose-bar__input"
+              aria-label="Submit a new incident report"
+            >
+              Describe the disaster or calamity in your area…
             </Link>
-            <Link to="/report/new" className="btn btn-primary btn-sm" style={{ flexShrink: 0 }}>
-              + Report
+            <Link
+              to={user ? "/report/new" : "/login"}
+              className="btn btn-primary btn-sm feed-compose-bar__btn"
+            >
+              <AlertTriangleIcon size={13} />
+              Report
             </Link>
           </div>
 
-          {/* Sort / Filter Bar */}
-          <div style={{
-            background: "var(--bg-card)",
-            border: "1px solid var(--border)",
-            borderRadius: "var(--radius-sm)",
-            padding: "8px 14px",
-            marginBottom: 12,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: 8,
-          }}>
-            <div style={{ display: "flex", gap: 4 }}>
+          {/* Sort / filter bar */}
+          <div className="feed-sort-bar">
+            <div className="feed-sort-bar__left">
               <button
-                className={`btn btn-sm ${sortOrder === "newest" ? "btn-outline" : "btn-ghost"}`}
-                style={{ color: sortOrder === "newest" ? "var(--alert)" : "var(--text-muted)", borderColor: sortOrder === "newest" ? "var(--alert)" : "transparent" }}
+                className={`feed-sort-btn ${sortOrder === "newest" ? "active" : ""}`}
                 onClick={() => setSortOrder("newest")}
               >
-                ✨ New
+                New
               </button>
               <button
-                className={`btn btn-sm ${sortOrder === "hot" ? "btn-outline" : "btn-ghost"}`}
-                style={{ color: sortOrder === "hot" ? "var(--alert)" : "var(--text-muted)", borderColor: sortOrder === "hot" ? "var(--alert)" : "transparent" }}
+                className={`feed-sort-btn ${sortOrder === "hot" ? "active" : ""}`}
                 onClick={() => setSortOrder("hot")}
               >
-                🔥 Top
+                Top
               </button>
+              <span className="feed-cluster-label">
+                <LayersIcon size={12} />
+                Location clusters on
+              </span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "var(--text-dim)" }}>
-              <span style={{
-                width: 7, height: 7, borderRadius: "50%",
-                background: live ? "var(--alert)" : "var(--verified)",
-                boxShadow: live ? "0 0 0 3px var(--alert-muted)" : "none",
-                flexShrink: 0,
-              }} />
+            <div className="feed-sort-bar__live">
+              <span className={`feed-live-dot ${live ? "feed-live-dot--live" : ""}`} />
               {live ? "Live" : "Connected"}
             </div>
           </div>
 
-          {/* Incident list */}
+          {/* Incidents */}
           {loading ? (
-            <div className="card" style={{ padding: 40, textAlign: "center", color: "var(--text-muted)" }}>
+            <div className="card" style={{ padding: "36px 20px", textAlign: "center", color: "var(--text-muted)", fontSize: 13 }}>
               Loading incident feed…
             </div>
-          ) : displayed.length === 0 ? (
-            <div className="card" style={{ padding: 40, textAlign: "center", color: "var(--text-muted)" }}>
-              <div style={{ fontSize: 36, marginBottom: 8 }}>📭</div>
-              <p>No incidents found. Be the first to report one.</p>
-              <Link to="/report/new" className="btn btn-primary btn-sm" style={{ marginTop: 12 }}>
-                + Report Incident
+          ) : clusteredGroups.length === 0 ? (
+            <div className="card" style={{ padding: "40px 20px", textAlign: "center", color: "var(--text-muted)" }}>
+              <p style={{ marginBottom: 12, fontSize: 14 }}>No incidents reported. Submit the first report for this area.</p>
+              <Link to={user ? "/report/new" : "/login"} className="btn btn-primary btn-sm">
+                Submit a report
               </Link>
             </div>
           ) : (
-            displayed.map((r) => <ReportRow key={r.id} report={r} config={config} />)
+            clusteredGroups.map((group) => {
+              if (group.length === 1) {
+                return <ReportRow key={group[0].id} report={group[0]} config={config} />;
+              }
+              return (
+                <div key={`cluster-${group[0].id}`} className="feed-cluster-group">
+                  <div className="feed-cluster-header">
+                    <LayersIcon size={13} />
+                    <span>{group.length} reports from the same area — within 1 km radius</span>
+                  </div>
+                  <div className="feed-cluster-body">
+                    {group.map((r) => (
+                      <ReportRow key={r.id} report={r} config={config} />
+                    ))}
+                  </div>
+                </div>
+              );
+            })
           )}
         </main>
 
-        {/* ── Right sidebar (community info, hidden on mobile) ── */}
         <SidebarRight config={config} />
       </div>
+
+      <style>{`
+        .feed-compose-bar {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          background: var(--bg-card);
+          border: 1px solid var(--border);
+          border-radius: var(--radius-sm);
+          padding: 10px 14px;
+          margin-bottom: 8px;
+        }
+        .feed-compose-bar__avatar {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          background: var(--bg-card-alt);
+          border: 1px solid var(--border);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          font-weight: 700;
+          color: var(--text-muted);
+          flex-shrink: 0;
+        }
+        .feed-compose-bar__input {
+          flex: 1;
+          min-width: 0;
+          background: var(--bg-input);
+          border: 1px solid var(--border);
+          border-radius: var(--radius-sm);
+          padding: 7px 12px;
+          font-size: 13px;
+          color: var(--text-dim);
+          display: block;
+          transition: border-color var(--transition);
+        }
+        .feed-compose-bar__input:hover { border-color: var(--text-muted); }
+        .feed-compose-bar__btn { flex-shrink: 0; }
+
+        .feed-sort-bar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: var(--bg-card);
+          border: 1px solid var(--border);
+          border-radius: var(--radius-sm);
+          padding: 6px 12px;
+          margin-bottom: 8px;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+        .feed-sort-bar__left {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+        .feed-sort-btn {
+          background: transparent;
+          border: none;
+          color: var(--text-muted);
+          font-size: 12px;
+          font-weight: 500;
+          padding: 4px 10px;
+          border-radius: var(--radius-xs);
+          cursor: pointer;
+          transition: all var(--transition);
+        }
+        .feed-sort-btn:hover { background: var(--bg-card-alt); color: var(--text-primary); }
+        .feed-sort-btn.active { background: var(--primary-bg); color: var(--primary); font-weight: 600; }
+
+        .feed-cluster-label {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          font-size: 11px;
+          color: var(--text-dim);
+          padding: 3px 8px;
+          border-radius: var(--radius-xs);
+          border: 1px solid var(--border-muted);
+          margin-left: 4px;
+        }
+
+        .feed-sort-bar__live {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          font-size: 11px;
+          color: var(--text-dim);
+        }
+        .feed-live-dot {
+          width: 6px; height: 6px; border-radius: 50%;
+          background: var(--green); flex-shrink: 0;
+        }
+        .feed-live-dot--live { background: var(--red); }
+
+        .feed-cluster-group {
+          border: 1px solid var(--border);
+          border-radius: var(--radius-sm);
+          background: var(--bg-card);
+          margin-bottom: 10px;
+          overflow: hidden;
+        }
+        .feed-cluster-header {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 8px 14px;
+          background: var(--primary-bg);
+          border-bottom: 1px solid var(--primary-border);
+          color: var(--primary);
+          font-size: 12px;
+          font-weight: 500;
+        }
+        .feed-cluster-body {
+          display: flex;
+          flex-direction: column;
+        }
+        .feed-cluster-body .rp-card:last-child { margin-bottom: 0; }
+      `}</style>
     </div>
   );
 }

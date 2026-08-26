@@ -50,28 +50,28 @@ export default function SmsFallbackModal({ reportData, onClose }) {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             <a
-              href={`sms:911100200?body=${encodeURIComponent(`SOS|FLOOD|CRITICAL|${lat},${lng}|TRAPPED ON ROOF`)}`}
+              href={`sms:911100200?body=${encodeURIComponent(`SOS|FLOOD|CRITICAL|${lat},${lng}|TRAPPED IN FLOOD`)}`}
               className="sms-preset-btn"
               style={{ background: "rgba(14, 165, 233, 0.2)", border: "1px solid #0ea5e9", color: "#38bdf8", padding: "8px", borderRadius: 6, textDecoration: "none", fontSize: 12, fontWeight: 600, textAlign: "center" }}
             >
-              🌊 Flood Trapped
+              🌊 Flood / Deluge
             </a>
             <a
-              href={`sms:911100200?body=${encodeURIComponent(`SOS|FIRE|CRITICAL|${lat},${lng}|FIRE RESCUE NEEDED`)}`}
+              href={`sms:911100200?body=${encodeURIComponent(`SOS|FIRE|CRITICAL|${lat},${lng}|WILDFIRE RESCUE NEEDED`)}`}
               className="sms-preset-btn"
               style={{ background: "rgba(239, 68, 68, 0.2)", border: "1px solid #ef4444", color: "#fca5a5", padding: "8px", borderRadius: 6, textDecoration: "none", fontSize: 12, fontWeight: 600, textAlign: "center" }}
             >
-              🔥 Fire Hazard
+              🔥 Wildfire Hazard
             </a>
             <a
-              href={`sms:911100200?body=${encodeURIComponent(`SOS|MEDICAL|CRITICAL|${lat},${lng}|INJURED AMBULANCE NEEDED`)}`}
+              href={`sms:911100200?body=${encodeURIComponent(`SOS|EARTHQUAKE|CRITICAL|${lat},${lng}|QUAKE DEBRIS TRAPPED`)}`}
               className="sms-preset-btn"
               style={{ background: "rgba(16, 185, 129, 0.2)", border: "1px solid #10b981", color: "#6ee7b7", padding: "8px", borderRadius: 6, textDecoration: "none", fontSize: 12, fontWeight: 600, textAlign: "center" }}
             >
-              🚑 Medical Emergency
+              🌋 Earthquake / Quake
             </a>
             <a
-              href={`sms:911100200?body=${encodeURIComponent(`SOS|COLLAPSE|CRITICAL|${lat},${lng}|DEBRIS TRAPPED`)}`}
+              href={`sms:911100200?body=${encodeURIComponent(`SOS|BUILDING_COLLAPSE|CRITICAL|${lat},${lng}|STRUCTURAL COLLAPSE`)}`}
               className="sms-preset-btn"
               style={{ background: "rgba(245, 158, 11, 0.2)", border: "1px solid #f59e0b", color: "#fde047", padding: "8px", borderRadius: 6, textDecoration: "none", fontSize: 12, fontWeight: 600, textAlign: "center" }}
             >

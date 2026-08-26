@@ -6,12 +6,12 @@ import { savePendingReport } from "../util/offlineStore";
 import SmsFallbackModal from "../components/SmsFallbackModal";
 import "./NewReport.css";
 
-const CATEGORIES = ["flood", "fire", "earthquake", "accident", "building_collapse", "gas_leak", "other"];
-const SEVERITIES = ["low", "moderate", "high", "critical"];
+const CATEGORIES = ["flood", "fire", "earthquake", "tsunami", "landslide", "building_collapse", "other"];
+const SEVERITIES = ["moderate", "high", "critical"];
 
-const CATEGORY_ICONS = {
-  flood: "🌊", fire: "🔥", earthquake: "🌋", accident: "💥",
-  building_collapse: "🏚️", gas_leak: "⚠️", other: "📍",
+const CATEGORY_LABELS = {
+  flood: "Flood", fire: "Fire", earthquake: "Earthquake", tsunami: "Tsunami",
+  landslide: "Landslide", building_collapse: "Collapse", other: "Other",
 };
 
 export default function NewReport() {
@@ -19,8 +19,8 @@ export default function NewReport() {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("flood");
   const [severity, setSeverity] = useState("moderate");
-  const [files, setFiles] = useState([]);        // File objects
-  const [previews, setPreviews] = useState([]);  // blob: URLs for preview
+  const [files, setFiles] = useState([]);
+  const [previews, setPreviews] = useState([]);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
   const [offlineNotice, setOfflineNotice] = useState(false);
@@ -29,12 +29,10 @@ export default function NewReport() {
   const geo = useGeolocation();
   const navigate = useNavigate();
 
-  // Auto-capture location via device GPS hardware on mount
   useEffect(() => {
     geo.request().catch(() => {});
   }, []);
 
-  // Clean up blob URLs on unmount
   useEffect(() => {
     return () => previews.forEach((url) => URL.revokeObjectURL(url));
   }, [previews]);
@@ -46,7 +44,6 @@ export default function NewReport() {
     const newFiles = [...files, ...incoming].slice(0, 5);
     setFiles(newFiles);
 
-    // Revoke old previews and generate new ones
     previews.forEach((url) => URL.revokeObjectURL(url));
     setPreviews(newFiles.map((f) => URL.createObjectURL(f)));
 
@@ -64,11 +61,11 @@ export default function NewReport() {
     setError(null);
 
     if (!geo.coords) {
-      setError("Device GPS location is required. Please turn on location access on your phone.");
+      setError("Device GPS location is required. Please enable location access.");
       return;
     }
     if (files.length === 0) {
-      setError("At least one photo from your camera is required to verify the incident.");
+      setError("At least one camera photo is required to verify the incident.");
       return;
     }
 
@@ -77,13 +74,8 @@ export default function NewReport() {
     if (!navigator.onLine) {
       try {
         await savePendingReport({
-          title,
-          description,
-          category,
-          severity,
-          lat: geo.coords.lat,
-          lng: geo.coords.lng,
-          files,
+          title, description, category, severity,
+          lat: geo.coords.lat, lng: geo.coords.lng, files,
         });
         setOfflineNotice(true);
       } catch (err) {
@@ -114,28 +106,27 @@ export default function NewReport() {
   }
 
   return (
-    <div className="container" style={{ maxWidth: 580, paddingTop: 24, paddingBottom: 60 }}>
+    <div className="container" style={{ maxWidth: 560, paddingTop: 24, paddingBottom: 60 }}>
       <div className="nr-header">
-        <div className="nr-header__icon">🚨</div>
         <div>
-          <h1 style={{ margin: 0, fontSize: 24 }}>Report an Incident</h1>
+          <h1 style={{ margin: 0, fontSize: 22 }}>Report an Incident</h1>
           <p style={{ color: "var(--text-muted)", margin: "4px 0 0 0", fontSize: 13 }}>
-            Camera photo + automatic GPS geotag required for authenticity.
+            Camera photo and GPS geotag are required for verification.
           </p>
         </div>
       </div>
 
-      {error && <div className="error-banner">⚠️ {error}</div>}
+      {error && <div className="error-banner">{error}</div>}
 
       <form onSubmit={handleSubmit}>
-        {/* ─── CAMERA CAPTURE (Instagram-style) ─── */}
+        {/* Camera Capture — only from camera, not storage */}
         <div className="nr-camera-section">
           <div className="nr-camera-label">
-            <span className="mono">📸 INCIDENT PHOTOS</span>
-            <span className="nr-camera-note">Camera only · up to 5 photos</span>
+            <span>Incident Photos</span>
+            <span className="nr-camera-note">📷 Camera only · up to 5· no file uploads
+            </span>
           </div>
 
-          {/* Photo Grid Preview */}
           <div className="nr-photo-grid">
             {previews.map((url, idx) => (
               <div key={idx} className="nr-photo-thumb">
@@ -144,7 +135,7 @@ export default function NewReport() {
                   type="button"
                   className="nr-photo-remove"
                   onClick={() => removePhoto(idx)}
-                  title="Remove photo"
+                  title="Remove"
                 >
                   ✕
                 </button>
@@ -152,34 +143,42 @@ export default function NewReport() {
               </div>
             ))}
 
-            {/* Add Photo Button */}
             {files.length < 5 && (
               <button
                 type="button"
                 className="nr-add-photo-btn"
                 onClick={() => fileInputRef.current?.click()}
               >
-                <span className="nr-add-photo-icon">📷</span>
-                <span>{files.length === 0 ? "Open Camera" : "Add More"}</span>
+                <span className="nr-add-photo-icon">+</span>
+                <span>{files.length === 0 ? "Take Photo" : "Add More"}</span>
               </button>
             )}
           </div>
 
-          {/* Hidden camera-only input */}
+          {/*
+            Camera-only input:
+            - accept="image/*" restricts to images
+            - capture="environment" forces camera (back/env camera preferred)
+            - On a laptop/desktop this opens the webcam directly
+            - Does NOT allow picking from gallery or file storage
+            - The user must physically take a photo with their device camera
+          */}
           <input
             ref={fileInputRef}
             type="file"
             accept="image/*"
             capture="environment"
-            multiple
             style={{ display: "none" }}
             onChange={handleCameraCapture}
           />
 
           {files.length === 0 && (
             <p className="nr-camera-hint">
-              📍 Each photo is timestamped and geotagged at your current location.
-              Only camera captures are accepted to prevent fake reports.
+              Photos are timestamped and geotagged at your current location.
+              <br />
+              <strong>Camera access required</strong> — only live camera captures accepted.
+              On a laptop or desktop, your webcam will open automatically.
+              No uploads from storage or gallery are permitted.
             </p>
           )}
           {files.length > 0 && (
@@ -190,7 +189,7 @@ export default function NewReport() {
           )}
         </div>
 
-        {/* ─── AUTOMATIC GPS GEOTAG ONLY (No manual map input allowed) ─── */}
+        {/* GPS Geotag */}
         <div
           className="field"
           style={{
@@ -202,46 +201,40 @@ export default function NewReport() {
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-            <label style={{ margin: 0, fontWeight: 700, fontSize: 13, color: "var(--text-primary)" }}>
-              📡 HARDWARE GPS GEOTAG (GPS ONLY)
+            <label style={{ margin: 0, fontWeight: 600, fontSize: 13, color: "var(--text-primary)" }}>
+              GPS Location
             </label>
-            <button
-              type="button"
-              className="btn btn-ghost btn-sm"
-              onClick={() => geo.request()}
-              style={{ fontSize: 11, padding: "2px 8px" }}
-            >
-              🔄 Refresh GPS
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => geo.request()} style={{ fontSize: 11 }}>
+              Refresh
             </button>
           </div>
-          <p style={{ fontSize: 12, color: "var(--text-muted)", margin: "0 0 10px 0", lineHeight: 1.4 }}>
-            Geotag location is captured directly from your device GPS hardware. Manual location editing or pinning is disabled to ensure anti-tampering verification.
+          <p style={{ fontSize: 12, color: "var(--text-muted)", margin: "0 0 8px 0", lineHeight: 1.4 }}>
+            Location is captured from your device GPS. Manual editing is disabled.
           </p>
 
           {geo.loading ? (
-            <div style={{ fontSize: 13, color: "var(--intel)", fontWeight: 600 }}>
-              📡 Acquiring GPS satellite coordinates...
+            <div style={{ fontSize: 13, color: "var(--blue)", fontWeight: 600 }}>
+              Acquiring location...
             </div>
           ) : geo.coords ? (
-            <div className="tag" style={{ background: "var(--verified-muted)", color: "var(--verified)", padding: "8px 12px", fontSize: 12, display: "inline-flex", alignItems: "center", gap: 6 }}>
-              <span>🔒 GPS Geotag Locked:</span>
-              <strong className="mono">{geo.coords.lat.toFixed(5)}, {geo.coords.lng.toFixed(5)}</strong>
+            <div style={{ background: "var(--green-bg)", color: "var(--green)", padding: "6px 10px", borderRadius: "var(--radius-xs)", fontSize: 12, fontWeight: 600 }}>
+              GPS location locked
             </div>
           ) : (
             <div className="error-banner" style={{ margin: 0, fontSize: 12 }}>
-              ⚠️ Device GPS required. Please enable location access on your phone or browser.
+              GPS required. Please enable location access.
             </div>
           )}
         </div>
 
-        {/* ─── INCIDENT DETAILS ─── */}
+        {/* Incident Details */}
         <div className="field">
-          <label>Incident Title</label>
+          <label>Title</label>
           <input
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g. Flash flood on MG Road near metro station"
+            placeholder="Brief description of the incident"
           />
         </div>
 
@@ -250,13 +243,13 @@ export default function NewReport() {
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="What's happening? How severe does it look? Are people trapped?"
+            placeholder="What's happening? How severe is it?"
           />
         </div>
 
-        {/* ─── CATEGORY TILES ─── */}
+        {/* Category */}
         <div className="field">
-          <label>Incident Category</label>
+          <label>Category</label>
           <div className="nr-category-grid">
             {CATEGORIES.map((c) => (
               <button
@@ -265,16 +258,15 @@ export default function NewReport() {
                 className={`nr-category-tile${category === c ? " active" : ""}`}
                 onClick={() => setCategory(c)}
               >
-                <span className="nr-category-icon">{CATEGORY_ICONS[c]}</span>
-                <span>{c.replace("_", " ")}</span>
+                <span>{CATEGORY_LABELS[c]}</span>
               </button>
             ))}
           </div>
         </div>
 
-        {/* ─── SEVERITY ─── */}
+        {/* Severity */}
         <div className="field">
-          <label>Severity Level</label>
+          <label>Severity</label>
           <div className="nr-severity-row">
             {SEVERITIES.map((s) => (
               <button
@@ -290,18 +282,18 @@ export default function NewReport() {
         </div>
 
         {offlineNotice && (
-          <div style={{ background: "#065f46", color: "#ecfdf5", padding: 14, borderRadius: 8, marginTop: 16, border: "1px solid #059669" }}>
-            <div style={{ fontWeight: 700, fontSize: 14 }}>📱 Saved Offline to Phone Storage!</div>
+          <div style={{ background: "var(--green-bg)", color: "var(--green)", padding: 14, borderRadius: "var(--radius-sm)", marginTop: 16, border: "1px solid var(--green)" }}>
+            <div style={{ fontWeight: 600, fontSize: 14 }}>Saved Offline</div>
             <div style={{ fontSize: 12, marginTop: 4 }}>
-              Cell data is offline. Your report + photo & geotag have been queued in phone memory and will auto-sync the second connectivity is restored.
+              Your report has been queued and will auto-sync when connectivity is restored.
             </div>
             <button
               type="button"
-              className="btn btn-secondary"
+              className="btn btn-outline btn-sm"
               onClick={() => setShowSmsModal(true)}
-              style={{ marginTop: 10, width: "100%", fontSize: 13, background: "#047857" }}
+              style={{ marginTop: 10, width: "100%" }}
             >
-              📲 Dispatch via 2G / SMS Fallback
+              Send via SMS Fallback
             </button>
           </div>
         )}
@@ -309,23 +301,14 @@ export default function NewReport() {
         <button
           className="btn btn-primary"
           disabled={busy || files.length === 0 || !geo.coords}
-          style={{ width: "100%", padding: "14px", fontSize: 15, marginTop: 12 }}
+          style={{ width: "100%", padding: "12px", fontSize: 14, marginTop: 12 }}
         >
-          {busy ? "Submitting Report…" : `🚨 Submit Incident Report${files.length > 0 ? ` (${files.length} photo${files.length > 1 ? "s" : ""})` : ""}`}
-        </button>
-
-        <button
-          type="button"
-          className="btn btn-ghost"
-          onClick={() => setShowSmsModal(true)}
-          style={{ width: "100%", fontSize: 12, marginTop: 6, color: "var(--text-muted)" }}
-        >
-          💬 Generate 2G SMS Dispatch Payload
+          {busy ? "Submitting..." : `Submit Report${files.length > 0 ? ` (${files.length} photo${files.length > 1 ? "s" : ""})` : ""}`}
         </button>
 
         {(!geo.coords || files.length === 0) && (
           <p style={{ textAlign: "center", fontSize: 12, color: "var(--text-muted)", marginTop: 8 }}>
-            {!geo.coords ? "GPS location required to submit" : "Camera photo required before submitting"}
+            {!geo.coords ? "GPS location required" : "Camera photo required"}
           </p>
         )}
       </form>

@@ -1,0 +1,155 @@
+{
+  "users": [
+    {
+      "id": "guest-citizen-anon-id",
+      "name": "Local Citizen",
+      "email": "guest_citizen@disasterconnect.local",
+      "password_hash": "guest_hash",
+      "role": "citizen",
+      "created_at": "2026-08-25T06:59:06.857Z"
+    },
+    {
+      "id": "demo-moderator-id",
+      "name": "Aarav Sharma (Student Mod)",
+      "email": "student_mod@disasterconnect.org",
+      "password_hash": "$2b$04$mzFvqjahgX4ip3SP9E6I6eN.Ju6vJxb5LHJNCGZIVDe2dvJdEGZuC",
+      "role": "moderator",
+      "created_at": "2026-08-25T06:59:06.863Z"
+    },
+    {
+      "id": "demo-ngo-1",
+      "name": "National Disaster Relief Corps (NDRC)",
+      "email": "ndrc-relief@disasterconnect.org",
+      "password_hash": "$2b$04$TzEcyvbqgrwNpvpW4xf6vu3RPvi7h217NTguHlrPhqSnWizToQO7i",
+      "role": "ngo",
+      "home_lat": 28.6139,
+      "home_lng": 77.209,
+      "created_at": "2026-08-25T06:59:06.864Z"
+    },
+    {
+      "id": "2f9b53cb-d563-4029-aae1-a945c67543b7",
+      "name": "Local Citizen",
+      "email": "citizen_5p685wl@disasterconnect.local",
+      "password_hash": "$2b$10$/BVd49Gyxhl/FUlPDjxA2edGHSC7NEASNXt8amMeyH7Df4JRZUcd6",
+      "role": "citizen",
+      "home_lat": null,
+      "home_lng": null,
+      "created_at": "2026-08-25T06:59:39.214Z"
+    },
+    {
+      "id": "b9e0135c-2f3a-4d90-a026-f2a3c558bee3",
+      "name": "Local Citizen",
+      "email": "citizen_hadcgio@disasterconnect.local",
+      "password_hash": "$2b$10$hcrxQv6MTwrvgtXilu940uPuRQ4jvH./6VaTBqYdP5SKnjsjH8SsS",
+      "role": "citizen",
+      "home_lat": null,
+      "home_lng": null,
+      "created_at": "2026-08-25T06:59:39.355Z"
+    },
+    {
+      "id": "91f7871a-f7a2-403d-97e8-c30d9e112e54",
+      "name": "Local Citizen",
+      "email": "citizen_te6z6mv@disasterconnect.local",
+      "password_hash": "$2b$10$tQI/Ql2pdCMS.ZEXyQXZPe9vD5BkskCtwUnFnsktb2YATeIRWGN5a",
+      "role": "citizen",
+      "home_lat": null,
+      "home_lng": null,
+      "created_at": "2026-08-25T07:07:41.634Z"
+    },
+    {
+      "id": "7db085ec-e83b-4de8-811d-91092e7ee27c",
+      "name": "Local Citizen",
+      "email": "citizen_2co5nwp@disasterconnect.local",
+      "password_hash": "$2b$10$l5EbtqOFHvT8siTWNyZ5be9.8r2359GFrac9Z5M2zyF/L6/nKji82",
+      "role": "citizen",
+      "home_lat": null,
+      "home_lng": null,
+      "created_at": "2026-08-25T07:07:41.901Z"
+    },
+    {
+      "id": "b6fd7574-3e1a-4468-b0a1-db4584f72c6b",
+      "name": "Local Citizen",
+      "email": "citizen_01ea58e@disasterconnect.local",
+      "password_hash": "$2b$10$BastuQ2uvAYZRbJ5ojDCJeuZUbwau5bsxjOGCedAqahza5F8DwYeW",
+      "role": "citizen",
+      "home_lat": null,
+      "home_lng": null,
+      "created_at": "2026-08-25T07:19:05.540Z"
+    },
+    {
+      "id": "86d4a6e6-ac59-4888-a5da-73b7f8016679",
+      "name": "Local Citizen",
+      "email": "citizen_71tl2c0@disasterconnect.local",
+      "password_hash": "$2b$10$SdqM8WG6jxWeif3Ca0VEQedwhdeoSHDVLwP2khoHASK.l/HrJzmcy",
+      "role": "citizen",
+      "home_lat": null,
+      "home_lng": null,
+      "created_at": "2026-08-25T07:19:05.944Z"
+    }
+  ],
+  "ngo_profiles": [
+    {
+      "id": "ngo-prof-1",
+      "user_id": "demo-ngo-1",
+      "org_name": "National Disaster Relief Corps",
+      "service_lat": 28.6139,
+      "service_lng": 77.209,
+      "service_radius_km": 50,
+      "verification_status": "approved",
+      "upi_id": "ndrc.disaster.relief@upi",
+      "contact_phone": "+91-9810011223",
+      "contact_email": "ndrc-relief@disasterconnect.org",
+      "focus_areas": "Flood Inundation, Emergency Evacuation & Food Relief",
+      "created_at": "2026-08-25T06:59:06.864Z"
+    }
+  ],
+  "reports": [
+    {
+      "id": "sample-report-1",
+      "user_id": "guest-citizen-anon-id",
+      "title": "Severe Urban Flooding & Waterlogging",
+      "description": "Water levels reached 3 feet near main arterial road. Vehicles stranded and emergency rescue required.",
+      "category": "flood",
+      "severity": "high",
+      "lat": 28.6139,
+      "lng": 77.209,
+      "status": "pending",
+      "moderation_status": "approved",
+      "relevance_score": 95,
+      "gibberish_score": 0,
+      "upvotes": 9,
+      "downvotes": 1,
+      "remote_votes": 3,
+      "exif_status": "verified",
+      "confirmations": 1,
+      "created_at": "2026-08-25T06:59:06.864Z"
+    }
+  ],
+  "media": [],
+  "votes": [
+    {
+      "id": "d1584b31-19d2-4a68-82fe-628801b101e7",
+      "report_id": "sample-report-1",
+      "user_id": "guest-citizen-anon-id",
+      "vote_type": "up",
+      "voter_lat": 28.6139,
+      "voter_lng": 77.209,
+      "vote_tier": "local",
+      "created_at": "2026-08-25T07:00:08.897Z"
+    }
+  ],
+  "notifications": [],
+  "moderator_reviews": [],
+  "moderator_payouts": [],
+  "system_config": {
+    "voting_radius_km": "10",
+    "verification_threshold_pct": "40",
+    "min_vote_quorum": "10",
+    "ngo_notify_radius_km": "25",
+    "duplicate_cluster_radius_km": "0.5",
+    "duplicate_cluster_window_hours": "6",
+    "spatial_density_count_threshold": "3",
+    "spatial_density_window_min": "30",
+    "spatial_density_radius_km": "2.0"
+  }
+}

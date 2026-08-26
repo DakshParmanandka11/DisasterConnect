@@ -6,21 +6,22 @@ import { api } from "../api/client";
 import "./ReportRow.css";
 
 const STATUS_LABEL = {
-  pending: "Pending Quorum",
-  flagged: "Verified / High-Priority",
-  under_review: "Under NGO Review",
+  pending: "Pending",
+  flagged: "Verified",
+  under_review: "Under Review",
   resolved: "Resolved",
 };
 
 const CATEGORY_LABEL = {
-  flood: "c/flooding",
-  fire: "c/wildfires",
-  earthquake: "c/earthquake",
-  accident: "c/accidents",
-  building_collapse: "c/structural-collapse",
-  gas_leak: "c/gas-hazard",
-  other: "c/other-calamities",
-  "": "c/all-incidents",
+  flood: "Flooding",
+  fire: "Fire",
+  wildfire: "Fire",
+  earthquake: "Earthquake",
+  tsunami: "Tsunami / Cyclone",
+  landslide: "Landslide",
+  building_collapse: "Collapse",
+  other: "Other",
+  "": "All",
 };
 
 function formatMediaUrl(filePath) {
@@ -51,10 +52,6 @@ export default function ReportRow({ report: initialReport, config }) {
 
   async function handleVote(e, voteType) {
     e.stopPropagation();
-    if (!user) {
-      alert("Please log in to vote on disaster reports.");
-      return;
-    }
     if (voting) return;
 
     setVoting(true);
@@ -72,7 +69,7 @@ export default function ReportRow({ report: initialReport, config }) {
         }
       }
     } catch (err) {
-      // fallback to report lat/lng if geolocation fails
+      // use report coords as fallback
     }
 
     try {
@@ -81,7 +78,7 @@ export default function ReportRow({ report: initialReport, config }) {
         setReport(res.report);
       }
     } catch (err) {
-      alert(err.message || "Failed to vote.");
+      alert(err.message || "Vote failed.");
     } finally {
       setVoting(false);
     }
@@ -89,12 +86,10 @@ export default function ReportRow({ report: initialReport, config }) {
 
   return (
     <div className="rp-card" onClick={handleCardClick}>
-
-      {/* ── Vote pillar (left side) ── */}
       <div className="rp-vote">
         <button
           className="rp-vote__btn rp-vote__btn--up"
-          title="Upvote — must be within 10 km"
+          title="Upvote"
           disabled={voting}
           onClick={(e) => handleVote(e, "up")}
         >
@@ -105,7 +100,7 @@ export default function ReportRow({ report: initialReport, config }) {
         <span className="rp-vote__score">{report.upvotes}</span>
         <button
           className="rp-vote__btn rp-vote__btn--down"
-          title="Downvote — must be within 10 km"
+          title="Downvote"
           disabled={voting}
           onClick={(e) => handleVote(e, "down")}
         >
@@ -115,41 +110,40 @@ export default function ReportRow({ report: initialReport, config }) {
         </button>
       </div>
 
-      {/* ── Main content ── */}
       <div className="rp-body">
+        {/* Location cluster indicator — informational */}
+        {report.confirmations > 1 && (
+          <div className="rp-cluster-banner">
+            {report.confirmations} reports from the same area
+          </div>
+        )}
 
-        {/* Meta row: channel • author • time • location • status */}
         <div className="rp-meta">
           <span className="rp-meta__channel">
-            {CATEGORY_LABEL[report.category] || `c/${report.category}`}
+            {CATEGORY_LABEL[report.category] || report.category}
           </span>
-          <span className="rp-meta__dot">•</span>
-          <span>Posted by <strong>{report.author?.name || "citizen"}</strong></span>
-          <span className="rp-meta__dot">•</span>
+          <span className="rp-meta__dot">·</span>
+          <span>by <strong>{report.author?.name || "citizen"}</strong></span>
+          <span className="rp-meta__dot">·</span>
           <span>{timeAgo}</span>
-          <span className="rp-meta__dot">•</span>
-          <span className="rp-meta__geo">📍 {report.lat.toFixed(3)}, {report.lng.toFixed(3)}</span>
-          {report.confirmations > 1 && (
-            <span className="rp-meta__badge rp-meta__badge--confirm">
-              {report.confirmations} reports
-            </span>
-          )}
           <span className={`status-badge status-${report.status}`}>
             {STATUS_LABEL[report.status]}
           </span>
+          {report.moderation_status === "approved" && (
+            <span className="rp-moderation-badge rp-moderation-badge--approved">
+              Verified
+            </span>
+          )}
         </div>
 
-        {/* Title */}
         <h3 className="rp-title">
           <Link to={`/report/${report.id}`}>{report.title}</Link>
         </h3>
 
-        {/* Description (clamped to 2 lines) */}
         {report.description && (
           <p className="rp-desc">{report.description}</p>
         )}
 
-        {/* ── PHOTO — full width like Reddit image posts ── */}
         {hasMedia && (() => {
           const items = report.media.slice(0, 4);
           const count = items.length;
@@ -178,7 +172,6 @@ export default function ReportRow({ report: initialReport, config }) {
                       ? <video src={src} muted playsInline />
                       : <img src={src} alt={`photo ${idx + 1}`} loading="lazy" />
                     }
-                    {/* "+N more" overlay on last slot */}
                     {idx === 3 && extra > 0 && (
                       <div className="rp-photo__more">+{extra}</div>
                     )}
@@ -189,7 +182,6 @@ export default function ReportRow({ report: initialReport, config }) {
           );
         })()}
 
-        {/* Verification signal meter */}
         <div className="rp-signal">
           <SignalMeter
             pct={report.upvotePct}
@@ -200,11 +192,10 @@ export default function ReportRow({ report: initialReport, config }) {
           />
         </div>
 
-        {/* Action footer */}
         <div className="rp-footer">
           <div className="rp-footer__actions">
             <Link to={`/report/${report.id}`} className="rp-footer__btn">
-              💬 {report.totalVotes} votes
+              {report.totalVotes} votes
             </Link>
             <button
               className="rp-footer__btn"
@@ -212,17 +203,17 @@ export default function ReportRow({ report: initialReport, config }) {
                 e.stopPropagation();
                 const url = window.location.origin + `/report/${report.id}`;
                 if (navigator.share) {
-                  navigator.share({ title: report.title, text: `🚨 ${report.title}`, url }).catch(() => {});
+                  navigator.share({ title: report.title, text: report.title, url }).catch(() => {});
                 } else {
                   navigator.clipboard?.writeText?.(url);
                   alert("Link copied!");
                 }
               }}
             >
-              📲 Share
+              Share
             </button>
           </div>
-          <span className="rp-footer__radius">📍 10 km radius</span>
+          <span className="rp-footer__radius">10 km voting radius</span>
         </div>
       </div>
     </div>

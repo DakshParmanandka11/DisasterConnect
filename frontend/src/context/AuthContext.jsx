@@ -1,4 +1,4 @@
-﻿import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { api } from "../api/client";
 
 const AuthContext = createContext(null);
@@ -9,17 +9,37 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem("dc_token");
-    if (!token) {
-      setLoading(false);
-      return;
+    if (token) {
+      api
+        .me()
+        .then((data) => setUser(data.user))
+        .catch(() => {
+          localStorage.removeItem("dc_token");
+          autoRegisterGuest();
+        })
+        .finally(() => setLoading(false));
+    } else {
+      autoRegisterGuest();
     }
-    api
-      .me()
-      .then((data) => setUser(data.user))
-      .catch(() => {
-        localStorage.removeItem("dc_token");
-      })
-      .finally(() => setLoading(false));
+
+    function autoRegisterGuest() {
+      const guestEmail = `citizen_${Math.random().toString(36).substring(2, 9)}@disasterconnect.local`;
+      api
+        .register({
+          name: "Local Citizen",
+          email: guestEmail,
+          password: "guest_password_123",
+          role: "citizen",
+        })
+        .then((data) => {
+          if (data && data.token) {
+            localStorage.setItem("dc_token", data.token);
+            setUser(data.user);
+          }
+        })
+        .catch(() => {})
+        .finally(() => setLoading(false));
+    }
   }, []);
 
   function login(token, user) {

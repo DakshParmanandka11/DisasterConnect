@@ -1,0 +1,21 @@
+{
+  "name": "disasterconnect-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd backend && npm install && node server.js",
+    "dev:backend": "cd backend && node server.js",
+    "dev:frontend": "cd frontend && npm run dev",
+    "tunnel": ".\\cloudflared.exe tunnel --url http://localhost:5173",
+    "localtunnel": "npx localtunnel --port 5173"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.2.0",
+    "uuid": "^14.0.2"
+  }
+}

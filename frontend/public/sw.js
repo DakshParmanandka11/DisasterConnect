@@ -1,7 +1,19 @@
-const CACHE_NAME = "disasterconnect-v2";
+const CACHE_NAME = "disasterconnect-v3";
+
+const PRECACHE_ASSETS = [
+  "/",
+  "/index.html",
+  "/favicon.svg",
+  "/manifest.json"
+];
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(PRECACHE_ASSETS).catch(() => {});
+    })
+  );
 });
 
 self.addEventListener("activate", (event) => {
@@ -19,20 +31,20 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(event.request.url);
 
-  // Exclude API/Uploads from static cache
+  // API requests fallback when offline
   if (url.pathname.startsWith("/api") || url.pathname.startsWith("/uploads")) {
     event.respondWith(
       fetch(event.request).catch(() => {
         return new Response(
-          JSON.stringify({ error: "Offline mode active", offline: true }),
-          { headers: { "Content-Type": "application/json" } }
+          JSON.stringify({ error: "Offline mode active", offline: true, reports: [], notifications: [] }),
+          { headers: { "Content-Type": "application/json" }, status: 200 }
         );
       })
     );
     return;
   }
 
-  // Stale-While-Revalidate Strategy for all static assets & navigation
+  // Static assets & page navigation caching strategy
   event.respondWith(
     caches.open(CACHE_NAME).then(async (cache) => {
       const cachedResponse = await cache.match(event.request);
@@ -50,12 +62,10 @@ self.addEventListener("fetch", (event) => {
         })
         .catch(() => null);
 
-      // Return cached version immediately if offline
       if (cachedResponse) {
         return cachedResponse;
       }
 
-      // If no direct match and offline navigation, return cached index.html
       const networkResult = await fetchPromise;
       if (networkResult) return networkResult;
 
@@ -81,7 +91,7 @@ self.addEventListener("fetch", (event) => {
           <body>
             <div class="card">
               <h2>📡 Offline Emergency Rescue</h2>
-              <p>Cell network is down. Tap below to send a zero-data emergency SMS to <strong>911100200</strong>:</p>
+              <p>Cell network is down. Tap below to send a zero-data emergency SMS:</p>
               <a href="sms:911100200?body=SOS%7CFLOOD%7CCRITICAL%7C28.6139,77.2090%7CTRAPPED%20ON%20ROOF" class="btn">🌊 1-Tap Flood Rescue SMS</a>
               <a href="sms:911100200?body=SOS%7CFIRE%7CCRITICAL%7C28.6139,77.2090%7CFIRE%20RESCUE" class="btn" style="background:#d97706">🔥 1-Tap Fire Rescue SMS</a>
               <a href="sms:112?body=SOS" class="btn" style="background:#2563eb">💬 Text SOS to 112</a>
@@ -93,3 +103,4 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+

@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
 import { Link } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
@@ -24,34 +24,15 @@ export default function CrisisMap() {
   const [pulseIds, setPulseIds] = useState(new Set());
 
   useEffect(() => {
-    api.listReports().then((data) => setReports(data.reports));
-
-    function upsert(report) {
-      setReports((prev) => {
-        const idx = prev.findIndex((r) => r.id === report.id);
-        if (idx === -1) return [report, ...prev];
-        const copy = [...prev];
-        copy[idx] = report;
-        return copy;
-      });
-      setPulseIds((prev) => new Set(prev).add(report.id));
-      setTimeout(() => {
-        setPulseIds((prev) => {
-          const next = new Set(prev);
-          next.delete(report.id);
-          return next;
-        });
-      }, 2500);
+    function fetchReports() {
+      api.listReports()
+        .then((data) => setReports(data && Array.isArray(data.reports) ? data.reports : []))
+        .catch(() => {});
     }
 
-    socket.on("report:new", upsert);
-    socket.on("report:updated", upsert);
-    socket.on("report:flagged", upsert);
-    return () => {
-      socket.off("report:new", upsert);
-      socket.off("report:updated", upsert);
-      socket.off("report:flagged", upsert);
-    };
+    fetchReports();
+    const interval = setInterval(fetchReports, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const center =

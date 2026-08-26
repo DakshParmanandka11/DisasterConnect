@@ -1,34 +1,30 @@
-/* ===================================================
-   DISASTERCONNECT — NEW REPORT PAGE (Camera Capture)
-=================================================== */
+/* New Report Page */
 
-/* ─── Header ─── */
 .nr-header {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   margin-bottom: 24px;
-  padding-bottom: 20px;
+  padding-bottom: 16px;
   border-bottom: 1px solid var(--border);
 }
 
 .nr-header__icon {
-  width: 52px;
-  height: 52px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, var(--alert), #FF6B00);
+  background: var(--red);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
+  font-size: 18px;
   flex-shrink: 0;
-  box-shadow: var(--shadow-glow-alert);
+  color: white;
 }
 
-/* ─── Camera Capture Section ─── */
 .nr-camera-section {
-  background-color: var(--bg-card);
-  border: 2px dashed var(--border);
+  background: var(--bg-card);
+  border: 1px dashed var(--border);
   border-radius: var(--radius-md);
   padding: 20px;
   margin-bottom: 20px;
@@ -37,7 +33,7 @@
 
 .nr-camera-section:has(.nr-photo-thumb) {
   border-style: solid;
-  border-color: var(--alert);
+  border-color: var(--border-glow);
 }
 
 .nr-camera-label {
@@ -45,42 +41,30 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 14px;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
 }
 
 .nr-camera-note {
-  font-weight: 500;
-  font-size: 11px;
+  font-weight: 400;
+  font-size: 12px;
   color: var(--text-dim);
-  letter-spacing: 0;
-  text-transform: none;
 }
 
-/* ─── Photo Grid ─── */
 .nr-photo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 10px;
 }
 
-/* ─── Photo Thumbnail ─── */
 .nr-photo-thumb {
   position: relative;
   aspect-ratio: 1 / 1;
   border-radius: var(--radius-sm);
   overflow: hidden;
-  background-color: var(--bg-base);
+  background: var(--bg-base);
   border: 1px solid var(--border);
-  animation: nr-photo-in 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes nr-photo-in {
-  from { opacity: 0; transform: scale(0.85); }
-  to   { opacity: 1; transform: scale(1); }
 }
 
 .nr-photo-thumb img {
@@ -94,88 +78,79 @@
   position: absolute;
   top: 6px;
   right: 6px;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.7);
   border: none;
-  color: #ffffff;
+  color: #fff;
   font-size: 10px;
   font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color var(--transition);
-  backdrop-filter: blur(4px);
+  transition: background var(--transition);
 }
 
 .nr-photo-remove:hover {
-  background-color: var(--alert);
+  background: var(--red);
 }
 
 .nr-photo-num {
   position: absolute;
   bottom: 5px;
   left: 7px;
-  font-family: var(--font-mono);
   font-size: 10px;
-  font-weight: 700;
-  color: #ffffff;
-  background-color: rgba(0, 0, 0, 0.6);
+  font-weight: 600;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
   border-radius: 3px;
   padding: 1px 5px;
-  backdrop-filter: blur(4px);
 }
 
-/* ─── Add Photo Button ─── */
 .nr-add-photo-btn {
   aspect-ratio: 1 / 1;
   border-radius: var(--radius-sm);
-  border: 2px dashed var(--border);
-  background-color: var(--bg-surface);
+  border: 1px dashed var(--border);
+  background: var(--bg-surface);
   color: var(--text-muted);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   cursor: pointer;
   font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-weight: 500;
   transition: all var(--transition);
 }
 
 .nr-add-photo-btn:hover {
-  border-color: var(--alert);
-  background-color: var(--alert-muted);
-  color: var(--alert);
+  border-color: var(--text-muted);
+  color: var(--text-primary);
 }
 
 .nr-add-photo-icon {
-  font-size: 24px;
+  font-size: 20px;
 }
 
-/* ─── Hints ─── */
 .nr-camera-hint {
   margin: 14px 0 0 0;
   font-size: 12px;
   color: var(--text-muted);
   line-height: 1.6;
-  border-left: 3px solid var(--border);
+  border-left: 2px solid var(--border);
   padding-left: 10px;
 }
 
 .nr-camera-count {
   margin: 10px 0 0 0;
   font-size: 12px;
-  font-family: var(--font-mono);
-  color: var(--verified);
+  color: var(--green);
   font-weight: 600;
 }
 
-/* ─── Category Grid ─── */
 .nr-category-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -186,11 +161,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   padding: 10px 8px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
-  background-color: var(--bg-surface);
+  background: var(--bg-surface);
   color: var(--text-muted);
   font-size: 11px;
   font-weight: 600;
@@ -200,23 +175,20 @@
 }
 
 .nr-category-tile:hover {
-  border-color: var(--intel);
-  color: var(--intel);
-  background-color: var(--intel-muted);
+  border-color: var(--text-muted);
+  color: var(--text-primary);
 }
 
 .nr-category-tile.active {
-  border-color: var(--alert);
-  background-color: var(--alert-muted);
-  color: var(--alert);
-  box-shadow: var(--shadow-glow-alert);
+  border-color: var(--red);
+  background: var(--red-bg);
+  color: var(--red);
 }
 
 .nr-category-icon {
-  font-size: 20px;
+  font-size: 18px;
 }
 
-/* ─── Severity Row ─── */
 .nr-severity-row {
   display: flex;
   gap: 8px;
@@ -225,23 +197,23 @@
 .nr-severity-btn {
   flex: 1;
   padding: 8px 4px;
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border);
-  background-color: var(--bg-surface);
+  background: var(--bg-surface);
   color: var(--text-muted);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   cursor: pointer;
   transition: all var(--transition);
 }
 
 .nr-severity-low:hover,
-.nr-severity-low.active    { border-color: var(--verified); color: var(--verified); background: var(--verified-muted); }
+.nr-severity-low.active    { border-color: var(--green); color: var(--green); background: var(--green-bg); }
 .nr-severity-moderate:hover,
-.nr-severity-moderate.active { border-color: var(--intel); color: var(--intel); background: var(--intel-muted); }
+.nr-severity-moderate.active { border-color: var(--blue); color: var(--blue); background: var(--blue-bg); }
 .nr-severity-high:hover,
-.nr-severity-high.active   { border-color: var(--signal); color: var(--signal); background: var(--signal-muted); }
+.nr-severity-high.active   { border-color: var(--amber); color: var(--amber); background: var(--amber-bg); }
 .nr-severity-critical:hover,
-.nr-severity-critical.active { border-color: var(--alert); color: var(--alert); background: var(--alert-muted); box-shadow: var(--shadow-glow-alert); }
+.nr-severity-critical.active { border-color: var(--red); color: var(--red); background: var(--red-bg); }

@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { api } from "../api/client";
 import { useAuth } from "../context/AuthContext";
@@ -18,7 +18,11 @@ export default function Login() {
     try {
       const data = await api.login({ email, password });
       login(data.token, data.user);
-      navigate(data.user.role === "ngo" ? "/ngo" : "/");
+      navigate(
+        data.user.role === "ngo" ? "/ngo"
+        : data.user.role === "moderator" ? "/moderator"
+        : "/"
+      );
     } catch (err) {
       setError(err.message);
     } finally {
@@ -27,26 +31,60 @@ export default function Login() {
   }
 
   return (
-    <div className="container" style={{ maxWidth: 420, paddingTop: 60 }}>
-      <h1>Log in</h1>
-      <p style={{ color: "var(--muted)", marginTop: -8 }}>Access your reporting or NGO account.</p>
-      {error && <div className="error-banner">{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <div className="field">
-          <label>Email</label>
-          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+    <div className="auth-page">
+      <div className="auth-card">
+        <div style={{ marginBottom: 20 }}>
+          <p style={{ fontSize: 11, fontWeight: 600, color: "var(--primary)", textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 6px 0" }}>
+            DisasterConnect
+          </p>
+          <h1 style={{ margin: "0 0 4px 0" }}>Log in to your account</h1>
+          <p className="auth-card__sub">
+            Access your incident feed, reports, and role dashboard.
+          </p>
         </div>
-        <div className="field">
-          <label>Password</label>
-          <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+
+        {error && <div className="error-banner">{error}</div>}
+
+        <form onSubmit={handleSubmit}>
+          <div className="field">
+            <label htmlFor="login-email">Email address</label>
+            <input
+              id="login-email"
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="your@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="login-password">Password</label>
+            <input
+              id="login-password"
+              type="password"
+              required
+              autoComplete="current-password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={busy}
+            style={{ width: "100%", padding: "9px", marginTop: 6 }}
+          >
+            {busy ? "Logging in…" : "Log in"}
+          </button>
+        </form>
+
+        <div className="auth-card__footer">
+          Don't have an account?{" "}
+          <Link to="/register">Create one</Link>
         </div>
-        <button className="btn btn-signal" disabled={busy} style={{ width: "100%" }}>
-          {busy ? "Logging in..." : "Log in"}
-        </button>
-      </form>
-      <p style={{ marginTop: 16, fontSize: 14 }}>
-        No account? <Link to="/register">Register here</Link>
-      </p>
+      </div>
     </div>
   );
 }

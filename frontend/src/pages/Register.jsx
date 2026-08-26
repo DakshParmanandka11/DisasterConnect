@@ -1,9 +1,27 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { api } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { useGeolocation } from "../hooks/useGeolocation";
 import MapPicker from "../components/MapPicker";
+
+const ROLES = [
+  {
+    id: "citizen",
+    label: "Citizen",
+    desc: "Report incidents in your area and help verify nearby disaster reports through community upvotes.",
+  },
+  {
+    id: "ngo",
+    label: "NGO / Relief Organisation",
+    desc: "Manage your relief operations, respond to verified incidents, and receive NGO dispatch alerts.",
+  },
+  {
+    id: "moderator",
+    label: "Moderator",
+    desc: "Review submitted reports for relevance and accuracy. Earn stipends per completed review.",
+  },
+];
 
 export default function Register() {
   const [role, setRole] = useState("citizen");
@@ -18,22 +36,19 @@ export default function Register() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const activeRole = ROLES.find((r) => r.id === role);
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
-
     if (role === "ngo" && !geo.coords) {
-      setError("Set your organization's service location on the map (or use your current location) before continuing.");
+      setError("Set your organisation's service location on the map before continuing.");
       return;
     }
-
     setBusy(true);
     try {
       const payload = {
-        name,
-        email,
-        password,
-        role,
+        name, email, password, role,
         home_lat: geo.coords?.lat,
         home_lng: geo.coords?.lng,
         org_name: role === "ngo" ? orgName : undefined,
@@ -41,7 +56,7 @@ export default function Register() {
       };
       const data = await api.register(payload);
       login(data.token, data.user);
-      navigate(role === "ngo" ? "/ngo" : "/");
+      navigate(role === "ngo" ? "/ngo" : role === "moderator" ? "/moderator" : "/");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -50,83 +65,113 @@ export default function Register() {
   }
 
   return (
-    <div className="container" style={{ maxWidth: 480, paddingTop: 40, paddingBottom: 60 }}>
-      <h1>Create an account</h1>
+    <div className="auth-page">
+      <div className="auth-card" style={{ maxWidth: 480 }}>
+        <div style={{ marginBottom: 18 }}>
+          <p style={{ fontSize: 11, fontWeight: 600, color: "var(--primary)", textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 6px 0" }}>
+            DisasterConnect
+          </p>
+          <h1 style={{ margin: "0 0 4px 0" }}>Create an account</h1>
+          <p className="auth-card__sub">
+            Select your role to get started. You can't change your role after registration.
+          </p>
+        </div>
 
-      <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-        <button
-          type="button"
-          className={`btn btn-sm ${role === "citizen" ? "btn-trust" : "btn-outline"}`}
-          onClick={() => setRole("citizen")}
-        >
-          Citizen Reporter
-        </button>
-        <button
-          type="button"
-          className={`btn btn-sm ${role === "ngo" ? "btn-trust" : "btn-outline"}`}
-          onClick={() => setRole("ngo")}
-        >
-          NGO / Relief Org
-        </button>
+        {/* Role selector */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 16 }}>
+          {ROLES.map((r) => (
+            <button
+              key={r.id}
+              type="button"
+              onClick={() => setRole(r.id)}
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 10,
+                padding: "10px 12px",
+                borderRadius: "var(--radius-sm)",
+                border: role === r.id ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                background: role === r.id ? "var(--primary-bg)" : "transparent",
+                cursor: "pointer",
+                transition: "all var(--transition)",
+                textAlign: "left",
+              }}
+            >
+              <span style={{
+                width: 14,
+                height: 14,
+                borderRadius: "50%",
+                border: role === r.id ? "4px solid var(--primary)" : "2px solid var(--border)",
+                background: "transparent",
+                flexShrink: 0,
+                marginTop: 2,
+                transition: "all var(--transition)",
+              }} />
+              <div>
+                <div style={{ fontWeight: 600, fontSize: 13, color: role === r.id ? "var(--primary)" : "var(--text-primary)" }}>
+                  {r.label}
+                </div>
+                <div style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.4, marginTop: 2 }}>
+                  {r.desc}
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {error && <div className="error-banner">{error}</div>}
+
+        <form onSubmit={handleSubmit}>
+          <div className="field">
+            <label htmlFor="reg-name">{role === "ngo" ? "Contact name" : "Full name"}</label>
+            <input id="reg-name" required autoComplete="name" placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} />
+          </div>
+          <div className="field">
+            <label htmlFor="reg-email">Email address</label>
+            <input id="reg-email" type="email" required autoComplete="email" placeholder="your@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <div className="field">
+            <label htmlFor="reg-password">Password</label>
+            <input id="reg-password" type="password" required minLength={6} autoComplete="new-password" placeholder="At least 6 characters" value={password} onChange={(e) => setPassword(e.target.value)} />
+          </div>
+
+          {role === "ngo" && (
+            <>
+              <div className="field">
+                <label htmlFor="reg-orgname">Organisation name</label>
+                <input id="reg-orgname" required placeholder="e.g. Red Cross — Delhi Chapter" value={orgName} onChange={(e) => setOrgName(e.target.value)} />
+              </div>
+              <div className="field">
+                <label htmlFor="reg-radius">Service radius (km)</label>
+                <input id="reg-radius" type="number" min={1} max={200} value={serviceRadius} onChange={(e) => setServiceRadius(e.target.value)} />
+              </div>
+              <div className="field">
+                <label>Base location</label>
+                <button type="button" className="btn btn-outline btn-sm" onClick={() => geo.request()} style={{ marginBottom: 8, alignSelf: "flex-start" }}>
+                  {geo.loading ? "Locating…" : "Use my current location"}
+                </button>
+                <MapPicker lat={geo.coords?.lat} lng={geo.coords?.lng} onPick={geo.setCoords} radiusKm={Number(serviceRadius)} />
+                <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 6, lineHeight: 1.4 }}>
+                  Click the map or use the button above to set your organisation's base location.
+                </p>
+              </div>
+            </>
+          )}
+
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={busy}
+            style={{ width: "100%", padding: "9px", marginTop: 6 }}
+          >
+            {busy ? "Creating account…" : "Create account"}
+          </button>
+        </form>
+
+        <div className="auth-card__footer">
+          Already registered? <Link to="/login">Log in</Link>
+        </div>
       </div>
-
-      {error && <div className="error-banner">{error}</div>}
-
-      <form onSubmit={handleSubmit}>
-        <div className="field">
-          <label>{role === "ngo" ? "Contact Name" : "Full Name"}</label>
-          <input required value={name} onChange={(e) => setName(e.target.value)} />
-        </div>
-        <div className="field">
-          <label>Email</label>
-          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-        </div>
-        <div className="field">
-          <label>Password</label>
-          <input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} />
-        </div>
-
-        {role === "ngo" && (
-          <>
-            <div className="field">
-              <label>Organization Name</label>
-              <input required value={orgName} onChange={(e) => setOrgName(e.target.value)} />
-            </div>
-            <div className="field">
-              <label>Service Radius (km)</label>
-              <input
-                type="number"
-                min={1}
-                max={200}
-                value={serviceRadius}
-                onChange={(e) => setServiceRadius(e.target.value)}
-              />
-            </div>
-            <div className="field">
-              <label>Service Area Location</label>
-              <button type="button" className="btn btn-outline btn-sm" onClick={() => geo.request()} style={{ marginBottom: 10 }}>
-                {geo.loading ? "Locating..." : "Use my current location"}
-              </button>
-              <MapPicker
-                lat={geo.coords?.lat}
-                lng={geo.coords?.lng}
-                onPick={geo.setCoords}
-                radiusKm={Number(serviceRadius)}
-              />
-              <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 6 }}>
-                Click the map to set your organization's base location, or use your current location.
-              </p>
-            </div>
-          </>
-        )}
-
-        <button className="btn btn-signal" disabled={busy} style={{ width: "100%" }}>
-          {busy ? "Creating account..." : "Create account"}
-        </button>
-      </form>
-      <p style={{ marginTop: 16, fontSize: 14 }}>
-        Already registered? <Link to="/login">Log in</Link>
-      </p>
     </div>
   );
 }

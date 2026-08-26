@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { readDb, writeDb } = require("../db");
 
 const JWT_SECRET = process.env.JWT_SECRET || "disasterconnect-dev-secret-change-me";
 
@@ -13,13 +14,34 @@ function signToken(user) {
 function requireAuth(req, res, next) {
   const header = req.headers.authorization || "";
   const token = header.startsWith("Bearer ") ? header.slice(7) : null;
-  if (!token) return res.status(401).json({ error: "Not authenticated" });
-  try {
-    req.user = jwt.verify(token, JWT_SECRET);
-    next();
-  } catch (e) {
-    return res.status(401).json({ error: "Invalid or expired session" });
+
+  if (token) {
+    try {
+      req.user = jwt.verify(token, JWT_SECRET);
+      return next();
+    } catch (e) {
+      // Invalid/expired token — fallback to guest citizen
+    }
   }
+
+  const dbData = readDb();
+  let guestUser = dbData.users.find((u) => u.email === "guest_citizen@disasterconnect.local");
+
+  if (!guestUser) {
+    guestUser = {
+      id: "guest-citizen-anon-id",
+      name: "Local Citizen",
+      email: "guest_citizen@disasterconnect.local",
+      password_hash: "guest_hash",
+      role: "citizen",
+      created_at: new Date().toISOString(),
+    };
+    dbData.users.push(guestUser);
+    writeDb(dbData);
+  }
+
+  req.user = { id: guestUser.id, role: guestUser.role, name: guestUser.name };
+  next();
 }
 
 function requireRole(role) {

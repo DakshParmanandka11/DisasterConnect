@@ -1,77 +1,116 @@
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import {
+  HomeIcon, MapPinIcon, AlertTriangleIcon, ShieldIcon, UsersIcon,
+  ClipboardIcon, KeyIcon
+} from "./Icons";
 import "./SidebarLeft.css";
 
 const CHANNELS = [
-  { id: "", label: "All Incidents", icon: "🌐" },
-  { id: "flood", label: "Flooding", icon: "🌊" },
-  { id: "fire", label: "Wildfires", icon: "🔥" },
-  { id: "earthquake", label: "Earthquake", icon: "🌋" },
-  { id: "accident", label: "Accidents", icon: "💥" },
-  { id: "building_collapse", label: "Structural Collapse", icon: "🏚️" },
-  { id: "gas_leak", label: "Gas Hazard", icon: "⚠️" },
-  { id: "other", label: "Other Calamities", icon: "📍" },
+  { id: "", label: "All" },
+  { id: "flood", label: "Flooding" },
+  { id: "fire", label: "Fire" },
+  { id: "earthquake", label: "Earthquake" },
+  { id: "tsunami", label: "Tsunami / Cyclone" },
+  { id: "landslide", label: "Landslide" },
+  { id: "building_collapse", label: "Structural Collapse" },
+  { id: "other", label: "Other" },
 ];
 
 export default function SidebarLeft({ activeCategory, onSelectCategory, activeStatus, onSelectStatus }) {
   const location = useLocation();
+  const { user } = useAuth();
+  const role = user?.role || null;
+  const isHome = location.pathname === "/";
 
   return (
     <aside className="reddit-sidebar-left">
-      {/* Main navigation */}
+      <div className="sidebar-section-title">Navigation</div>
+
       <Link
         to="/"
-        className={`sidebar-item ${location.pathname === "/" && !activeStatus && !activeCategory ? "active" : ""}`}
+        className={`sidebar-item ${isHome && !activeStatus && !activeCategory ? "active" : ""}`}
       >
-        <span className="sidebar-icon">🏠</span>
-        <span>Home</span>
+        <HomeIcon size={14} /> Home
       </Link>
-      <Link to="/map" className={`sidebar-item ${location.pathname === "/map" ? "active-intel" : ""}`}>
-        <span className="sidebar-icon">🗺️</span>
-        <span>Live Crisis Map</span>
+
+      <Link to="/map" className={`sidebar-item ${location.pathname === "/map" ? "active" : ""}`}>
+        <MapPinIcon size={14} /> Crisis Map
       </Link>
-      <Link to="/report/new" className={`sidebar-item ${location.pathname === "/report/new" ? "active-alert" : ""}`}
-        style={{ color: "var(--alert)", fontWeight: 700 }}>
-        <span className="sidebar-icon">📷</span>
-        <span>Report Incident</span>
-      </Link>
+
+      {role === "citizen" && (
+        <Link to="/ngos" className={`sidebar-item ${location.pathname === "/ngos" ? "active" : ""}`}>
+          <UsersIcon size={14} /> NGO Network
+        </Link>
+      )}
+
+      {(role === "ngo" || role === "admin") && (
+        <>
+          <Link to="/ngos" className={`sidebar-item ${location.pathname === "/ngos" ? "active" : ""}`}>
+            <UsersIcon size={14} /> NGO Network
+          </Link>
+          <Link to="/ngo" className={`sidebar-item ${location.pathname === "/ngo" ? "active" : ""}`}>
+            <ClipboardIcon size={14} /> NGO Dashboard
+          </Link>
+        </>
+      )}
+
+      {(role === "moderator" || role === "admin") && (
+        <Link to="/moderator" className={`sidebar-item ${location.pathname === "/moderator" ? "active" : ""}`}>
+          <ShieldIcon size={14} /> Moderation
+        </Link>
+      )}
+
+      {!user && (
+        <>
+          <div className="sidebar-divider" />
+          <Link to="/login" className={`sidebar-item ${location.pathname === "/login" ? "active" : ""}`}>
+            <KeyIcon size={14} /> Log in
+          </Link>
+          <Link to="/register" className="sidebar-item sidebar-item--cta">
+            Sign up
+          </Link>
+        </>
+      )}
 
       <div className="sidebar-divider" />
 
-      {/* Status Feeds */}
-      <div className="sidebar-section-title">STATUS FEEDS</div>
-      <button className={`sidebar-item ${activeStatus === "" && location.pathname === "/" ? "active" : ""}`}
-        onClick={() => onSelectStatus("")}>
-        <span className="sidebar-icon">🔥</span>
-        <span>All Active</span>
+      <div className="sidebar-section-title">Status</div>
+      <button
+        className={`sidebar-item ${isHome && activeStatus === "" ? "active" : ""}`}
+        onClick={() => onSelectStatus("")}
+      >
+        All Active
       </button>
-      <button className={`sidebar-item ${activeStatus === "flagged" ? "active-alert" : ""}`}
-        onClick={() => onSelectStatus("flagged")}>
-        <span className="sidebar-icon">🚨</span>
-        <span>High Priority</span>
+      <button
+        className={`sidebar-item ${activeStatus === "flagged" ? "active" : ""}`}
+        onClick={() => onSelectStatus("flagged")}
+      >
+        High Priority
       </button>
-      <button className={`sidebar-item ${activeStatus === "pending" ? "active" : ""}`}
-        onClick={() => onSelectStatus("pending")}>
-        <span className="sidebar-icon">⏳</span>
-        <span>Pending Quorum</span>
+      <button
+        className={`sidebar-item ${activeStatus === "pending" ? "active" : ""}`}
+        onClick={() => onSelectStatus("pending")}
+      >
+        Pending Verification
       </button>
-      <button className={`sidebar-item ${activeStatus === "under_review" ? "active-intel" : ""}`}
-        onClick={() => onSelectStatus("under_review")}>
-        <span className="sidebar-icon">🏥</span>
-        <span>NGO Review</span>
+      <button
+        className={`sidebar-item ${activeStatus === "under_review" ? "active" : ""}`}
+        onClick={() => onSelectStatus("under_review")}
+      >
+        Under Review
       </button>
 
       <div className="sidebar-divider" />
 
-      {/* Disaster Category Channels */}
-      <div className="sidebar-section-title">DISASTER CHANNELS</div>
+      <div className="sidebar-section-title">Category</div>
       {CHANNELS.map((ch) => (
         <button
           key={ch.id}
-          className={`sidebar-item ${activeCategory === ch.id ? "active-intel" : ""}`}
+          className={`sidebar-item ${activeCategory === ch.id ? "active" : ""}`}
           onClick={() => onSelectCategory(ch.id)}
         >
-          <span className="sidebar-icon">{ch.icon}</span>
-          <span>{ch.label}</span>
+          {ch.label}
         </button>
       ))}
     </aside>
