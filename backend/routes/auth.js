@@ -7,92 +7,122 @@ const { signToken, requireAuth } = require("../util/auth");
 const router = express.Router();
 
 router.post("/register", (req, res) => {
-  const { name, email, password, role, home_lat, home_lng, org_name, service_radius_km } = req.body;
+  try {
+    const { name, email, password, role, home_lat, home_lng, org_name, service_radius_km } = req.body || {};
 
-  if (!name || !email || !password) {
-    return res.status(400).json({ error: "name, email, and password are required" });
-  }
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: "name, email, and password are required" });
+    }
 
-  const dbData = readDb();
-  const existing = dbData.users.find((u) => u.email.toLowerCase() === email.toLowerCase());
-  if (existing) return res.status(409).json({ error: "An account with this email already exists" });
+    const dbData = readDb();
+    if (!dbData.users) dbData.users = [];
+    if (!dbData.ngo_profiles) dbData.ngo_profiles = [];
 
-  const finalRole = role === "ngo" ? "ngo" : role === "moderator" ? "moderator" : "citizen";
+    const normalizedEmail = String(email).trim().toLowerCase();
+    const existing = dbData.users.find((u) => u && u.email && String(u.email).toLowerCase() === normalizedEmail);
 
-  if (finalRole === "ngo" && (!home_lat || !home_lng || !org_name)) {
-    return res.status(400).json({ error: "org_name, home_lat, and home_lng are required for NGO accounts" });
-  }
+    if (existing) {
+      return res.status(409).json({ error: "An account with this email already exists" });
+    }
 
-  const id = uuidv4();
-  const hash = bcrypt.hashSync(password, 10);
+    const finalRole = role === "ngo" ? "ngo" : role === "moderator" ? "moderator" : "citizen";
 
-  const newUser = {
-    id,
-    name,
-    email,
-    password_hash: hash,
-    role: finalRole,
-    home_lat: home_lat ?? null,
-    home_lng: home_lng ?? null,
-    created_at: new Date().toISOString(),
-  };
-  dbData.users.push(newUser);
+    if (finalRole === "ngo" && (!home_lat || !home_lng || !org_name)) {
+      return res.status(400).json({ error: "org_name, home_lat, and home_lng are required for NGO accounts" });
+    }
 
-  if (finalRole === "ngo") {
-    dbData.ngo_profiles.push({
-      id: uuidv4(),
-      user_id: id,
-      org_name,
-      service_lat: home_lat,
-      service_lng: home_lng,
-      service_radius_km: service_radius_km || 25,
-      verification_status: "approved",
-      upi_id: "relief-ngo@upi",
-      contact_phone: "+91-9876543210",
-      contact_email: email,
-      focus_areas: "Flood Relief, Emergency Rescue & Medical Aid",
+    const id = uuidv4();
+    const hash = bcrypt.hashSync(String(password), 8);
+
+    const newUser = {
+      id,
+      name: String(name).trim(),
+      email: normalizedEmail,
+      password_hash: hash,
+      role: finalRole,
+      home_lat: home_lat ?? null,
+      home_lng: home_lng ?? null,
       created_at: new Date().toISOString(),
-    });
+    };
+    dbData.users.push(newUser);
+
+    if (finalRole === "ngo") {
+      dbData.ngo_profiles.push({
+        id: uuidv4(),
+        user_id: id,
+        org_name: String(org_name).trim(),
+        service_lat: home_lat,
+        service_lng: home_lng,
+        service_radius_km: service_radius_km || 25,
+        verification_status: "approved",
+        upi_id: "relief-ngo@upi",
+        contact_phone: "+91-9876543210",
+        contact_email: normalizedEmail,
+        focus_areas: "Flood Relief, Emergency Rescue & Medical Aid",
+        created_at: new Date().toISOString(),
+      });
+    }
+
+    writeDb(dbData);
+
+    const userObj = { id, name: newUser.name, role: finalRole };
+    const token = signToken(userObj);
+    return res.status(201).json({ token, user: userObj });
+  } catch (err) {
+    console.error("Register Error:", err);
+    return res.status(500).json({ error: err.message || "Registration failed on server" });
   }
-
-  writeDb(dbData);
-
-  const user = { id, name, role: finalRole };
-  const token = signToken(user);
-  res.status(201).json({ token, user });
 });
 
 router.post("/login", (req, res) => {
-  const { email, password } = req.body;
-  const dbData = readDb();
-  const user = dbData.users.find((u) => u.email.toLowerCase() === (email || "").toLowerCase());
+  try {
+    const { email, password } = req.body || {};
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required" });
+    }
 
-  if (!user || !bcrypt.compareSync(password, user.password_hash)) {
-    return res.status(401).json({ error: "Invalid email or password" });
+    const normalizedEmail = String(email).trim().toLowerCase();
+    const dbData = readDb();
+    if (!dbData.users) dbData.users = [];
+
+    const user = dbData.users.find((u) => u && u.email && String(u.email).toLowerCase() === normalizedEmail);
+
+    if (!user || !user.password_hash || !bcrypt.compareSync(String(password), user.password_hash)) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    const token = signToken(user);
+    return res.json({
+      token,
+      user: { id: user.id, name: user.name, role: user.role },
+    });
+  } catch (err) {
+    console.error("Login Error:", err);
+    return res.status(500).json({ error: err.message || "Login failed on server" });
   }
-
-  const token = signToken(user);
-  res.json({
-    token,
-    user: { id: user.id, name: user.name, role: user.role },
-  });
 });
 
 router.get("/me", requireAuth, (req, res) => {
-  const dbData = readDb();
-  const user = dbData.users.find((u) => u.id === req.user.id);
-  if (!user) return res.status(404).json({ error: "User not found" });
+  try {
+    const dbData = readDb();
+    if (!dbData.users) dbData.users = [];
 
-  res.json({
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      home_lat: user.home_lat,
-      home_lng: user.home_lng,
-    },
-  });
+    const user = dbData.users.find((u) => u && u.id === req.user.id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    return res.json({
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        home_lat: user.home_lat,
+        home_lng: user.home_lng,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message || "Failed to fetch profile" });
+  }
 });
 
 module.exports = router;

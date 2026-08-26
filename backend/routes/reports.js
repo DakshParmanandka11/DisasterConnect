@@ -34,11 +34,16 @@ const upload = multer({
 });
 
 function reportWithMedia(reportId, dbData = readDb()) {
-  const report = dbData.reports.find((r) => r.id === reportId);
+  if (!dbData) return null;
+  if (!dbData.reports) dbData.reports = [];
+  if (!dbData.media) dbData.media = [];
+  if (!dbData.users) dbData.users = [];
+
+  const report = dbData.reports.find((r) => r && r.id === reportId);
   if (!report) return null;
 
-  const media = dbData.media.filter((m) => m.report_id === reportId);
-  const author = dbData.users.find((u) => u.id === report.user_id);
+  const media = dbData.media.filter((m) => m && m.report_id === reportId);
+  const author = dbData.users.find((u) => u && u.id === report.user_id);
   const totalVotes = (report.upvotes || 0) + (report.downvotes || 0);
   const upvotePct = totalVotes > 0 ? Math.round(((report.upvotes || 0) / totalVotes) * 1000) / 10 : 0;
 
@@ -46,14 +51,14 @@ function reportWithMedia(reportId, dbData = readDb()) {
   let confirmations = 1;
   if (report.cluster_id) {
     clusterSiblings = dbData.reports
-      .filter((r) => r.cluster_id === report.cluster_id && r.id !== report.id)
+      .filter((r) => r && r.cluster_id === report.cluster_id && r.id !== report.id)
       .map((r) => ({ id: r.id, title: r.title, created_at: r.created_at, user_id: r.user_id }));
     confirmations = clusterSiblings.length + 1;
   }
 
   let moderatorInfo = null;
   if (report.moderated_by) {
-    const mod = dbData.users.find((u) => u.id === report.moderated_by);
+    const mod = dbData.users.find((u) => u && u.id === report.moderated_by);
     if (mod) moderatorInfo = { id: mod.id, name: mod.name };
   }
 
