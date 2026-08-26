@@ -93,22 +93,29 @@ const initialData = {
   },
 };
 
+let memoryDb = null;
+
 function readDb() {
+  if (memoryDb) return memoryDb;
   try {
     if (!fs.existsSync(DB_FILE)) {
-      writeDb(initialData);
-      return initialData;
+      memoryDb = JSON.parse(JSON.stringify(initialData));
+      writeDb(memoryDb);
+      return memoryDb;
     }
     const raw = fs.readFileSync(DB_FILE, "utf-8");
-    return JSON.parse(raw);
+    memoryDb = JSON.parse(raw);
+    return memoryDb;
   } catch (err) {
     console.error("Error reading data.json, resetting to initial:", err.message);
-    writeDb(initialData);
-    return initialData;
+    memoryDb = JSON.parse(JSON.stringify(initialData));
+    writeDb(memoryDb);
+    return memoryDb;
   }
 }
 
 function writeDb(data) {
+  memoryDb = data;
   try {
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), "utf-8");
   } catch (err) {

@@ -9,8 +9,20 @@ const { analyzeRelevance } = require("../util/relevance");
 
 const router = express.Router();
 
+const fs = require("fs");
+
+const uploadDir = (process.env.VERCEL || process.env.NODE_ENV === "production")
+  ? "/tmp"
+  : path.join(__dirname, "..", "uploads");
+
+if (!fs.existsSync(uploadDir)) {
+  try { fs.mkdirSync(uploadDir, { recursive: true }); } catch (e) {}
+}
+
 const storage = multer.diskStorage({
-  destination: path.join(__dirname, "..", "uploads"),
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
+  },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
     cb(null, `${uuidv4()}${ext}`);
