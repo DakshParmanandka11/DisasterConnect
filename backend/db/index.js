@@ -9,33 +9,66 @@ const DB_FILE = (process.env.VERCEL || process.env.NODE_ENV === "production")
 
 const CLOUD_DB_URL = process.env.CLOUD_DB_URL || process.env.MONGODB_URI || null;
 
-// Initial seed data if database does not exist
 const initialData = {
   users: [
     {
       id: "guest-citizen-anon-id",
       name: "Local Citizen",
       email: "guest_citizen@disasterconnect.local",
-      password_hash: "$2a$04$z9vS51aC1r2o1vQ5o2G1ue1234567890123456789012345678901",
+      password_hash: "$2a$10$WrglY5nmGYUahZ.tGs82gOU73WIlYmtp4T7T7Cj27qxGMXor2oT/i",
       role: "citizen",
       created_at: new Date().toISOString(),
     },
     {
+      id: "demo-admin-id",
+      name: "Admin",
+      email: "admin@disasterconnect.org",
+      password_hash: "$2a$10$WrglY5nmGYUahZ.tGs82gOU73WIlYmtp4T7T7Cj27qxGMXor2oT/i",
+      role: "admin",
+      created_at: new Date().toISOString(),
+    },
+    {
       id: "demo-moderator-id",
-      name: "Aarav Sharma (Student Mod)",
+      name: "Aarav Sharma",
       email: "student_mod@disasterconnect.org",
-      password_hash: "$2a$04$vI8A7y9Y4JgTf6h0W5e5e.W.Q.X12345678901234567890123",
-      role: "moderator",
+      password_hash: "$2a$10$WrglY5nmGYUahZ.tGs82gOU73WIlYmtp4T7T7Cj27qxGMXor2oT/i",
+      role: "student_moderator",
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: "demo-mod-2-id",
+      name: "Priya Nair",
+      email: "priya.mod@disasterconnect.org",
+      password_hash: "$2a$10$WrglY5nmGYUahZ.tGs82gOU73WIlYmtp4T7T7Cj27qxGMXor2oT/i",
+      role: "student_moderator",
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: "demo-senior-mod-id",
+      name: "Dr. Kavitha Menon",
+      email: "senior.mod@disasterconnect.org",
+      password_hash: "$2a$10$WrglY5nmGYUahZ.tGs82gOU73WIlYmtp4T7T7Cj27qxGMXor2oT/i",
+      role: "senior_moderator",
       created_at: new Date().toISOString(),
     },
     {
       id: "demo-ngo-1",
       name: "National Disaster Relief Corps (NDRC)",
       email: "ndrc-relief@disasterconnect.org",
-      password_hash: "$2a$04$aB1C2d3E4f5G6h7I8j9K0L1M2N3O4P5Q6R7S8T9U0V1W2X3Y4Z567",
+      password_hash: "$2a$10$WrglY5nmGYUahZ.tGs82gOU73WIlYmtp4T7T7Cj27qxGMXor2oT/i",
       role: "ngo",
       home_lat: 28.6139,
       home_lng: 77.209,
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: "citizen-reporter-1",
+      name: "Rahul Gupta",
+      email: "rahul.citizen@example.com",
+      password_hash: "$2a$10$WrglY5nmGYUahZ.tGs82gOU73WIlYmtp4T7T7Cj27qxGMXor2oT/i",
+      role: "citizen",
+      home_lat: 28.62,
+      home_lng: 77.21,
       created_at: new Date().toISOString(),
     },
   ],
@@ -55,33 +88,17 @@ const initialData = {
       created_at: new Date().toISOString(),
     },
   ],
-  reports: [
-    {
-      id: "sample-report-1",
-      user_id: "guest-citizen-anon-id",
-      title: "Severe Urban Flooding & Waterlogging",
-      description: "Water levels reached 3 feet near main arterial road. Vehicles stranded and emergency rescue required.",
-      category: "flood",
-      severity: "high",
-      lat: 28.6139,
-      lng: 77.209,
-      status: "pending",
-      moderation_status: "approved",
-      relevance_score: 95,
-      gibberish_score: 0,
-      upvotes: 8,
-      downvotes: 1,
-      remote_votes: 3,
-      exif_status: "verified",
-      confirmations: 1,
-      created_at: new Date().toISOString(),
-    },
-  ],
+  reports: [],
   media: [],
   votes: [],
   notifications: [],
-  moderator_reviews: [],
-  moderator_payouts: [],
+  moderatorApplications: [],
+  moderatorProfiles: [],
+  trainingAttempts: [],
+  moderationTasks: [],
+  moderationDecisions: [],
+  moderatorAudits: [],
+  walletTransactions: [],
   system_config: {
     voting_radius_km: "10",
     verification_threshold_pct: "40",
@@ -98,6 +115,8 @@ const initialData = {
 let memoryDb = null;
 let cloudSyncing = false;
 
+const SEED_FILE = path.join(__dirname, "data.json");
+
 function readDb() {
   try {
     if (fs.existsSync(DB_FILE)) {
@@ -106,9 +125,24 @@ function readDb() {
       return memoryDb;
     }
   } catch (err) {
-    console.error("Error reading DB file:", err.message);
+    console.error("Error reading DB_FILE:", err.message);
   }
   if (memoryDb) return memoryDb;
+
+  // Load from seed data.json (which contains all users, tasks, applications, and password hashes)
+  try {
+    if (fs.existsSync(SEED_FILE)) {
+      const seedRaw = fs.readFileSync(SEED_FILE, "utf-8");
+      memoryDb = JSON.parse(seedRaw);
+      try {
+        fs.writeFileSync(DB_FILE, JSON.stringify(memoryDb, null, 2), "utf-8");
+      } catch (e) {}
+      return memoryDb;
+    }
+  } catch (e) {
+    console.error("Error reading SEED_FILE:", e.message);
+  }
+
   memoryDb = JSON.parse(JSON.stringify(initialData));
   try {
     fs.writeFileSync(DB_FILE, JSON.stringify(memoryDb, null, 2), "utf-8");
