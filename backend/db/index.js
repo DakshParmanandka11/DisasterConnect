@@ -99,7 +99,6 @@ let memoryDb = null;
 let cloudSyncing = false;
 
 function readDb() {
-  if (memoryDb) return memoryDb;
   try {
     if (fs.existsSync(DB_FILE)) {
       const raw = fs.readFileSync(DB_FILE, "utf-8");
@@ -109,6 +108,7 @@ function readDb() {
   } catch (err) {
     console.error("Error reading DB file:", err.message);
   }
+  if (memoryDb) return memoryDb;
   memoryDb = JSON.parse(JSON.stringify(initialData));
   try {
     fs.writeFileSync(DB_FILE, JSON.stringify(memoryDb, null, 2), "utf-8");
