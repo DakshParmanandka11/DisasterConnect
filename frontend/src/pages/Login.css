@@ -1,0 +1,147 @@
+/* Login.css — Responsive login page styles */
+
+.login-page {
+  min-height: calc(100vh - 60px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px 80px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 520px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 28px 24px;
+  box-shadow: var(--shadow-md);
+}
+
+.demo-credentials-box {
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+
+.demo-credentials-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.demo-credentials-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-credentials-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.demo-credentials-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.demo-card-btn {
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.demo-card-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  background: var(--primary-bg, rgba(16, 185, 129, 0.08));
+}
+
+.demo-card-btn:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.demo-card-role {
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.demo-card-email {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  font-family: monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.demo-card-cta {
+  font-size: 0.7rem;
+  color: var(--primary);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* Mobile layout optimizations (< 560px) */
+@media (max-width: 560px) {
+  .login-page {
+    padding: 16px 12px 90px;
+    align-items: flex-start;
+  }
+
+  .login-card {
+    padding: 20px 16px;
+    border-radius: var(--radius-sm);
+  }
+
+  .demo-credentials-box {
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+
+  .demo-credentials-grid {
+    grid-template-columns: 1fr; /* Single column on mobile for easy tapping */
+    gap: 8px;
+  }
+
+  .demo-card-btn {
+    padding: 12px 14px; /* Larger tap targets */
+  }
+
+  .demo-card-role {
+    font-size: 0.88rem;
+  }
+
+  .demo-card-email {
+    font-size: 0.78rem;
+  }
+
+  .demo-card-cta {
+    font-size: 0.75rem;
+  }
+
+  /* Prevent mobile input auto-zoom on iOS */
+  .field input {
+    font-size: 16px !important;
+    padding: 10px 12px;
+  }
+}

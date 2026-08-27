@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { api } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { getLocalAccount, saveLocalAccount } from "../util/accountStore";
+import "./Login.css";
 
 const DEMO_ACCOUNTS = [
   {
@@ -105,8 +106,8 @@ export default function Login() {
   }
 
   return (
-    <div className="auth-page" style={{ paddingTop: 24, paddingBottom: 48 }}>
-      <div className="auth-card" style={{ maxWidth: 520 }}>
+    <div className="login-page">
+      <div className="login-card">
         <div style={{ marginBottom: 16 }}>
           <p style={{ fontSize: 11, fontWeight: 600, color: "var(--primary)", textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 6px 0" }}>
             DisasterConnect
@@ -118,39 +119,36 @@ export default function Login() {
         </div>
 
         {/* Demo Credentials Box */}
-        <div style={{ background: "var(--bg-card-alt)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: "14px 16px", marginBottom: 20 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-            <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--primary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-              ⚡ 1-Click Quick Demo Logins
-            </span>
-            <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>Click any account to login instantly</span>
+        <div className="demo-credentials-box">
+          <div className="demo-credentials-header">
+            <span className="demo-credentials-title">⚡ 1-Click Quick Demo Logins</span>
+            <span className="demo-credentials-sub">Click any account to login instantly</span>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+          <div className="demo-credentials-grid">
             {DEMO_ACCOUNTS.map((acc) => (
               <button
                 key={acc.email}
                 type="button"
+                className="demo-card-btn"
                 disabled={busy}
                 onClick={() => handleDemoClick(acc.email, acc.pass)}
                 style={{
-                  textAlign: "left",
-                  padding: "8px 10px",
-                  borderRadius: "var(--radius-sm)",
-                  border: email === acc.email ? `1.5px solid ${acc.color}` : "1px solid var(--border)",
-                  background: email === acc.email ? acc.bg : "var(--bg-card)",
-                  cursor: busy ? "not-allowed" : "pointer",
-                  transition: "all 0.12s ease",
+                  borderColor: email === acc.email ? acc.color : undefined,
+                  background: email === acc.email ? acc.bg : undefined,
                   opacity: busy ? 0.7 : 1,
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 }}>
-                  <span style={{ fontWeight: 600, fontSize: "0.8rem", color: "var(--text-primary)" }}>{acc.role}</span>
+                <div className="demo-card-role">
+                  <span>{acc.role}</span>
+                  <span style={{ fontSize: "0.7rem", background: `${acc.color}20`, color: acc.color, padding: "1px 6px", borderRadius: "var(--radius-xs)" }}>
+                    {acc.badge}
+                  </span>
                 </div>
-                <div style={{ fontSize: "0.74rem", color: "var(--text-muted)", fontFamily: "monospace", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <div className="demo-card-email">
                   {acc.email}
                 </div>
-                <div style={{ fontSize: "0.7rem", color: "var(--primary)", fontWeight: 600, marginTop: 2 }}>
+                <div className="demo-card-cta">
                   Click to log in →
                 </div>
               </button>
@@ -189,13 +187,13 @@ export default function Login() {
             type="submit"
             className="btn btn-primary"
             disabled={busy}
-            style={{ width: "100%", padding: "9px", marginTop: 6 }}
+            style={{ width: "100%", padding: "11px 16px", marginTop: 8, fontSize: "0.95rem" }}
           >
             {busy ? "Logging in…" : "Log in"}
           </button>
         </form>
 
-        <div className="auth-card__footer">
+        <div className="auth-card__footer" style={{ marginTop: 20 }}>
           Don't have an account?{" "}
           <Link to="/register">Create one</Link>
         </div>
@@ -203,4 +201,3 @@ export default function Login() {
     </div>
   );
 }
-
