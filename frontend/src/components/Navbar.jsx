@@ -94,11 +94,19 @@ export default function Navbar({ onToggleTaskbar }) {
             </>
           )}
 
-          {(role === "moderator" || role === "admin") && (
-            <Link to="/moderator" className={`navbar__nav-item ${location.pathname === "/moderator" ? "active" : ""}`}>
+          {(role === "moderator" || role === "student_moderator" || role === "senior_moderator" || role === "admin") && (
+            <Link to="/moderator" className={`navbar__nav-item ${location.pathname.startsWith("/moderator") ? "active" : ""}`}>
               <ShieldIcon size={14} />
               Moderation
             </Link>
+          )}
+
+          {(role === "admin" || role === "senior_moderator") && (
+            <>
+              <Link to="/admin/moderator-applications" className={`navbar__nav-item ${location.pathname.startsWith("/admin") ? "active" : ""}`}>
+                Applications
+              </Link>
+            </>
           )}
 
           {/* Compact Icon-only Theme Toggle Button */}

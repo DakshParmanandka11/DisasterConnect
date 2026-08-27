@@ -103,10 +103,12 @@ router.post("/", requireAuth, upload.array("media", 5), (req, res) => {
       lat: numLat,
       lng: numLng,
       status: "pending",
-      moderation_status: "approved",
+      moderation_status: "PENDING_MODERATOR",
       relevance_score: relevanceAnalysis.relevanceScore,
       gibberish_score: relevanceAnalysis.gibberishScore,
-      upvotes: 1,
+      spam_score: relevanceAnalysis.spamScore || 0,
+      duplicate_probability: relevanceAnalysis.duplicateProbability || 0,
+      upvotes: 0,
       downvotes: 0,
       remote_votes: 0,
       exif_status: files.length > 0 ? "verified" : "missing",
@@ -127,10 +129,42 @@ router.post("/", requireAuth, upload.array("media", 5), (req, res) => {
       });
     }
 
+    // Auto-assign to an available student moderator (round-robin by least tasks)
+    if (!dbData.moderationTasks) dbData.moderationTasks = [];
+    if (!dbData.moderatorProfiles) dbData.moderatorProfiles = [];
+    const activeMods = (dbData.moderatorProfiles || []).filter(
+      (p) => p.status === "approved" && p.training_completed
+    );
+    if (activeMods.length > 0) {
+      // Find moderator with fewest pending tasks who hasn't submitted this report
+      const taskCounts = {};
+      activeMods.forEach((p) => { taskCounts[p.user_id] = 0; });
+      (dbData.moderationTasks || []).forEach((t) => {
+        if (t.status === "pending" && taskCounts[t.moderator_id] !== undefined) {
+          taskCounts[t.moderator_id]++;
+        }
+      });
+      // Exclude the reporter themselves
+      const eligible = activeMods.filter((p) => p.user_id !== newReport.user_id);
+      if (eligible.length > 0) {
+        eligible.sort((a, b) => (taskCounts[a.user_id] || 0) - (taskCounts[b.user_id] || 0));
+        const assignedMod = eligible[0];
+        newReport.assigned_moderator_id = assignedMod.user_id;
+        dbData.moderationTasks.push({
+          id: uuidv4(),
+          report_id: id,
+          moderator_id: assignedMod.user_id,
+          status: "pending",
+          assigned_at: new Date().toISOString(),
+          completed_at: null,
+        });
+      }
+    }
+
     writeDb(dbData);
 
     const report = reportWithMedia(id, dbData);
-    return res.status(201).json({ report });
+    return res.status(201).json({ report, message: "Report submitted and entered moderation queue." });
   } catch (err) {
     console.error("Create Report Error:", err);
     return res.status(500).json({ error: err.message || "Failed to create report" });
@@ -147,9 +181,16 @@ router.get("/", (req, res) => {
   if (moderation_status) {
     reports = reports.filter((r) => r.moderation_status === moderation_status);
   } else {
-    reports = reports.filter(
-      (r) => r.moderation_status !== "reject_gibberish" && r.moderation_status !== "reject_irrelevant"
-    );
+    // Only show reports that have passed moderation
+    const visibleStatuses = [
+      "APPROVED_BY_MODERATOR",
+      "APPROVED_BY_SENIOR",
+      "COMMUNITY_VERIFIED",
+      "NGO_DISPATCHED",
+      // Legacy statuses for backward-compat
+      "approved",
+    ];
+    reports = reports.filter((r) => visibleStatuses.includes(r.moderation_status));
   }
 
   if (status) reports = reports.filter((r) => r.status === status);

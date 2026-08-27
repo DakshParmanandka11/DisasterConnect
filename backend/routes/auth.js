@@ -30,7 +30,8 @@ router.post("/register", (req, res) => {
       return res.status(409).json({ error: "An account with this email address already exists. Please log in instead." });
     }
 
-    const finalRole = role === "ngo" ? "ngo" : role === "moderator" ? "moderator" : "citizen";
+    // Moderator roles require application — cannot be self-selected at registration
+    const finalRole = role === "ngo" ? "ngo" : "citizen";
 
     if (finalRole === "ngo" && (!home_lat || !home_lng || !org_name)) {
       return res.status(400).json({ error: "Organisation name and location on map are required for NGO accounts" });

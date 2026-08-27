@@ -13,7 +13,11 @@ import NGODashboard from "./pages/NGODashboard";
 import NGONetwork from "./pages/NGONetwork";
 import CrisisMap from "./pages/CrisisMap";
 import ModeratorDashboard from "./pages/ModeratorDashboard";
-
+import ModeratorApply from "./pages/ModeratorApply";
+import ModeratorTraining from "./pages/ModeratorTraining";
+import ModeratorWallet from "./pages/ModeratorWallet";
+import AdminApplications from "./pages/AdminApplications";
+import AdminModerators from "./pages/AdminModerators";
 import OfflineBanner from "./components/OfflineBanner";
 import PwaInstallBanner from "./components/PwaInstallBanner";
 
@@ -26,10 +30,7 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <OfflineBanner />
-        <Navbar
-          onToggleTaskbar={() => setTaskbarOpen((prev) => !prev)}
-        />
-        
+        <Navbar onToggleTaskbar={() => setTaskbarOpen((prev) => !prev)} />
         <SideTaskbar
           isOpen={taskbarOpen}
           onClose={() => setTaskbarOpen(false)}
@@ -60,6 +61,11 @@ export default function App() {
             <Route path="/ngo" element={<NGODashboard />} />
             <Route path="/ngos" element={<NGONetwork />} />
             <Route path="/moderator" element={<ModeratorDashboard />} />
+            <Route path="/moderator/apply" element={<ModeratorApply />} />
+            <Route path="/moderator/training" element={<ModeratorTraining />} />
+            <Route path="/moderator/wallet" element={<ModeratorWallet />} />
+            <Route path="/admin/moderator-applications" element={<AdminApplications />} />
+            <Route path="/admin/moderators" element={<AdminModerators />} />
           </Routes>
         </main>
 

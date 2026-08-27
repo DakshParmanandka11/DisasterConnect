@@ -8,6 +8,7 @@ const authRoutes = require("./routes/auth");
 const reportRoutes = require("./routes/reports");
 const ngoRoutes = require("./routes/ngo");
 const moderatorRoutes = require("./routes/moderator");
+const adminRoutes = require("./routes/admin");
 const { getConfig } = require("./db");
 
 const app = express();
@@ -29,6 +30,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/ngo", ngoRoutes);
 app.use("/api/moderator", moderatorRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.get("/api/config", (req, res) => {
   try {

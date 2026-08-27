@@ -17,11 +17,6 @@ const ROLES = [
     label: "NGO / Relief Organisation",
     desc: "Manage your relief operations, respond to verified incidents, and receive NGO dispatch alerts.",
   },
-  {
-    id: "moderator",
-    label: "Moderator",
-    desc: "Review submitted reports for relevance and accuracy. Earn stipends per completed review.",
-  },
 ];
 
 export default function Register() {
@@ -84,6 +79,9 @@ export default function Register() {
           <p className="auth-card__sub">
             Select your role to get started. You can't change your role after registration.
           </p>
+          <div style={{ background: "var(--primary-bg)", border: "1px solid var(--primary-border)", borderRadius: "var(--radius-sm)", padding: "8px 12px", fontSize: "0.82rem", color: "var(--text-muted)" }}>
+            Want to join as a <strong style={{ color: "var(--primary)" }}>Student Moderator</strong>? Register as a citizen first, then <Link to="/moderator/apply" style={{ color: "var(--primary)", fontWeight: 600 }}>apply to the moderation programme →</Link>
+          </div>
         </div>
 
         {/* Role selector */}

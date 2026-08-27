@@ -69,6 +69,46 @@ export const api = {
     return request(`/ngo/public-list${qs}`);
   },
   getReportFundraiser: (reportId) => request(`/ngo/fundraiser/${reportId}`),
+
+  // Moderator Application
+  applyModerator: (payload) => request("/moderator/apply", { method: "POST", body: payload }),
+  getApplicationStatus: () => request("/moderator/application-status"),
+
+  // Training
+  getTrainingStatus: () => request("/moderator/training/status"),
+  submitTraining: (answers) => request("/moderator/training/submit", { method: "POST", body: { answers } }),
+
+  // Moderation Tasks
+  getModeratorTasks: (status = "pending") => request(`/moderator/tasks?status=${status}`),
+  getModeratorTask: (taskId) => request(`/moderator/tasks/${taskId}`),
+  approveTask: (taskId, reason, notes) => request(`/moderator/tasks/${taskId}/approve`, { method: "POST", body: { reason, notes } }),
+  rejectTask: (taskId, reason, notes) => request(`/moderator/tasks/${taskId}/reject`, { method: "POST", body: { reason, notes } }),
+  escalateTask: (taskId, reason, notes) => request(`/moderator/tasks/${taskId}/escalate`, { method: "POST", body: { reason, notes } }),
+  getDecisionReasons: () => request("/moderator/decision-reasons"),
+
+  // Moderator Stats & Wallet
+  getModeratorStats: () => request("/moderator/stats"),
+  getModeratorWallet: () => request("/moderator/wallet"),
+  requestPayout: (amount, upi_id) => request("/moderator/payout", { method: "POST", body: { amount, upi_id } }),
+  getLeaderboard: () => request("/moderator/leaderboard"),
+
+  // Senior: Escalated
+  getEscalated: () => request("/moderator/escalated"),
+  resolveEscalated: (reportId, action, reason) =>
+    request(`/moderator/escalated/${reportId}/resolve`, { method: "POST", body: { action, reason } }),
+
+  // Admin
+  adminGetApplications: () => request("/admin/moderator-applications"),
+  adminApproveApplication: (id) => request(`/admin/moderator-applications/${id}/approve`, { method: "POST" }),
+  adminRejectApplication: (id, reason) => request(`/admin/moderator-applications/${id}/reject`, { method: "POST", body: { reason } }),
+  adminRequestTraining: (id) => request(`/admin/moderator-applications/${id}/request-training`, { method: "POST" }),
+  adminGetModerators: () => request("/admin/moderators"),
+  adminSuspendModerator: (userId, reason) => request(`/admin/moderators/${userId}/suspend`, { method: "POST", body: { reason } }),
+  adminReactivateModerator: (userId) => request(`/admin/moderators/${userId}/reactivate`, { method: "POST" }),
+  adminPromoteModerator: (userId, level) => request(`/admin/moderators/${userId}/promote`, { method: "POST", body: { level } }),
+  adminGetAudits: () => request("/admin/audits"),
+  adminSubmitAudit: (payload) => request("/admin/audits", { method: "POST", body: payload }),
+  adminGetAnalytics: () => request("/admin/analytics"),
 };
 
 export { getToken };
