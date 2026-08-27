@@ -70,19 +70,18 @@ export default function Login() {
     return "/";
   }
 
-  async function handleSubmit(e) {
-    if (e) e.preventDefault();
+  async function performLogin(targetEmail, targetPassword) {
     setError(null);
     setBusy(true);
 
     try {
-      const data = await api.login({ email, password });
-      saveLocalAccount({ email, password, user: data.user, token: data.token });
+      const data = await api.login({ email: targetEmail, password: targetPassword });
+      saveLocalAccount({ email: targetEmail, password: targetPassword, user: data.user, token: data.token });
       login(data.token, data.user);
       navigate(getRedirectPath(data.user.role));
     } catch (err) {
       // Check local saved account store if Vercel serverless container recycled memory
-      const localAcc = getLocalAccount(email, password);
+      const localAcc = getLocalAccount(targetEmail, targetPassword);
       if (localAcc) {
         login(localAcc.token, localAcc.user);
         navigate(getRedirectPath(localAcc.user.role));
@@ -94,9 +93,15 @@ export default function Login() {
     }
   }
 
-  function fillDemo(demoEmail, demoPass) {
+  function handleSubmit(e) {
+    if (e) e.preventDefault();
+    performLogin(email, password);
+  }
+
+  function handleDemoClick(demoEmail, demoPass) {
     setEmail(demoEmail);
     setPassword(demoPass);
+    performLogin(demoEmail, demoPass);
   }
 
   return (
@@ -116,9 +121,9 @@ export default function Login() {
         <div style={{ background: "var(--bg-card-alt)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: "14px 16px", marginBottom: 20 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
             <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--primary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-              ⚡ Quick Demo Login Credentials
+              ⚡ 1-Click Quick Demo Logins
             </span>
-            <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>Click any account to auto-fill</span>
+            <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>Click any account to login instantly</span>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
@@ -126,15 +131,17 @@ export default function Login() {
               <button
                 key={acc.email}
                 type="button"
-                onClick={() => fillDemo(acc.email, acc.pass)}
+                disabled={busy}
+                onClick={() => handleDemoClick(acc.email, acc.pass)}
                 style={{
                   textAlign: "left",
                   padding: "8px 10px",
                   borderRadius: "var(--radius-sm)",
                   border: email === acc.email ? `1.5px solid ${acc.color}` : "1px solid var(--border)",
                   background: email === acc.email ? acc.bg : "var(--bg-card)",
-                  cursor: "pointer",
+                  cursor: busy ? "not-allowed" : "pointer",
                   transition: "all 0.12s ease",
+                  opacity: busy ? 0.7 : 1,
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 }}>
@@ -143,8 +150,8 @@ export default function Login() {
                 <div style={{ fontSize: "0.74rem", color: "var(--text-muted)", fontFamily: "monospace", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {acc.email}
                 </div>
-                <div style={{ fontSize: "0.7rem", color: "var(--text-muted)", marginTop: 1 }}>
-                  Pass: <code style={{ color: "var(--text-primary)" }}>{acc.pass}</code>
+                <div style={{ fontSize: "0.7rem", color: "var(--primary)", fontWeight: 600, marginTop: 2 }}>
+                  Click to log in →
                 </div>
               </button>
             ))}
