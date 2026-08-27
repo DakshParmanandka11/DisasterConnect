@@ -97,6 +97,26 @@
       "home_lat": null,
       "home_lng": null,
       "created_at": "2026-08-27T14:31:41.865Z"
+    },
+    {
+      "id": "cd4d4fbf-3201-4832-9f6d-4dec983e734d",
+      "name": "Local Citizen",
+      "email": "citizen_v3x7z7h@disasterconnect.local",
+      "password_hash": "$2a$08$iH74r5jsPDoNq9XOrDEYvevebgSj3XTpu5tYUVmC0mE7kw2PRX68m",
+      "role": "citizen",
+      "home_lat": null,
+      "home_lng": null,
+      "created_at": "2026-08-27T14:50:43.921Z"
+    },
+    {
+      "id": "85b3a52e-bdf2-4b8b-a6cc-97f1c2afd7d8",
+      "name": "Local Citizen",
+      "email": "citizen_36jonvd@disasterconnect.local",
+      "password_hash": "$2a$08$FtlKmislnsvZcFuKA2MbceTZqijuLfFv2mvroDTLdVeroO4gXEbEO",
+      "role": "citizen",
+      "home_lat": null,
+      "home_lng": null,
+      "created_at": "2026-08-27T14:50:44.003Z"
     }
   ],
   "ngo_profiles": [
@@ -599,18 +619,74 @@
   ],
   "media": [
     {
+      "id": "media-flood-1",
+      "report_id": "report-flood-pending",
+      "file_path": "/uploads/flood_lajpat.jpg",
+      "file_type": "image",
+      "created_at": "2026-08-27T14:57:08.201Z"
+    },
+    {
+      "id": "media-storm-1",
+      "report_id": "report-road-approved",
+      "file_path": "/uploads/storm_nh48.jpg",
+      "file_type": "image",
+      "created_at": "2026-08-27T14:57:08.204Z"
+    },
+    {
       "id": "media-fire-1",
       "report_id": "report-fire-community-verified",
-      "file_path": "/uploads/fire_placeholder.jpg",
+      "file_path": "/uploads/fire_okhla.jpg",
       "file_type": "image",
-      "created_at": "2026-08-25T10:01:00.000Z"
+      "created_at": "2026-08-27T14:57:08.204Z"
+    },
+    {
+      "id": "media-gibberish-1",
+      "report_id": "report-gibberish-rejected",
+      "file_path": "/uploads/gibberish_random.jpg",
+      "file_type": "image",
+      "created_at": "2026-08-27T14:57:08.204Z"
+    },
+    {
+      "id": "media-nike-1",
+      "report_id": "report-irrelevant-rejected",
+      "file_path": "/uploads/red_nike_shoes.jpg",
+      "file_type": "image",
+      "created_at": "2026-08-27T14:57:08.204Z"
+    },
+    {
+      "id": "media-duplicate-1",
+      "report_id": "report-duplicate-rejected",
+      "file_path": "/uploads/flood_duplicate.jpg",
+      "file_type": "image",
+      "created_at": "2026-08-27T14:57:08.204Z"
+    },
+    {
+      "id": "media-dam-1",
+      "report_id": "report-suspicious-escalated",
+      "file_path": "/uploads/dam_breach_suspicious.jpg",
+      "file_type": "image",
+      "created_at": "2026-08-27T14:57:08.204Z"
     },
     {
       "id": "media-building-1",
       "report_id": "report-building-senior-approved",
-      "file_path": "/uploads/building_placeholder.jpg",
+      "file_path": "/uploads/building_collapse.jpg",
       "file_type": "image",
-      "created_at": "2026-08-24T14:01:00.000Z"
+      "created_at": "2026-08-27T14:57:08.204Z"
+    },
+    {
+      "id": "media-ito-1",
+      "report_id": "sample-report-1",
+      "file_path": "/uploads/ito_flooding.jpg",
+      "file_type": "image",
+      "created_at": "2026-08-27T14:57:08.204Z"
+    },
+    {
+      "id": "media-landslide-1",
+      "report_id": "report-landslide-pending",
+      "file_path": "/uploads/landslide_shimla.jpg",
+      "file_type": "image",
+      "created_at": "2026-08-27T14:57:08.204Z"
     }
   ],
   "votes": [
