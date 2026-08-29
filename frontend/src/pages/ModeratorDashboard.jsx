@@ -522,7 +522,7 @@ export default function ModeratorDashboard() {
           <div className="mod-title">
             <h1>Moderation Queue</h1>
             <div className="mod-subtitle">
-              Verify submitted disaster incidents for genuine calamity relevance and ground truth.
+              Review and verify disaster reports from citizens across India — your decisions help NGOs reach people in need.
             </div>
           </div>
           <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>

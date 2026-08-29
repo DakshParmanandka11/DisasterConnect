@@ -168,16 +168,16 @@ export default function ModeratorApply() {
         </p>
         <h1 style={{ margin: "0 0 4px 0" }}>Become a Student Moderator</h1>
         <p className="auth-card__sub" style={{ marginBottom: 20 }}>
-          Help verify disaster reports, improve information quality, and earn micro-payments for legitimate moderation work.
+          Help verify real disaster reports from across India, support NGOs in the field, and make a meaningful difference — all on your own schedule.
         </p>
 
         {/* Value prop */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 24 }}>
           {[
-            ["₹5 per review", "Earn for each verified decision"],
-            ["Flexible hours", "Work on your own schedule"],
-            ["Real impact", "Help NGOs respond to genuine crises"],
-            ["Build skills", "Develop analytical and civic-tech expertise"],
+            ["🤝 Volunteer work", "Give your time to help communities"],
+            ["🕐 Flexible hours", "Work on your own schedule"],
+            ["🌏 Real impact", "Help NGOs respond to genuine crises"],
+            ["📊 Build skills", "Develop analytical and civic-tech expertise"],
           ].map(([title, desc]) => (
             <div key={title} style={{ background: "var(--bg-card-alt)", borderRadius: "var(--radius-sm)", padding: "10px 12px", border: "1px solid var(--border)" }}>
               <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "var(--primary)", marginBottom: 2 }}>{title}</div>
@@ -257,7 +257,7 @@ export default function ModeratorApply() {
           </div>
 
           <div style={{ background: "var(--amber-bg)", border: "1px solid rgba(245,158,11,0.25)", borderRadius: "var(--radius-sm)", padding: "10px 14px", marginBottom: 20, fontSize: "0.84rem", color: "var(--text-body)", lineHeight: 1.6 }}>
-            <strong style={{ color: "var(--amber)" }}>Important:</strong> By applying, you agree to maintain accuracy and impartiality in your moderation decisions. Fraudulent or biased moderation will result in suspension and earnings clawback.
+            <strong style={{ color: "var(--amber)" }}>Important:</strong> By applying, you agree to review reports honestly and impartially. Biased or fraudulent decisions will result in suspension of your moderator access.
           </div>
 
           <button
