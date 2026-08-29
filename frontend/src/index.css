@@ -124,10 +124,10 @@
   --border-muted: #f3f4f6;
   --border-glow:  var(--primary);
 
-  --text-primary: #111827;
-  --text-body:    #374151;
-  --text-muted:   #6b7280;
-  --text-dim:     #9ca3af;
+  --text-primary: #000000;
+  --text-body:    #111111;
+  --text-muted:   #444444;
+  --text-dim:     #666666;
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
