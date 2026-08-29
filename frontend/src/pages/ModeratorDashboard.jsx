@@ -549,7 +549,6 @@ export default function ModeratorDashboard() {
             { label: "Accuracy", value: `${(stats.accuracy || 100).toFixed(1)}%`, color: "#14b8a6" },
             { label: "Total Reviews", value: stats.totalReviews, color: "var(--text-primary)" },
             { label: "Pending Tasks", value: stats.pendingTasks, color: "var(--amber)" },
-            { label: "Wallet", value: `₹${(stats.walletBalance || 0).toFixed(0)}`, color: "#10b981" },
           ].map((s) => (
             <div key={s.label} style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "var(--radius-sm)", padding: "12px 14px" }}>
               <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: 4 }}>{s.label}</div>
@@ -575,9 +574,6 @@ export default function ModeratorDashboard() {
             {t.label}
           </button>
         ))}
-        <Link to="/moderator/wallet" className="mod-tab-btn" style={{ textDecoration: "none" }}>
-          Wallet →
-        </Link>
       </div>
 
       {/* QUEUE TAB */}
@@ -632,19 +628,7 @@ export default function ModeratorDashboard() {
                 </div>
               </div>
 
-              {/* Earnings summary */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
-                {[
-                  { label: "Earned Today", value: `₹${(stats.todayEarnings || 0).toFixed(0)}`, color: "#10b981" },
-                  { label: "This Week", value: `₹${(stats.weekEarnings || 0).toFixed(0)}`, color: "#14b8a6" },
-                  { label: "Total Balance", value: `₹${(stats.walletBalance || 0).toFixed(0)}`, color: "#10b981" },
-                ].map((s) => (
-                  <div key={s.label} style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "var(--radius-sm)", padding: "16px 20px" }}>
-                    <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginBottom: 4 }}>{s.label}</div>
-                    <div style={{ fontWeight: 800, fontSize: "1.4rem", color: s.color }}>{s.value}</div>
-                  </div>
-                ))}
-              </div>
+
 
               {/* Activity chart */}
               {stats.activityByDay && (
