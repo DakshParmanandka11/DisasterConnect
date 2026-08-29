@@ -1,8 +1,8 @@
 # DisasterConnect — AI-Assisted Student Disaster Verification Workforce System
 
-A civic-tech web platform for real-time disaster reporting, AI-assisted student moderation, community ground-truth verification, crisis mapping, and emergency NGO dispatch.
+A civic-tech web platform for real-time disaster reporting, AI-assisted student moderation, community ground-truth verification, crisis mapping, and emergency NGO dispatch focused on disaster management in India.
 
-> **Core Philosophy**: DisasterConnect does not rely solely on AI to decide whether a disaster report is real. Instead, it operates a multi-tiered pipeline: **AI Screens → Student Workforce Verifies → Local Citizens Validate → NGOs Respond.**
+> **Core Philosophy**: DisasterConnect does not rely solely on AI or immediate unverified posts to decide whether a disaster report is real. Instead, it operates a multi-tiered pipeline: **Citizen Submits → AI Screens → Student Workforce Moderates & Verifies → Public Feed Publication → Local Citizens Validate → NGOs Respond.**
 
 ---
 
@@ -15,7 +15,7 @@ Anyone evaluating or testing the demo can click the **Quick Demo Login Credentia
 | **Admin** | `admin@disasterconnect.org` | `password` | `/admin/moderator-applications` & `/admin/moderators` |
 | **Senior Moderator** | `senior.mod@disasterconnect.org` | `password` | `/moderator` (*Escalated* & *Queue* tabs) |
 | **Student Moderator (Trusted)** | `student_mod@disasterconnect.org` | `password` | `/moderator` (*Queue*, *Analytics*, *History*) |
-| **Student Moderator (Verified)** | `priya.mod@disasterconnect.org` | `password` | `/moderator` (*Queue*, *Wallet*) |
+| **Student Moderator (Verified)** | `priya.mod@disasterconnect.org` | `password` | `/moderator` (*Queue*, *Analytics*, *History*) |
 | **NGO / Relief Org** | `ndrc-relief@disasterconnect.org` | `password` | `/ngo` (NGO Operations) |
 | **Citizen Reporter** | `rahul.citizen@example.com` | `password` | `/` (Public Feed & Incident Reporting) |
 
@@ -27,7 +27,7 @@ Anyone evaluating or testing the demo can click the **Quick Demo Login Credentia
 Citizen Submits Disaster Report
              │
              ▼
-   [ PENDING_MODERATOR ]
+   [ PENDING_MODERATOR ]  (Hidden from public feed, pending verification)
              │
              ├──► Auto-assigned to available Student Moderator (Round-Robin)
              │
@@ -44,6 +44,9 @@ Citizen Submits Disaster Report
 [APPROVED_BY_MODERATOR]  Senior Moderator Review Queue
    │                    └► [APPROVED_BY_SENIOR] / [REJECTED]
    ▼
+Published to Public Crisis Feed
+   │
+   ▼
 Community Geofenced Voting (10 km radius)
    │
    ▼ (>40% upvotes + quorum)
@@ -54,34 +57,50 @@ Community Geofenced Voting (10 km radius)
 
 ## 🌟 Key Features
 
-### 🎓 1. AI-Assisted Student Moderator Workforce
-- **Application & Approval Flow (`/moderator/apply`)**: Moderator role is removed from direct registration. Interested students submit their college, student ID, course, year, and motivation for admin approval.
+### 🇮🇳 1. Real Indian Disaster Incidents & Geotagged Media
+- Seeded with authentic, location-accurate natural calamities across India:
+  - **Kerala Monsoon Floods** (Alappuzha & Kuttanad, IAF helicopter operations)
+  - **Uttarakhand Flash Floods** (Kedarnath valley, NH-58 washouts)
+  - **Super Cyclone** (Puri & coastal Odisha)
+  - **Mumbai Extreme Monsoon** (Kurla, Dharavi & train disruptions)
+  - **Himachal Pradesh Landslide** (Rohtang Pass & NH-3 Koksar)
+  - **Gujarat Earthquake** (Bhuj district, M5.8)
+  - **Uttarakhand Forest Wildfires** (Nainital & Almora)
+  - **Rajasthan Severe Dust Storm** (Jaisalmer desert andhi)
+- High-resolution disaster photos, GPS coordinates, and EXIF authenticity verification badges for each report.
+
+### 🎓 2. AI-Assisted Student Moderator Workforce
+- **Application & Approval Flow (`/moderator/apply`)**: Interested students submit their college, student ID, course, year, and volunteer motivation for admin review.
 - **Interactive Training Module (`/moderator/training`)**: Approved applicants undergo an 8-scenario interactive quiz (minimum passing score: 80%) covering genuine reports, gibberish detection, spam, image verification, and escalation rules.
-- **Moderator Queue & AI Assist Panel (`/moderator`)**: Moderation queue presenting AI-scored relevance (0–100%), gibberish, spam, duplicate probabilities, location confidence, and natural language flags. AI scores are clearly labeled as non-authoritative recommendations.
-- **Decision Pipeline**: Moderators choose **Approve**, **Reject**, or **Escalate** with mandatory structured reasons and optional notes.
+- **Moderator Queue & AI Assist Panel (`/moderator`)**: Moderation workspace presenting AI-scored relevance (0–100%), gibberish, spam, duplicate probabilities, location confidence, and natural language flags. AI scores act as non-authoritative recommendations.
+- **Decision Pipeline**: Moderators choose **Approve**, **Reject**, or **Escalate** with structured reasons and notes.
 - **Trust & Progression System**: Moderators progress through levels (**Trainee** → **Verified** → **Trusted** → **Senior**) with daily task limits (10/15/25/50) and a dynamic Trust Score (0–100).
-- **Moderator Wallet & Instant UPI Payouts (`/moderator/wallet`)**: Earns micro-payments per completed decision (e.g. ₹5 for approve/reject, ₹3 for escalate) with instant simulated UPI payouts to GPay, PhonePe, or Paytm.
 - **Anti-Abuse & Quality Controls**:
   - Rate limiting (max 5 decisions/minute)
   - Blocked self-moderation (cannot moderate own reports)
   - Round-robin task assignment
-  - Senior audit sampling (10% sample rate) with accuracy calculation and penalty clawbacks for incorrect approvals.
+  - Senior audit sampling (10% sample rate) with accuracy calculation and trust score updates.
 
-### 🎖️ 2. Senior Moderator & Escalation System
+### 🛡️ 3. Pre-Publication Moderation Gatekeeper
+- Any newly reported incident automatically enters the moderation queue in `PENDING_MODERATOR` status.
+- Reports remain **hidden from the public feed** until approved by a student or senior moderator, preventing panic and misinformation.
+- The submitter sees a clear **⏳ Under Moderator Review** status banner on the incident detail page while verification is underway.
+
+### 🎖️ 4. Senior Moderator & Escalation System
 - Senior moderators access the **Escalated Queue** to resolve complex, high-impact, or suspicious reports flagged by student moderators.
 - Final binding authority: **Approve by Senior** or **Reject**.
 - Conducts audit reviews on student decisions to maintain high verification quality.
 
-### 👑 3. Admin Governance Dashboards
+### 👑 5. Admin Governance Dashboards
 - **Applications Management (`/admin/moderator-applications`)**: View pending/approved/rejected applications with expandable student details. Approve, reject with custom reasons, or demand training.
-- **Moderator Management (`/admin/moderators`)**: Table of all moderators showing level, trust score, accuracy percentage, total reviews, earnings, and last active timestamp. Promote levels, suspend with reasons, or reactivate.
+- **Moderator Management (`/admin/moderators`)**: Table of all moderators showing level, trust score, accuracy percentage, total reviews, and last active timestamp. Promote levels, suspend with reasons, or reactivate.
 - **System Analytics**: Real-time stats on total reports, status breakdowns, decision rates (approvals/rejections/escalations), and active workforce count.
 
-### 📍 4. Ground-Truth Geofenced Voting & NGO Dispatch
+### 📍 6. Ground-Truth Geofenced Voting & NGO Dispatch
 - **10 km Voting Radius**: Server computes Haversine distance from voter coordinates to ensure only nearby citizens cast ground-truth votes.
 - **Automated NGO Dispatch**: Reports exceeding **>40% upvotes** with quorum automatically transition to `COMMUNITY_VERIFIED` and trigger real-time dispatch alerts to NGOs within their service radius.
 
-### 🗺️ 5. Live Crisis Map & Emergency SMS SOS
+### 🗺️ 7. Live Crisis Map & Emergency SMS SOS
 - **Interactive Crisis Map (`/map`)**: Real-time Leaflet map displaying active incident clusters, severity markers, and NGO operational zones.
 - **Offline SMS SOS Gateway (`/api/sms`)**: Emergency endpoint parsing SMS SOS messages for citizens in low-connectivity areas.
 
@@ -117,7 +136,7 @@ disasterconnect/
 │   ├── routes/
 │   │   ├── auth.js                   # Register (Citizen, NGO) / Login / Me
 │   │   ├── reports.js                # Create / List / Vote / Moderation pipeline status
-│   │   ├── moderator.js              # Tasks, decisions, applications, training, wallet, payouts, senior escalation
+│   │   ├── moderator.js              # Tasks, decisions, applications, training, senior escalation
 │   │   ├── admin.js                  # Applications management, moderator management, audits, analytics
 │   │   ├── ngo.js                    # NGO notifications & relief network directory
 │   │   └── sms.js                    # Emergency SMS SOS fallback
@@ -151,7 +170,6 @@ disasterconnect/
             ├── ModeratorDashboard.jsx # Student & Senior Moderator Workspace
             ├── ModeratorApply.jsx    # Student Moderator application form & status tracker
             ├── ModeratorTraining.jsx # Mandatory 8-question scenario training module
-            ├── ModeratorWallet.jsx   # Micro-earnings wallet & UPI payout portal
             ├── AdminApplications.jsx # Admin moderator application review panel
             ├── AdminModerators.jsx   # Admin moderator workforce management table
             ├── NGODashboard.jsx      # NGO dispatch alerts & action tracker
@@ -167,7 +185,7 @@ disasterconnect/
 | **Auth** | `POST` | `/api/auth/register` | Register new Citizen or NGO account |
 | | `POST` | `/api/auth/login` | Authenticate user & issue JWT |
 | | `GET` | `/api/auth/me` | Fetch authenticated user profile |
-| **Reports** | `GET` | `/api/reports` | List moderated public disaster reports |
+| **Reports** | `GET` | `/api/reports` | List approved public disaster reports |
 | | `POST` | `/api/reports` | Submit new disaster report (enters `PENDING_MODERATOR`) |
 | | `POST` | `/api/reports/:id/vote` | Cast geofenced ground-truth vote |
 | **Student Mod**| `POST` | `/api/moderator/apply` | Submit student moderator application |
@@ -175,12 +193,10 @@ disasterconnect/
 | | `GET` | `/api/moderator/training/status` | Get training scenarios & progress |
 | | `POST` | `/api/moderator/training/submit` | Submit training quiz answers |
 | | `GET` | `/api/moderator/tasks` | Fetch assigned moderation queue tasks |
-| | `POST` | `/api/moderator/tasks/:id/approve` | Approve report (+₹5 reward) |
-| | `POST` | `/api/moderator/tasks/:id/reject` | Reject report (+₹5 reward) |
-| | `POST` | `/api/moderator/tasks/:id/escalate` | Escalate report (+₹3 reward) |
+| | `POST` | `/api/moderator/tasks/:id/approve` | Approve report for public feed |
+| | `POST` | `/api/moderator/tasks/:id/reject` | Reject report |
+| | `POST` | `/api/moderator/tasks/:id/escalate` | Escalate report to senior moderator |
 | | `GET` | `/api/moderator/stats` | Moderator dashboard analytics |
-| | `GET` | `/api/moderator/wallet` | Wallet balance & transaction history |
-| | `POST` | `/api/moderator/payout` | Request UPI payout (simulated) |
 | | `GET` | `/api/moderator/leaderboard` | Public moderator leaderboard |
 | **Senior Mod** | `GET` | `/api/moderator/escalated` | Fetch escalated reports queue |
 | | `POST` | `/api/moderator/escalated/:id/resolve` | Senior decision (Approve/Reject) |

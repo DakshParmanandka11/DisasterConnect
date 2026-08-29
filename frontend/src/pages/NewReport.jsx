@@ -109,7 +109,7 @@ export default function NewReport() {
         <div>
           <h1 style={{ margin: 0, fontSize: 22 }}>Report an Incident</h1>
           <p style={{ color: "var(--text-muted)", margin: "4px 0 0 0", fontSize: 13 }}>
-            Camera photo and GPS geotag are required for verification.
+            All reports are reviewed by moderators for verification before being published on the public feed.
           </p>
         </div>
       </div>

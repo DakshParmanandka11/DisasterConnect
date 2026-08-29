@@ -173,9 +173,9 @@
       "city": "Noida",
       "preferred_hours": "Flexible",
       "reason": "I want to contribute to community safety and disaster response in India.",
-      "status": "pending",
-      "reviewed_by": null,
-      "reviewed_at": null,
+      "status": "training_required",
+      "reviewed_by": "demo-admin-id",
+      "reviewed_at": "2026-08-29T17:17:28.503Z",
       "created_at": "2026-08-27T08:00:00.000Z"
     }
   ],
@@ -256,7 +256,16 @@
       "user_id": "demo-moderator-id",
       "score": 90,
       "passed": true,
-      "answers": [1, 0, 1, 1, 2, 1, 0, 2],
+      "answers": [
+        1,
+        0,
+        1,
+        1,
+        2,
+        1,
+        0,
+        2
+      ],
       "created_at": "2026-08-21T11:30:00.000Z"
     },
     {
@@ -264,7 +273,16 @@
       "user_id": "demo-mod-2-id",
       "score": 75,
       "passed": false,
-      "answers": [1, 0, 1, 0, 2, 1, 0, 2],
+      "answers": [
+        1,
+        0,
+        1,
+        0,
+        2,
+        1,
+        0,
+        2
+      ],
       "created_at": "2026-08-22T12:00:00.000Z"
     },
     {
@@ -272,7 +290,16 @@
       "user_id": "demo-mod-2-id",
       "score": 85,
       "passed": true,
-      "answers": [1, 0, 1, 1, 2, 1, 0, 1],
+      "answers": [
+        1,
+        0,
+        1,
+        1,
+        2,
+        1,
+        0,
+        1
+      ],
       "created_at": "2026-08-22T13:30:00.000Z"
     },
     {
@@ -280,7 +307,16 @@
       "user_id": "demo-mod-3-id",
       "score": 80,
       "passed": true,
-      "answers": [1, 0, 1, 1, 2, 0, 0, 2],
+      "answers": [
+        1,
+        0,
+        1,
+        1,
+        2,
+        0,
+        0,
+        2
+      ],
       "created_at": "2026-08-23T13:00:00.000Z"
     }
   ],
@@ -371,7 +407,7 @@
       "description": "IMD issued Red Alert after 294 mm of rain fell in 24 hours — second highest ever for Mumbai. Kurla, Sion, Dharavi and Chembur submerged under 4–6 feet of water. Several BEST buses stranded mid-road on Lal Bahadur Shastri Road. Central and Harbour railway lines fully suspended. CSMT–Thane route waterlogged. Airport operations disrupted with 60+ flights diverted to Pune and Ahmedabad. BMC deployed emergency pumps at 12 critical spots. Multiple vehicles swept away at King's Circle underpass. Mithi River has breached danger mark at Kurla.",
       "category": "flood",
       "severity": "high",
-      "lat": 19.0760,
+      "lat": 19.076,
       "lng": 72.8777,
       "status": "flagged",
       "moderation_status": "COMMUNITY_VERIFIED",
@@ -611,7 +647,7 @@
       "report_id": "report-kerala-flood",
       "user_id": "citizen-reporter-3",
       "vote_type": "up",
-      "voter_lat": 9.50,
+      "voter_lat": 9.5,
       "voter_lng": 76.34,
       "vote_tier": "local",
       "created_at": "2026-08-25T12:00:00.000Z"
@@ -891,7 +927,7 @@
       "id": "notif-kerala-ngo",
       "ngo_id": "ngo-prof-1",
       "report_id": "report-kerala-flood",
-      "status": "sent",
+      "status": "acknowledged",
       "created_at": "2026-08-25T16:00:00.000Z"
     },
     {

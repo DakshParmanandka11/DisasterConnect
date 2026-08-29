@@ -120,6 +120,79 @@ export default function ReportDetail() {
 
             <h1 style={{ fontSize: 22, marginTop: 8, marginBottom: 8 }}>{report.title}</h1>
 
+            {/* Moderation Status Banner */}
+            {report.moderation_status === "PENDING_MODERATOR" && (
+              <div style={{
+                background: "rgba(245, 158, 11, 0.12)",
+                border: "1px solid rgba(245, 158, 11, 0.35)",
+                color: "var(--amber)",
+                padding: "14px 16px",
+                borderRadius: "var(--radius-sm)",
+                fontSize: 14,
+                fontWeight: 600,
+                marginBottom: 16,
+                display: "flex",
+                alignItems: "center",
+                gap: 10
+              }}>
+                <span style={{ fontSize: 20 }}>⏳</span>
+                <div>
+                  <div>Under Moderator Review</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: "var(--text-body)", marginTop: 2 }}>
+                    This report has been submitted to student moderators for verification. It will be published on the public feed once approved.
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {report.moderation_status === "ESCALATED" && (
+              <div style={{
+                background: "rgba(99, 102, 241, 0.12)",
+                border: "1px solid rgba(99, 102, 241, 0.35)",
+                color: "#6366f1",
+                padding: "14px 16px",
+                borderRadius: "var(--radius-sm)",
+                fontSize: 14,
+                fontWeight: 600,
+                marginBottom: 16,
+                display: "flex",
+                alignItems: "center",
+                gap: 10
+              }}>
+                <span style={{ fontSize: 20 }}>🔍</span>
+                <div>
+                  <div>Escalated for Senior Verification</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: "var(--text-body)", marginTop: 2 }}>
+                    This report requires high-level verification and has been escalated to senior disaster authorities.
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {report.moderation_status === "REJECTED_BY_MODERATOR" && (
+              <div style={{
+                background: "rgba(239, 68, 68, 0.12)",
+                border: "1px solid rgba(239, 68, 68, 0.35)",
+                color: "var(--red)",
+                padding: "14px 16px",
+                borderRadius: "var(--radius-sm)",
+                fontSize: 14,
+                fontWeight: 600,
+                marginBottom: 16,
+                display: "flex",
+                alignItems: "center",
+                gap: 10
+              }}>
+                <span style={{ fontSize: 20 }}>❌</span>
+                <div>
+                  <div>Report Rejected by Moderator</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: "var(--text-body)", marginTop: 2 }}>
+                    {report.moderation_reason || "This report was rejected during moderation verification."}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* EXIF Authenticity Badge */}
             {report.exif_status === "verified" && (
               <div className="exif-badge exif-badge--ok">
