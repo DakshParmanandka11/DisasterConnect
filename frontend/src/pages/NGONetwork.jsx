@@ -34,9 +34,9 @@ export default function NGONetwork() {
   }
 
   return (
-    <div className="ngo-network-page container" style={{ paddingTop: 24, paddingBottom: 60 }}>
+    <div className="ngo-network-page container" style={{ paddingTop: 24, paddingBottom: 80 }}>
       <div className="ngo-header">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
+        <div className="ngo-header__title-row">
           <div>
             <h1 style={{ margin: 0, fontSize: "1.25rem" }}>Relief NGO Network</h1>
             <p className="ngo-header__sub">
@@ -44,15 +44,15 @@ export default function NGONetwork() {
               Donate directly via UPI — zero gateway fees.
             </p>
           </div>
-          <div className="ngo-stats-bar">
-            <div className="ngo-stat">
-              <span className="ngo-stat__value">{ngos.length}</span>
-              <span className="ngo-stat__label">Verified partners</span>
-            </div>
-            <div className="ngo-stat">
-              <span className="ngo-stat__value">Direct</span>
-              <span className="ngo-stat__label">UPI transfers</span>
-            </div>
+        </div>
+        <div className="ngo-stats-bar">
+          <div className="ngo-stat">
+            <span className="ngo-stat__value">{ngos.length}</span>
+            <span className="ngo-stat__label">Verified partners</span>
+          </div>
+          <div className="ngo-stat">
+            <span className="ngo-stat__value">Direct</span>
+            <span className="ngo-stat__label">UPI transfers</span>
           </div>
         </div>
       </div>

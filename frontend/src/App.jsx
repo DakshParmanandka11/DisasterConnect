@@ -40,7 +40,7 @@ export default function App() {
           onSelectStatus={setActiveStatus}
         />
 
-        <main style={{ flex: 1, paddingBottom: 60 }}>
+        <main style={{ flex: 1 }}>
           <Routes>
             <Route
               path="/"

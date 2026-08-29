@@ -287,12 +287,17 @@
     border-bottom: 1px solid var(--border-muted);
     justify-content: flex-start;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
   }
 
   .rp-vote__btn {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .rp-vote__score {
+    min-width: 28px;
+    text-align: center;
   }
 
   .rp-body { padding: 10px 12px; }
@@ -300,5 +305,11 @@
   .rp-photo { margin: 4px -12px; }
   .rp-photo--single { max-height: 260px; }
   .rp-photo--grid { max-height: 200px; }
-  .rp-footer { flex-direction: column; align-items: flex-start; }
+  .rp-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .rp-footer__actions { flex-wrap: wrap; }
+  .rp-footer__radius { align-self: flex-end; }
 }

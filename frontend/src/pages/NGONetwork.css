@@ -9,10 +9,7 @@
 }
 
 .ngo-header__title-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .ngo-header__icon {
@@ -64,8 +61,15 @@
 
 .ngo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .ngo-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 }
 
 .ngo-card {
@@ -323,4 +327,53 @@
   padding: 10px;
   border-radius: var(--radius-sm);
   font-size: 13px;
+}
+
+/* ── Mobile fixes ── */
+@media (max-width: 600px) {
+  .ngo-header {
+    padding: 16px;
+  }
+
+  .ngo-header__title-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ngo-stats-bar {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .ngo-card {
+    padding: 16px;
+  }
+
+  .ngo-modal {
+    padding: 18px 16px;
+    max-width: 100%;
+    border-radius: var(--radius-sm);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .ngo-modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .ngo-qr-image {
+    width: 140px;
+    height: 140px;
+  }
+
+  .ngo-field {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .ngo-field__val {
+    text-align: left;
+    flex: 1 1 100%;
+  }
 }

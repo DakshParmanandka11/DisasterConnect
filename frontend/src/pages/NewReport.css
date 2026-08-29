@@ -217,3 +217,42 @@
 .nr-severity-high.active   { border-color: var(--amber); color: var(--amber); background: var(--amber-bg); }
 .nr-severity-critical:hover,
 .nr-severity-critical.active { border-color: var(--red); color: var(--red); background: var(--red-bg); }
+
+/* ── Mobile fixes ── */
+@media (max-width: 540px) {
+  .nr-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .nr-severity-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .nr-photo-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  }
+
+  .nr-category-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  }
+
+  .nr-camera-label {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  /* Prevent iOS input zoom */
+  .nr-camera-section input,
+  .nr-camera-section select,
+  .nr-camera-section textarea,
+  .field input,
+  .field select,
+  .field textarea {
+    font-size: 16px !important;
+  }
+}

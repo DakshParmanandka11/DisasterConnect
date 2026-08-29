@@ -138,5 +138,10 @@
   .mod-dashboard { padding: 16px 12px 80px; }
   .mod-title h1 { font-size: 1.2rem; }
   .mod-tab-btn { padding: 6px 10px; font-size: 0.82rem; }
-  .history-table { font-size: 0.8rem; }
+  .mod-header-top { flex-direction: column; }
+  .queue-card { padding: 14px 14px; }
+  .history-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .history-table { font-size: 0.78rem; white-space: nowrap; }
+  .history-table th, .history-table td { padding: 8px 10px; }
+  .assessment-box { padding: 12px 14px; }
 }

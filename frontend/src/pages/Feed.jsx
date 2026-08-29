@@ -301,6 +301,19 @@ export default function Feed({
           flex-direction: column;
         }
         .feed-cluster-body .rp-card:last-child { margin-bottom: 0; }
+
+        @media (max-width: 540px) {
+          .feed-compose-bar {
+            padding: 8px 10px;
+            gap: 8px;
+          }
+          .feed-compose-bar__avatar { width: 28px; height: 28px; font-size: 11px; }
+          .feed-compose-bar__input { font-size: 12px; padding: 6px 10px; }
+          .feed-compose-bar__btn { padding: 5px 10px; font-size: 12px; }
+          .feed-cluster-label { display: none; }
+          .feed-sort-bar { padding: 5px 10px; }
+          .feed-cluster-header { padding: 7px 12px; font-size: 11px; }
+        }
       `}</style>
     </div>
   );
