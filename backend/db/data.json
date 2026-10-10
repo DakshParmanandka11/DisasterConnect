@@ -87,6 +87,36 @@
       "home_lat": 9.9312,
       "home_lng": 76.2673,
       "created_at": "2026-08-23T08:00:00.000Z"
+    },
+    {
+      "id": "dcddfdb4-70c4-45f0-b26f-609d6e212c86",
+      "name": "Test Citizen",
+      "email": "test_citizen_1791652857038@disasterconnect.org",
+      "password_hash": "$2a$08$n2pTiysiZ5SxR6KNKMgn..4p/qS14ND2937MWxmIMT0S2UMlCNmd6",
+      "role": "citizen",
+      "home_lat": null,
+      "home_lng": null,
+      "created_at": "2026-10-10T17:20:57.150Z"
+    },
+    {
+      "id": "7dc0d53c-c9da-4f9c-af96-feb322e1ea71",
+      "name": "Disaster Tester",
+      "email": "tester_1791653409532@disasterconnect.org",
+      "password_hash": "$2a$08$Fi0Ua/bu22dv3Lbvx7f6D..S2G/UeBQYyEjFkIL3j1cFrj8MpPSxy",
+      "role": "citizen",
+      "home_lat": null,
+      "home_lng": null,
+      "created_at": "2026-10-10T17:30:09.741Z"
+    },
+    {
+      "id": "5a3b5ac2-75d8-45f6-89d4-92b38e98be81",
+      "name": "Verification Tester",
+      "email": "tinyfish_tester_1791653707404@disasterconnect.org",
+      "password_hash": "$2a$08$wFp0kEhGfpg7H8iZCsWVVORpzkIZzcDh1EhCMB/UibL0EdXdBq9Ny",
+      "role": "citizen",
+      "home_lat": null,
+      "home_lng": null,
+      "created_at": "2026-10-10T17:35:07.554Z"
     }
   ],
   "ngo_profiles": [
@@ -321,6 +351,734 @@
     }
   ],
   "reports": [
+    {
+      "id": "31046939-12b2-4e73-8469-72a545c6fee8",
+      "user_id": "5a3b5ac2-75d8-45f6-89d4-92b38e98be81",
+      "title": "Heavy Flooding & Waterlogging in Jamnagar City Center",
+      "description": "Disaster warning issued due to continuous heavy downpours. River level overflowing.",
+      "category": "flood",
+      "severity": "critical",
+      "lat": 22.4707,
+      "lng": 70.0577,
+      "status": "pending",
+      "moderation_status": "PENDING_MODERATOR",
+      "relevance_score": 100,
+      "gibberish_score": 0,
+      "spam_score": 0,
+      "duplicate_probability": 0,
+      "upvotes": 0,
+      "downvotes": 0,
+      "remote_votes": 0,
+      "exif_status": "missing",
+      "confirmations": 1,
+      "created_at": "2026-10-10T17:35:07.591Z",
+      "aiVerification": {
+        "corroboration_score": 95,
+        "gravity_level": 4,
+        "verdict": "CORROBORATED",
+        "summary_reasoning": "The citizen report regarding heavy flooding and waterlogging in Jamnagar City Center is strongly corroborated by official CWC telemetry showing water levels at 14.85m (exceeding the 14.00m danger mark) and 142.5mm of 24-hour rainfall. Regional weather patterns and historical precedents from Tavily web snippets further confirm Jamnagar's vulnerability to severe monsoon flooding and red alert conditions.",
+        "visual_damage_confirmed": true,
+        "official_alerts_found": [
+          "IMD Red Alert issued for Gujarat region",
+          "CWC River Gauge Danger Level Exceeded"
+        ],
+        "official_telemetry_summary": "River Gauge: 14.85m (Danger Mark: 14.00m) | Rainfall: 142.5mm/24h | Warning: RED_ALERT",
+        "sources_cited": [
+          "https://indianexpress.com/article/cities/ahmedabad/3-killed-as-heavy-rain-pound-jamnagar-kutch-junagadh-8694976",
+          "https://www.youtube.com/watch?v=hTg-NAmrkm0"
+        ],
+        "recommended_relief_actions": {
+          "ndrf_assets": [
+            "Inflatable Boats",
+            "Dewatering Pumps",
+            "Life Jackets & Buoys"
+          ],
+          "ngo_supplies": [
+            "Food Packets",
+            "Drinking Water Cans",
+            "First Aid Kits",
+            "Water Purification Tablets"
+          ]
+        }
+      },
+      "assigned_moderator_id": "demo-mod-3-id"
+    },
+    {
+      "id": "c1e2ca6e-ec09-4ec7-bb65-6f0672301dfb",
+      "user_id": "7dc0d53c-c9da-4f9c-af96-feb322e1ea71",
+      "title": "Flash Flood Emergency in Jamnagar Old City",
+      "description": "Rangmati river overflowing. Water level reached 4 feet in residential areas. Emergency rescue needed.",
+      "category": "flood",
+      "severity": "critical",
+      "lat": 22.4707,
+      "lng": 70.0577,
+      "status": "pending",
+      "moderation_status": "PENDING_MODERATOR",
+      "relevance_score": 100,
+      "gibberish_score": 0,
+      "spam_score": 0,
+      "duplicate_probability": 0,
+      "upvotes": 0,
+      "downvotes": 0,
+      "remote_votes": 0,
+      "exif_status": "missing",
+      "confirmations": 1,
+      "created_at": "2026-10-10T17:30:09.795Z",
+      "aiVerification": {
+        "corroboration_score": 92,
+        "gravity_level": 4,
+        "verdict": "CORROBORATED",
+        "summary_reasoning": "Citizen report of severe flooding due to the overflowing Rangmati river in Jamnagar Old City is strongly corroborated by official hydrological telemetry and regional weather alerts. CWC river monitoring registers gauge levels at 14.85m, exceeding the critical danger mark of 14.00m by 0.85m alongside heavy 24-hour localized rainfall of 142.5mm. IMD flash flood risk advisories and NDMA Sachet alerts corroborate active high-volume surface runoff and critical inundation in Saurashtra low-lying zones, necessitating rapid rescue operations.",
+        "visual_damage_confirmed": true,
+        "official_alerts_found": [
+          "IMD Flash Flood Risk (FFR) Warning for Gujarat / Saurashtra & Kutch",
+          "CWC River Level Exceeded Danger Mark (Warning Active - RED_ALERT)"
+        ],
+        "official_telemetry_summary": "River Gauge: 14.85m (Danger Mark: 14.00m) | Rainfall: 142.5mm/24h | Warning: RED_ALERT",
+        "sources_cited": [
+          "https://www.livemint.com/news/india/imd-issues-flash-flood-alert-for-gujarat-maharashtra-and-karnataka-over-next-24-hours-11783425880978.html",
+          "https://m.economictimes.com/news/new-updates/imd-issues-flash-flood-risk-warning-for-maharashtra-goa-and-gujarat-amid-heavy-rain-check-affected-districts/articleshow/132253554.cms",
+          "https://sachet.ndma.gov.in"
+        ],
+        "recommended_relief_actions": {
+          "ndrf_assets": [
+            "Inflatable Motorized Rescue Boats (IRBs)",
+            "Life Buoys and PFD Jackets",
+            "High-Capacity Dewatering Pumps",
+            "Flood Search & Rescue (FSR) Specialized Teams"
+          ],
+          "ngo_supplies": [
+            "Packaged Drinking Water Jerrycans",
+            "Ready-to-Eat Food Packets (Ration Kits)",
+            "Chlorine / Water Purification Tablets",
+            "Tarpaulin Sheets & Temporary Shelter Kits",
+            "Basic Emergency Medical & First Aid Kits"
+          ]
+        }
+      },
+      "assigned_moderator_id": "demo-mod-2-id"
+    },
+    {
+      "id": "0352062f-43ae-4c91-afeb-2cf42ad6a15f",
+      "user_id": "dcddfdb4-70c4-45f0-b26f-609d6e212c86",
+      "title": "Cyclonic Storm Damage in Puri Coastal Area",
+      "description": "High velocity winds and tidal surges damaged coastal huts and uprooted trees near Golden Beach.",
+      "category": "cyclone",
+      "severity": "critical",
+      "lat": 19.8135,
+      "lng": 85.8312,
+      "status": "pending",
+      "moderation_status": "PENDING_MODERATOR",
+      "relevance_score": 65,
+      "gibberish_score": 0,
+      "spam_score": 0,
+      "duplicate_probability": 0,
+      "upvotes": 0,
+      "downvotes": 0,
+      "remote_votes": 0,
+      "exif_status": "missing",
+      "confirmations": 1,
+      "created_at": "2026-10-10T17:20:57.196Z",
+      "aiVerification": {
+        "corroboration_score": 98,
+        "gravity_level": 4,
+        "verdict": "CORROBORATED",
+        "summary_reasoning": "The citizen report regarding cyclonic storm damage, high-velocity winds, and tidal surges near Golden Beach in Puri is fully corroborated by IMD telemetry showing 85-105 km/h winds, 180mm of heavy rainfall, and an active RED ALERT for coastal Puri. Web snippets and news reports confirm extensive cyclone warnings, evacuations, and administration preparedness in the region.",
+        "visual_damage_confirmed": true,
+        "official_alerts_found": [
+          "IMD Red Alert issued for Puri Coastal Area",
+          "Cyclone Warning: High-velocity winds and storm surge advisory"
+        ],
+        "official_telemetry_summary": "Wind Speed: 85 km/h (Gusts up to 105 km/h) | Rainfall: 180.0mm/24h | Sea Condition: VERY ROUGH TO HIGH | Warning: RED_ALERT",
+        "sources_cited": [
+          "https://www.youtube.com/watch?v=H5iKJse6wSw",
+          "https://www.livemint.com/news/india/weather-today-live-update-odisha-andhra-pradesh-up-lucknow-bihar-heavy-rain-clogged-drain-traffic-latest-news-11790224996870.html",
+          "https://economictimes.indiatimes.com/topic/cyclone-in-puri",
+          "https://www.etvbharat.com/en/state/live-blog--cyclone-arnab-live-updates-deep-depression-heavy-rain-odisha-andhra-pradesh-weather-enn26092308889"
+        ],
+        "recommended_relief_actions": {
+          "ndrf_assets": [
+            "Inflatable Boats",
+            "Dewatering Pumps",
+            "Tree Chain Saws",
+            "Flood Rescue Teams"
+          ],
+          "ngo_supplies": [
+            "Food Packets",
+            "Drinking Water Cans",
+            "First Aid Kits",
+            "Tarpaulins and Shelter Materials"
+          ]
+        }
+      },
+      "assigned_moderator_id": "demo-moderator-id"
+    },
+    {
+      "id": "d23ed92f-54af-4bb1-a812-dc9d0fa58e56",
+      "user_id": "demo-moderator-id",
+      "title": "flood",
+      "description": "roads inaccesible",
+      "category": "flood",
+      "severity": "high",
+      "lat": 28.47025242123804,
+      "lng": 77.49387157902669,
+      "status": "pending",
+      "moderation_status": "PENDING_MODERATOR",
+      "relevance_score": 60,
+      "gibberish_score": 0,
+      "spam_score": 0,
+      "duplicate_probability": 0,
+      "upvotes": 0,
+      "downvotes": 0,
+      "remote_votes": 0,
+      "exif_status": "verified",
+      "confirmations": 1,
+      "created_at": "2026-10-10T14:35:28.226Z",
+      "aiVerification": {
+        "corroboration_score": 18,
+        "gravity_level": 2,
+        "verdict": "LIKELY_HOAX",
+        "summary_reasoning": "The incident report cites severe flooding in Greater Noida (Gautam Buddha Nagar, NCR), claiming inaccessible roads. However, the uploaded visual evidence depicts an aerial view of an extensively inundated rural village with thatched-roof dwellings and tropical vegetation, characteristic of archival cyclone/flood imagery from coastal or eastern regions rather than the urbanized Knowledge Park sector of Greater Noida. Furthermore, real-time IMD flash flood bulletins and NDMA Sachet portal alerts show no active flood or extreme rainfall warnings for western Uttar Pradesh or Delhi-NCR.",
+        "visual_damage_confirmed": false,
+        "official_alerts_found": [],
+        "sources_cited": [
+          "https://sachet.ndma.gov.in",
+          "https://mausam.imd.gov.in/imd_latest/contents/flash_flood.php"
+        ],
+        "recommended_relief_actions": {
+          "ndrf_assets": [
+            "Local Police / SDRF ground verification patrol",
+            "Municipal dewatering pump units (if localized waterlogging exists)"
+          ],
+          "ngo_supplies": [
+            "No immediate emergency deployment recommended pending physical verification"
+          ]
+        }
+      },
+      "assigned_moderator_id": "demo-mod-3-id"
+    },
+    {
+      "id": "08260f17-e28b-4b1d-a93f-674e25c8ab0a",
+      "user_id": "citizen-reporter-1",
+      "title": "heavy floods in odisha state local destrict affected homes in accesible",
+      "description": "very heavy floods dam broke water filled eveywhere roads hospitals all are inaccesible",
+      "category": "flood",
+      "severity": "high",
+      "lat": 28.470271044379746,
+      "lng": 77.49385754240505,
+      "status": "pending",
+      "moderation_status": "PENDING_MODERATOR",
+      "relevance_score": 85,
+      "gibberish_score": 0,
+      "spam_score": 0,
+      "duplicate_probability": 0,
+      "upvotes": 0,
+      "downvotes": 0,
+      "remote_votes": 0,
+      "exif_status": "verified",
+      "confirmations": 1,
+      "created_at": "2026-10-10T14:34:08.464Z",
+      "aiVerification": {
+        "corroboration_score": 90,
+        "gravity_level": 4,
+        "verdict": "CORROBORATED",
+        "summary_reasoning": "The report of widespread heavy flooding in Odisha is strongly supported by recent ground-truth news snippets and official IMD warnings. Multiple districts across Odisha have experienced severe inundation, river breaches, and mass evacuations, with NDRF and SDRF teams deployed. The attached visual evidence shows extensive aerial damage, with submerged homes, rooftops, and flooded rural terrain.",
+        "visual_damage_confirmed": true,
+        "official_alerts_found": [
+          "IMD Red Alert issued for heavy rainfall across North Odisha districts",
+          "NDRF and SDRF teams deployed for flood rescue and relief",
+          "School closures declared in Bhadrak, Keonjhar, Jajpur, and Mayurbhanj"
+        ],
+        "sources_cited": [
+          "https://www.karmactive.com/north-odisha-flood-situation-imd-rain-forecast-august-2026",
+          "https://www.telegraphindia.com/edugraph/news/odisha-schools-closed-today-in-4-districts-amid-floods-imd-issues-red-alert/cid/2175358",
+          "https://www.india.com/news/india/odisha-floods-more-than-4-lakh-people-affected-alerts-issued-in-several-districts-5578215"
+        ],
+        "recommended_relief_actions": {
+          "ndrf_assets": [
+            "Inflatable Motorized Rescue Boats",
+            "High-Capacity Dewatering Pumps",
+            "Deep Diver Teams",
+            "Life Jackets & Ring Buoys"
+          ],
+          "ngo_supplies": [
+            "Dry Food Packets & Ready-to-Eat Meals",
+            "Packaged Drinking Water & Halazone Tablets",
+            "Emergency Tarpaulins & Plastic Sheets",
+            "First Aid & Essential Hygiene Kits"
+          ]
+        }
+      },
+      "assigned_moderator_id": "demo-mod-2-id"
+    },
+    {
+      "id": "eacaba9f-013a-430b-9587-5ed4bf59ac05",
+      "user_id": "citizen-reporter-1",
+      "title": "Major Landslide Blocking National Highway near Shimla",
+      "description": "Debris and heavy boulders fell on the Shimla-Kalka highway following overnight rain. Highway movement restricted to single lane.",
+      "category": "landslide",
+      "severity": "moderate",
+      "lat": 31.1048,
+      "lng": 77.1734,
+      "status": "pending",
+      "moderation_status": "PENDING_MODERATOR",
+      "relevance_score": 95,
+      "gibberish_score": 0,
+      "spam_score": 5,
+      "duplicate_probability": 10,
+      "upvotes": 4,
+      "downvotes": 0,
+      "remote_votes": 2,
+      "exif_status": "verified",
+      "confirmations": 1,
+      "assigned_moderator_id": "demo-moderator-id",
+      "created_at": "2026-10-10T14:28:58.232Z",
+      "aiVerification": {
+        "corroboration_score": 88,
+        "gravity_level": 3,
+        "verdict": "CORROBORATED",
+        "summary_reasoning": "The citizen report is strongly corroborated by multiple recent news reports and social media documentation confirming landslides along the Shimla highway corridor. IMD warnings for heavy rain in Himachal Pradesh further align with the trigger conditions. Road obstruction matches verified incident patterns on NH-5 (Shimla-Kalka/Chandigarh highway).",
+        "visual_damage_confirmed": true,
+        "official_alerts_found": [
+          "IMD Yellow Alert for heavy rain across the Himalayan region",
+          "Himachal Pradesh State Disaster Management Authority / NDMA Sachet landslide and weather advisories"
+        ],
+        "sources_cited": [
+          "https://www.ndtv.com/topic/himachal-pradesh-landslide",
+          "https://www.facebook.com/jionews/posts/a-major-landslide-struck-shimla-the-capital-of-himachal-pradesh-burying-several-/1571733508315641",
+          "https://mausam.imd.gov.in/imd_latest/contents/districtwise-warning_mc.php?id=3"
+        ],
+        "recommended_relief_actions": {
+          "ndrf_assets": [
+            "Heavy Earthmoving Machinery / JCBs",
+            "Hydraulic Cutters and Spreaders",
+            "Rock Breakers",
+            "Search and Rescue Canine Units"
+          ],
+          "ngo_supplies": [
+            "Drinking Water Packets",
+            "Ready-to-Eat Food Packets",
+            "First Aid Kits",
+            "Thermal Blankets",
+            "Emergency Highway Torches"
+          ]
+        }
+      }
+    },
+    {
+      "id": "8b336ff2-e5ad-4ac7-a73d-696e0271c0a1",
+      "user_id": "citizen-reporter-1",
+      "title": "High-Speed Cyclonic Winds & Uprooted Trees in Puri",
+      "description": "Severe gale winds near Swargadwar and Golden Beach Puri. Power lines disrupted and trees blocking main arterial roads.",
+      "category": "cyclone",
+      "severity": "critical",
+      "lat": 19.8135,
+      "lng": 85.8312,
+      "status": "pending",
+      "moderation_status": "PENDING_MODERATOR",
+      "relevance_score": 95,
+      "gibberish_score": 0,
+      "spam_score": 5,
+      "duplicate_probability": 10,
+      "upvotes": 4,
+      "downvotes": 0,
+      "remote_votes": 2,
+      "exif_status": "verified",
+      "confirmations": 1,
+      "assigned_moderator_id": "demo-moderator-id",
+      "created_at": "2026-10-10T14:27:11.632Z",
+      "aiVerification": {
+        "corroboration_score": 78,
+        "gravity_level": 4,
+        "verdict": "CORROBORATED",
+        "summary_reasoning": "The incident report of severe gale winds, disrupted power lines, and fallen trees in Puri (near Swargadwar and Golden Beach) aligns with ground-truth reports and official meteorological notices. IMD and state authorities issued red alerts and designated Puri as a red zone due to cyclonic weather/depression systems in the Bay of Bengal, reporting squally winds gusting up to 70-75 kmph, high tides, and localized infrastructure impact along coastal Odisha.",
+        "visual_damage_confirmed": false,
+        "official_alerts_found": [
+          "IMD Red Alert issued for coastal and southern Odisha districts including Puri",
+          "Odisha Government declared Puri 'red zone' and banned sea bathing",
+          "Deployment of ODRAF (Odisha Disaster Rapid Action Force) teams and evacuation advisories"
+        ],
+        "sources_cited": [
+          "https://www.livemint.com/news/india/weather-today-live-update-odisha-andhra-pradesh-up-lucknow-bihar-heavy-rain-clogged-drain-traffic-latest-news-11790224996870.html",
+          "https://www.hindustantimes.com/india-news/cyclone-arnab-live-updates-imd-forecast-deep-depression-heavy-rain-odisha-andhra-pradesh-weather-tracking-schools-closed-101790128520158.html",
+          "https://www.thehindu.com/news/national/cyclone-arnab-heavy-rain-lashes-odisha-andhra-pradesh-red-alert-weather-live-updates-september-25-2026/article71506926.ece"
+        ],
+        "recommended_relief_actions": {
+          "ndrf_assets": [
+            "Pole Pruners & Tree-Cutting Chainsaws",
+            "High-Capacity Dewatering Pumps",
+            "Emergency Route Clearing & Restoration Teams",
+            "Backup Power Generation Sets"
+          ],
+          "ngo_supplies": [
+            "Tarpaulins and Temporary Shelter Kits",
+            "Ready-to-Eat Food Packets",
+            "Safe Drinking Water Sachets",
+            "Emergency Medical & First Aid Kits"
+          ]
+        }
+      }
+    },
+    {
+      "id": "fa583d87-947b-4c12-ab13-ddf9764e12f2",
+      "user_id": "citizen-reporter-1",
+      "title": "Severe Urban Flooding & Waterlogging in Jamnagar",
+      "description": "Heavy monsoon downpour caused knee-deep inundation near Ring Road and Jamnagar Railway Station. Several vehicles stranded, traffic completely halted.",
+      "category": "flood",
+      "severity": "high",
+      "lat": 22.4707,
+      "lng": 70.0577,
+      "status": "pending",
+      "moderation_status": "PENDING_MODERATOR",
+      "relevance_score": 95,
+      "gibberish_score": 0,
+      "spam_score": 5,
+      "duplicate_probability": 10,
+      "upvotes": 4,
+      "downvotes": 0,
+      "remote_votes": 2,
+      "exif_status": "verified",
+      "confirmations": 1,
+      "assigned_moderator_id": "demo-moderator-id",
+      "created_at": "2026-10-10T14:25:21.114Z",
+      "aiVerification": {
+        "corroboration_score": 84,
+        "gravity_level": 3,
+        "verdict": "CORROBORATED",
+        "summary_reasoning": "Ground reports and media broadcasts corroborate intense rainfall and severe inundation in Jamnagar, particularly near railway infrastructure and key roadways such as Hapa railway station road and adjoining colonies. The incident report accurately reflects widespread waterlogging and traffic disruption consistent with active monsoon weather alerts in Gujarat.",
+        "visual_damage_confirmed": true,
+        "official_alerts_found": [
+          "Gujarat Flood Alert / Heavy Rainfall Warning - NDMA SACHET",
+          "IMD District Rainfall & Flash Flood Advisory for Saurashtra & Kutch"
+        ],
+        "sources_cited": [
+          "https://www.facebook.com/IndiaToday/posts/hapa-railway-station-road-and-adjoining-railway-colony-in-jamnagar-inundated-by-/1026777119485836",
+          "https://www.youtube.com/watch?v=xQxL4IYVln8",
+          "https://sachet.ndma.gov.in"
+        ],
+        "recommended_relief_actions": {
+          "ndrf_assets": [
+            "High-Capacity Dewatering Pumps",
+            "SDRF/NDRF Urban Inundation Rescue Boats",
+            "Vehicle Towing & Recovery Cranes"
+          ],
+          "ngo_supplies": [
+            "Clean Drinking Water Jerry Cans",
+            "Dry Ration & Ready-to-Eat Food Packets",
+            "Temporary Tarpaulins & Plastic Sheets",
+            "Basic First Aid and Antiseptic Kits"
+          ]
+        }
+      }
+    },
+    {
+      "id": "e816955b-9a58-4971-b389-df21e4376a33",
+      "user_id": "citizen-reporter-1",
+      "title": "Severe Flooding on Ring Road Jamnagar (or Cyclone Warning in Puri Odisha)",
+      "description": "Knee-deep water inundating streets near Ring Road after heavy rains.",
+      "category": "flood",
+      "severity": "high",
+      "lat": 28.47026646594549,
+      "lng": 77.49386830407417,
+      "status": "pending",
+      "moderation_status": "PENDING_MODERATOR",
+      "relevance_score": 100,
+      "gibberish_score": 0,
+      "spam_score": 0,
+      "duplicate_probability": 0,
+      "upvotes": 0,
+      "downvotes": 0,
+      "remote_votes": 0,
+      "exif_status": "verified",
+      "confirmations": 1,
+      "created_at": "2026-10-10T14:20:19.310Z",
+      "aiVerification": {
+        "corroboration_score": 18,
+        "gravity_level": 2,
+        "verdict": "LIKELY_HOAX",
+        "summary_reasoning": "The incident report displays major geospatial and contextual contradictions. The GPS coordinates (28.4702, 77.4938) correspond to Greater Noida, Uttar Pradesh, directly conflicting with the reported titles referencing Jamnagar (Gujarat) and Puri (Odisha). Furthermore, the user description describes minor 'knee-deep water inundating streets near Ring Road,' whereas the attached photograph depicts catastrophic, roof-level aerial inundation of a rural settlement, indicating reuse of stock disaster imagery. Ground-truth snippets confirm historical depression alerts in Odisha from late September 2026, but do not substantiate an active emergency matching this report's timeline, coordinates, or urban scenario.",
+        "visual_damage_confirmed": false,
+        "official_alerts_found": [
+          "IMD Red Alert issued for coastal Odisha districts (September 2026 depression)"
+        ],
+        "sources_cited": [
+          "https://timesofindia.indiatimes.com/city/bhubaneswar/red-alert-for-extremely-heavy-rain-in-6-districts-imd/articleshow/134374571.cms",
+          "https://www.thehindu.com/news/national/odisha/red-warning-alert-issued-for-4-odisha-districs-as-disaster-response-forces-in-place-for-deep-depression/article71500624.ece"
+        ],
+        "recommended_relief_actions": {
+          "ndrf_assets": [
+            "Field Verification Patrol",
+            "Drone Aerial Reconnaissance Unit"
+          ],
+          "ngo_supplies": [
+            "Emergency Potable Water",
+            "Basic First Aid Kits"
+          ]
+        }
+      },
+      "assigned_moderator_id": "demo-moderator-id"
+    },
+    {
+      "id": "f81eba82-5372-4bf8-9681-94d060950245",
+      "user_id": "demo-moderator-id",
+      "title": "Severe Flooding on Ring Road Jamnagar",
+      "description": "Knee-deep water inundating streets near Ring Road after heavy monsoon downpour. Vehicles stranded.",
+      "category": "flood",
+      "severity": "high",
+      "lat": 22.4707,
+      "lng": 70.0577,
+      "status": "pending",
+      "moderation_status": "PENDING_MODERATOR",
+      "relevance_score": 85,
+      "gibberish_score": 0,
+      "spam_score": 0,
+      "duplicate_probability": 0,
+      "upvotes": 0,
+      "downvotes": 0,
+      "remote_votes": 0,
+      "exif_status": "missing",
+      "confirmations": 1,
+      "created_at": "2026-10-10T14:11:30.362Z",
+      "aiVerification": {
+        "corroboration_score": 75,
+        "gravity_level": 3,
+        "verdict": "CORROBORATED",
+        "summary_reasoning": "Recent reports and ground-truth media coverage confirm heavy monsoon rainfall and resultant urban waterlogging and street flooding across multiple parts of Jamnagar, Gujarat. Inundation of key transit routes and stranded vehicles are consistent with local reports.",
+        "visual_damage_confirmed": false,
+        "official_alerts_found": [
+          "IMD Heavy Rainfall Alert for Gujarat",
+          "GSDMA/NDMA Flood Advisory for Jamnagar District"
+        ],
+        "sources_cited": [
+          "https://floodlist.com/asia/india-floods-gujarat-september-2021",
+          "https://economictimes.indiatimes.com/topic/jamnagar-floods",
+          "https://www.facebook.com/IndiaToday/posts/hapa-railway-station-road-and-adjoining-railway-colony-in-jamnagar-inundated-by-/1026777119485836"
+        ],
+        "recommended_relief_actions": {
+          "ndrf_assets": [
+            "Dewatering High-Capacity Pumps",
+            "Inflatable Rescue Boats",
+            "Vehicle Towing & Recovery Equipment"
+          ],
+          "ngo_supplies": [
+            "Drinking Water Pouch Bundles",
+            "Ready-to-Eat Meal Packets",
+            "Emergency Solar Lanterns"
+          ]
+        }
+      },
+      "assigned_moderator_id": "demo-mod-3-id"
+    },
+    {
+      "id": "9c2a66e0-5b0c-43bd-8e50-4e2281910451",
+      "user_id": "demo-moderator-id",
+      "title": "Severe Flooding on Ring Road Jamnagar",
+      "description": "Knee-deep water inundating streets near Ring Road after heavy monsoon downpour. Vehicles stranded.",
+      "category": "flood",
+      "severity": "high",
+      "lat": 22.4707,
+      "lng": 70.0577,
+      "status": "pending",
+      "moderation_status": "PENDING_MODERATOR",
+      "relevance_score": 85,
+      "gibberish_score": 0,
+      "spam_score": 0,
+      "duplicate_probability": 0,
+      "upvotes": 0,
+      "downvotes": 0,
+      "remote_votes": 0,
+      "exif_status": "missing",
+      "confirmations": 1,
+      "created_at": "2026-10-10T14:07:23.017Z",
+      "aiVerification": {
+        "corroboration_score": 50,
+        "gravity_level": 3,
+        "verdict": "UNVERIFIED",
+        "summary_reasoning": "Automatic verification could not be completed ({\"error\":{\"code\":404,\"message\":\"This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started).\",\"status\":\"NOT_FOUND\"}}). Report routed to student moderators for manual review.",
+        "visual_damage_confirmed": false,
+        "official_alerts_found": [],
+        "sources_cited": [],
+        "recommended_relief_actions": {
+          "ndrf_assets": [
+            "Standard Inspection Unit"
+          ],
+          "ngo_supplies": [
+            "Food Packets",
+            "Clean Water Cans",
+            "First Aid Kits"
+          ]
+        }
+      },
+      "assigned_moderator_id": "demo-mod-2-id"
+    },
+    {
+      "id": "2a9747f5-0da7-4f92-8dd0-867741c6748e",
+      "user_id": "demo-moderator-id",
+      "title": "Severe Flooding on Ring Road Jamnagar",
+      "description": "Knee-deep water inundating streets near Ring Road after heavy monsoon downpour. Vehicles stranded.",
+      "category": "flood",
+      "severity": "high",
+      "lat": 22.4707,
+      "lng": 70.0577,
+      "status": "pending",
+      "moderation_status": "PENDING_MODERATOR",
+      "relevance_score": 85,
+      "gibberish_score": 0,
+      "spam_score": 0,
+      "duplicate_probability": 0,
+      "upvotes": 0,
+      "downvotes": 0,
+      "remote_votes": 0,
+      "exif_status": "missing",
+      "confirmations": 1,
+      "created_at": "2026-10-10T14:06:04.459Z",
+      "aiVerification": {
+        "corroboration_score": 50,
+        "gravity_level": 3,
+        "verdict": "UNVERIFIED",
+        "summary_reasoning": "Automatic verification could not be completed ({\"error\":{\"code\":404,\"message\":\"This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started).\",\"status\":\"NOT_FOUND\"}}). Report routed to student moderators for manual review.",
+        "visual_damage_confirmed": false,
+        "official_alerts_found": [],
+        "sources_cited": [],
+        "recommended_relief_actions": {
+          "ndrf_assets": [
+            "Standard Inspection Unit"
+          ],
+          "ngo_supplies": [
+            "Food Packets",
+            "Clean Water Cans",
+            "First Aid Kits"
+          ]
+        }
+      },
+      "assigned_moderator_id": "demo-mod-3-id"
+    },
+    {
+      "id": "664fcd6d-364a-4fec-bb55-37fe95e5c4e7",
+      "user_id": "demo-moderator-id",
+      "title": "Severe Flooding on Ring Road Jamnagar",
+      "description": "Knee-deep water inundating streets near Ring Road after heavy monsoon downpour. Vehicles stranded.",
+      "category": "flood",
+      "severity": "high",
+      "lat": 22.4707,
+      "lng": 70.0577,
+      "status": "pending",
+      "moderation_status": "PENDING_MODERATOR",
+      "relevance_score": 85,
+      "gibberish_score": 0,
+      "spam_score": 0,
+      "duplicate_probability": 0,
+      "upvotes": 0,
+      "downvotes": 0,
+      "remote_votes": 0,
+      "exif_status": "missing",
+      "confirmations": 1,
+      "created_at": "2026-10-10T14:05:04.545Z",
+      "aiVerification": {
+        "corroboration_score": 50,
+        "gravity_level": 3,
+        "verdict": "UNVERIFIED",
+        "summary_reasoning": "Automatic verification could not be completed ({\"error\":{\"code\":404,\"message\":\"This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started).\",\"status\":\"NOT_FOUND\"}}). Report routed to student moderators for manual review.",
+        "visual_damage_confirmed": false,
+        "official_alerts_found": [],
+        "sources_cited": [],
+        "recommended_relief_actions": {
+          "ndrf_assets": [
+            "Standard Inspection Unit"
+          ],
+          "ngo_supplies": [
+            "Food Packets",
+            "Clean Water Cans",
+            "First Aid Kits"
+          ]
+        }
+      },
+      "assigned_moderator_id": "demo-mod-2-id"
+    },
+    {
+      "id": "8527a13a-6732-433a-b7f3-dbf94919eee1",
+      "user_id": "demo-moderator-id",
+      "title": "Severe Flooding on Ring Road Jamnagar",
+      "description": "Knee-deep water inundating streets near Ring Road after heavy monsoon downpour. Vehicles stranded.",
+      "category": "flood",
+      "severity": "high",
+      "lat": 22.4707,
+      "lng": 70.0577,
+      "status": "pending",
+      "moderation_status": "PENDING_MODERATOR",
+      "relevance_score": 85,
+      "gibberish_score": 0,
+      "spam_score": 0,
+      "duplicate_probability": 0,
+      "upvotes": 0,
+      "downvotes": 0,
+      "remote_votes": 0,
+      "exif_status": "missing",
+      "confirmations": 1,
+      "created_at": "2026-10-10T14:02:09.536Z",
+      "aiVerification": {
+        "corroboration_score": 50,
+        "gravity_level": 3,
+        "verdict": "UNVERIFIED",
+        "summary_reasoning": "Automatic verification could not be completed ({\"error\":{\"code\":404,\"message\":\"This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started).\",\"status\":\"NOT_FOUND\"}}). Report routed to student moderators for manual review.",
+        "visual_damage_confirmed": false,
+        "official_alerts_found": [],
+        "sources_cited": [],
+        "recommended_relief_actions": {
+          "ndrf_assets": [
+            "Standard Inspection Unit"
+          ],
+          "ngo_supplies": [
+            "Food Packets",
+            "Clean Water Cans",
+            "First Aid Kits"
+          ]
+        }
+      },
+      "assigned_moderator_id": "demo-mod-3-id"
+    },
+    {
+      "id": "0841cb84-9763-468a-bc45-c1435cc1fd31",
+      "user_id": "demo-moderator-id",
+      "title": "Severe Flooding on Ring Road Jamnagar",
+      "description": "Knee-deep water inundating streets near Ring Road after heavy monsoon downpour. Vehicles stranded.",
+      "category": "flood",
+      "severity": "high",
+      "lat": 22.4707,
+      "lng": 70.0577,
+      "status": "pending",
+      "moderation_status": "PENDING_MODERATOR",
+      "relevance_score": 85,
+      "gibberish_score": 0,
+      "spam_score": 0,
+      "duplicate_probability": 0,
+      "upvotes": 0,
+      "downvotes": 0,
+      "remote_votes": 0,
+      "exif_status": "missing",
+      "confirmations": 1,
+      "created_at": "2026-10-10T13:51:37.861Z",
+      "aiVerification": {
+        "corroboration_score": 50,
+        "gravity_level": 3,
+        "verdict": "UNVERIFIED",
+        "summary_reasoning": "Automatic verification could not be completed (GEMINI_API_KEY not configured). Report routed to student moderators for manual review.",
+        "visual_damage_confirmed": false,
+        "official_alerts_found": [],
+        "sources_cited": [],
+        "recommended_relief_actions": {
+          "ndrf_assets": [
+            "Standard Inspection Unit"
+          ],
+          "ngo_supplies": [
+            "Food Packets",
+            "Clean Water Cans",
+            "First Aid Kits"
+          ]
+        }
+      },
+      "assigned_moderator_id": "demo-mod-3-id"
+    },
     {
       "id": "report-kerala-flood",
       "user_id": "citizen-reporter-3",
@@ -639,6 +1397,27 @@
       "file_path": "/uploads/rajasthan_duststorm.jpg",
       "file_type": "image",
       "created_at": "2026-08-27T09:06:00.000Z"
+    },
+    {
+      "id": "77b5c7d9-0df8-4218-b017-7ef8be1d8849",
+      "report_id": "e816955b-9a58-4971-b389-df21e4376a33",
+      "file_path": "/uploads/9af8ea02-39f3-492d-81ac-0c6042196410.jpg",
+      "file_type": "image",
+      "created_at": "2026-10-10T14:22:44.912Z"
+    },
+    {
+      "id": "b372db86-36b8-44de-b578-467a413a46f3",
+      "report_id": "08260f17-e28b-4b1d-a93f-674e25c8ab0a",
+      "file_path": "/uploads/6326f085-de44-4894-aa02-3b5ca06fdcc5.jpg",
+      "file_type": "image",
+      "created_at": "2026-10-10T14:34:24.755Z"
+    },
+    {
+      "id": "285b53c6-7f11-4407-8809-c63534c2ab28",
+      "report_id": "d23ed92f-54af-4bb1-a812-dc9d0fa58e56",
+      "file_path": "/uploads/f66eb258-84ae-43b2-8b47-bdb64c05de77.jpg",
+      "file_type": "image",
+      "created_at": "2026-10-10T14:37:22.156Z"
     }
   ],
   "votes": [
@@ -763,6 +1542,126 @@
       "status": "escalated",
       "assigned_at": "2026-08-24T14:05:00.000Z",
       "completed_at": "2026-08-24T15:00:00.000Z"
+    },
+    {
+      "id": "f886f82f-ca3f-4e4d-aacf-61edd4475926",
+      "report_id": "0841cb84-9763-468a-bc45-c1435cc1fd31",
+      "moderator_id": "demo-mod-3-id",
+      "status": "pending",
+      "assigned_at": "2026-10-10T13:51:37.870Z",
+      "completed_at": null
+    },
+    {
+      "id": "96e64df5-7422-4074-8050-f10d535c1d0f",
+      "report_id": "8527a13a-6732-433a-b7f3-dbf94919eee1",
+      "moderator_id": "demo-mod-3-id",
+      "status": "pending",
+      "assigned_at": "2026-10-10T14:02:16.587Z",
+      "completed_at": null
+    },
+    {
+      "id": "36220b34-e694-4d62-9782-050d58e25aa9",
+      "report_id": "664fcd6d-364a-4fec-bb55-37fe95e5c4e7",
+      "moderator_id": "demo-mod-2-id",
+      "status": "pending",
+      "assigned_at": "2026-10-10T14:05:06.998Z",
+      "completed_at": null
+    },
+    {
+      "id": "9736f353-8450-4960-955a-473e8562290c",
+      "report_id": "2a9747f5-0da7-4f92-8dd0-867741c6748e",
+      "moderator_id": "demo-mod-3-id",
+      "status": "pending",
+      "assigned_at": "2026-10-10T14:06:07.958Z",
+      "completed_at": null
+    },
+    {
+      "id": "e8df0760-b657-4e29-8b43-b83621775a0a",
+      "report_id": "9c2a66e0-5b0c-43bd-8e50-4e2281910451",
+      "moderator_id": "demo-mod-2-id",
+      "status": "pending",
+      "assigned_at": "2026-10-10T14:07:32.716Z",
+      "completed_at": null
+    },
+    {
+      "id": "6dec0667-9a84-43ee-84aa-d441a61e25b7",
+      "report_id": "f81eba82-5372-4bf8-9681-94d060950245",
+      "moderator_id": "demo-mod-3-id",
+      "status": "pending",
+      "assigned_at": "2026-10-10T14:12:31.444Z",
+      "completed_at": null
+    },
+    {
+      "id": "cc3ac4fc-583d-4137-a3ce-a0428f93de37",
+      "report_id": "e816955b-9a58-4971-b389-df21e4376a33",
+      "moderator_id": "demo-moderator-id",
+      "status": "pending",
+      "assigned_at": "2026-10-10T14:22:44.913Z",
+      "completed_at": null
+    },
+    {
+      "id": "55ada186-ad34-4a61-962b-c346f442802e",
+      "report_id": "fa583d87-947b-4c12-ab13-ddf9764e12f2",
+      "moderator_id": "demo-moderator-id",
+      "status": "pending",
+      "assigned_at": "2026-10-10T14:27:10.079Z",
+      "completed_at": null
+    },
+    {
+      "id": "b11b06a8-3b1c-48d0-a274-3bda2f0cdbe0",
+      "report_id": "8b336ff2-e5ad-4ac7-a73d-696e0271c0a1",
+      "moderator_id": "demo-moderator-id",
+      "status": "pending",
+      "assigned_at": "2026-10-10T14:28:54.505Z",
+      "completed_at": null
+    },
+    {
+      "id": "d9654fcf-e44d-4577-bbc4-11e4a4eb2b46",
+      "report_id": "eacaba9f-013a-430b-9587-5ed4bf59ac05",
+      "moderator_id": "demo-moderator-id",
+      "status": "pending",
+      "assigned_at": "2026-10-10T14:32:24.456Z",
+      "completed_at": null
+    },
+    {
+      "id": "69fabbc2-1007-4cb7-8833-962666aa5cfb",
+      "report_id": "08260f17-e28b-4b1d-a93f-674e25c8ab0a",
+      "moderator_id": "demo-mod-2-id",
+      "status": "pending",
+      "assigned_at": "2026-10-10T14:34:24.756Z",
+      "completed_at": null
+    },
+    {
+      "id": "db367354-5426-4bd9-9ead-9bac42c0610b",
+      "report_id": "d23ed92f-54af-4bb1-a812-dc9d0fa58e56",
+      "moderator_id": "demo-mod-3-id",
+      "status": "pending",
+      "assigned_at": "2026-10-10T14:37:22.156Z",
+      "completed_at": null
+    },
+    {
+      "id": "9cbcaccd-ada7-4259-95f3-c8e061d3822e",
+      "report_id": "0352062f-43ae-4c91-afeb-2cf42ad6a15f",
+      "moderator_id": "demo-moderator-id",
+      "status": "pending",
+      "assigned_at": "2026-10-10T17:21:05.831Z",
+      "completed_at": null
+    },
+    {
+      "id": "0109e4c0-ebf7-4bdd-a63e-f648c684f281",
+      "report_id": "c1e2ca6e-ec09-4ec7-bb65-6f0672301dfb",
+      "moderator_id": "demo-mod-2-id",
+      "status": "pending",
+      "assigned_at": "2026-10-10T17:30:23.565Z",
+      "completed_at": null
+    },
+    {
+      "id": "038e831a-b175-4cd1-826b-a4bbbe9023a6",
+      "report_id": "31046939-12b2-4e73-8469-72a545c6fee8",
+      "moderator_id": "demo-mod-3-id",
+      "status": "pending",
+      "assigned_at": "2026-10-10T17:35:27.087Z",
+      "completed_at": null
     }
   ],
   "moderationDecisions": [

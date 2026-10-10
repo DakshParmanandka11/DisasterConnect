@@ -89,6 +89,197 @@ function TrustScoreGauge({ score }) {
   );
 }
 
+function AiVerificationPanel({ aiVerification }) {
+  if (!aiVerification) return null;
+
+  const {
+    corroboration_score = 50,
+    gravity_level = 3,
+    verdict = "UNVERIFIED",
+    summary_reasoning = "",
+    visual_damage_confirmed = false,
+    official_alerts_found = [],
+    official_telemetry_summary = "",
+    sources_cited = [],
+    recommended_relief_actions = {}
+  } = aiVerification;
+
+  const verdictBadge = {
+    CORROBORATED: { label: "CORROBORATED", color: "#10b981", bg: "rgba(16, 185, 129, 0.15)" },
+    UNVERIFIED: { label: "UNVERIFIED", color: "#f59e0b", bg: "rgba(245, 158, 11, 0.15)" },
+    LIKELY_HOAX: { label: "LIKELY HOAX", color: "#ef4444", bg: "rgba(239, 68, 68, 0.15)" }
+  }[verdict] || { label: verdict, color: "#f59e0b", bg: "rgba(245, 158, 11, 0.15)" };
+
+  const ndrfAssets = recommended_relief_actions.ndrf_assets || [];
+  const ngoSupplies = recommended_relief_actions.ngo_supplies || [];
+
+  return (
+    <div style={{
+      background: "var(--bg-card-alt, #1e293b)",
+      border: `1px solid ${verdictBadge.color}50`,
+      borderRadius: "var(--radius-md, 8px)",
+      padding: "16px 20px",
+      marginTop: 12,
+      marginBottom: 12
+    }}>
+      {/* Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, flexWrap: "wrap", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <span style={{ fontWeight: 800, fontSize: "0.85rem", letterSpacing: "0.05em", color: "var(--text-muted)" }}>
+            ⚡ 3-LAYER AI CRISIS VERIFICATION ENGINE
+          </span>
+          <span style={{
+            background: verdictBadge.bg,
+            color: verdictBadge.color,
+            border: `1px solid ${verdictBadge.color}`,
+            padding: "3px 10px",
+            borderRadius: "999px",
+            fontSize: "0.78rem",
+            fontWeight: 800
+          }}>
+            {verdictBadge.label}
+          </span>
+        </div>
+        <div style={{ display: "flex", gap: 12, fontSize: "0.82rem", alignItems: "center" }}>
+          <span>Gravity: <strong style={{ color: gravity_level >= 4 ? "#ef4444" : "#f59e0b" }}>Level {gravity_level}/5</strong></span>
+          <span>Corroboration: <strong style={{ color: verdictBadge.color }}>{corroboration_score}%</strong></span>
+        </div>
+      </div>
+
+      {/* Layer badges strip */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap", fontSize: "0.75rem" }}>
+        <span style={{ background: "rgba(56, 189, 248, 0.12)", color: "#38bdf8", border: "1px solid rgba(56, 189, 248, 0.3)", padding: "2px 8px", borderRadius: "4px" }}>
+          🔍 Layer 1: Scout (Tavily)
+        </span>
+        <span style={{ background: "rgba(168, 85, 247, 0.12)", color: "#c084fc", border: "1px solid rgba(168, 85, 247, 0.3)", padding: "2px 8px", borderRadius: "4px" }}>
+          🌊 Layer 2: Inspector (TinyFish / CWC / IMD)
+        </span>
+        <span style={{ background: "rgba(16, 185, 129, 0.12)", color: "#34d399", border: "1px solid rgba(16, 185, 129, 0.3)", padding: "2px 8px", borderRadius: "4px" }}>
+          🤖 Layer 3: Synthesizer (Gemini Flash)
+        </span>
+      </div>
+
+      {/* Layer 2 Official Telemetry Summary */}
+      {official_telemetry_summary && (
+        <div style={{
+          background: "rgba(168, 85, 247, 0.08)",
+          borderLeft: "3px solid #c084fc",
+          padding: "8px 12px",
+          borderRadius: "4px",
+          marginBottom: 12,
+          fontSize: "0.82rem",
+          color: "var(--text-body)"
+        }}>
+          <strong>🌊 Layer 2 Official Telemetry: </strong> {official_telemetry_summary}
+        </div>
+      )}
+
+      {/* Layer 3 Synthesized Reasoning */}
+      {summary_reasoning && (
+        <div style={{ fontSize: "0.88rem", color: "var(--text-body)", lineHeight: 1.6, marginBottom: 12 }}>
+          {summary_reasoning}
+        </div>
+      )}
+
+      {/* Visual Damage Status */}
+      <div style={{ display: "flex", gap: 16, fontSize: "0.82rem", marginBottom: 12, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span>Visual Damage Confirmed:</span>
+          <span style={{
+            color: visual_damage_confirmed ? "#10b981" : "#9ca3af",
+            fontWeight: 700
+          }}>
+            {visual_damage_confirmed ? "✓ Yes" : "✗ No / Not Evident"}
+          </span>
+        </div>
+      </div>
+
+      {/* Official Alerts Found */}
+      {official_alerts_found.length > 0 && (
+        <div style={{ marginBottom: 12 }}>
+          <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "#f59e0b", textTransform: "uppercase", marginBottom: 4 }}>
+            🚨 Official Alerts Found:
+          </div>
+          <ul style={{ margin: 0, paddingLeft: 20, fontSize: "0.82rem", color: "var(--text-body)" }}>
+            {official_alerts_found.map((alert, idx) => (
+              <li key={idx}>{alert}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Sources Cited */}
+      {sources_cited.length > 0 && (
+        <div style={{ marginBottom: 12 }}>
+          <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", marginBottom: 4 }}>
+            🔗 Ground-Truth Web & Social Sources (Scout):
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: "0.82rem" }}>
+            {sources_cited.map((url, idx) => (
+              <a
+                key={idx}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#38bdf8", textDecoration: "underline", wordBreak: "break-all" }}
+              >
+                {url} ↗
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Recommended Relief Actions */}
+      {(ndrfAssets.length > 0 || ngoSupplies.length > 0) && (
+        <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px dashed var(--border)" }}>
+          <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", marginBottom: 8 }}>
+            📦 Recommended Emergency Relief Actions:
+          </div>
+
+          {ndrfAssets.length > 0 && (
+            <div style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+              <span style={{ fontSize: "0.78rem", color: "#6366f1", fontWeight: 600 }}>NDRF/SDRF Assets:</span>
+              {ndrfAssets.map((asset, i) => (
+                <span key={i} style={{
+                  background: "rgba(99, 102, 241, 0.15)",
+                  color: "#818cf8",
+                  border: "1px solid rgba(99, 102, 241, 0.3)",
+                  padding: "2px 8px",
+                  borderRadius: "4px",
+                  fontSize: "0.78rem",
+                  fontWeight: 600
+                }}>
+                  {asset}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {ngoSupplies.length > 0 && (
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+              <span style={{ fontSize: "0.78rem", color: "#10b981", fontWeight: 600 }}>NGO Relief Supplies:</span>
+              {ngoSupplies.map((supply, i) => (
+                <span key={i} style={{
+                  background: "rgba(16, 185, 129, 0.15)",
+                  color: "#34d399",
+                  border: "1px solid rgba(16, 185, 129, 0.3)",
+                  padding: "2px 8px",
+                  borderRadius: "4px",
+                  fontSize: "0.78rem",
+                  fontWeight: 600
+                }}>
+                  {supply}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function DecisionModal({ task, onConfirm, onClose }) {
   const [action, setAction] = useState("approve");
   const [reason, setReason] = useState("");
@@ -128,6 +319,9 @@ function DecisionModal({ task, onConfirm, onClose }) {
         <div style={{ background: "var(--bg-card-alt)", borderRadius: "var(--radius-sm)", padding: "10px 14px", marginBottom: 20, fontSize: "0.88rem" }}>
           <strong>{task.title}</strong>
         </div>
+
+        {/* AI Ground-Truth & Social Verification Panel */}
+        <AiVerificationPanel aiVerification={task.aiVerification || task.ai_verification} />
 
         {/* Action selector */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 20 }}>
@@ -250,6 +444,9 @@ function ReportCard({ task, onDecision }) {
               ))}
             </div>
           )}
+
+          {/* AI Ground-Truth & Social Verification Panel */}
+          <AiVerificationPanel aiVerification={task.aiVerification || task.ai_verification} />
 
           {/* AI Moderation Assist Panel */}
           <div className="assessment-box">

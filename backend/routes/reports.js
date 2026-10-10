@@ -6,6 +6,9 @@ const { readDb, writeDb, getConfig } = require("../db");
 const { requireAuth } = require("../util/auth");
 const { distanceKm } = require("../util/geo");
 const { analyzeRelevance } = require("../util/relevance");
+const { fetchLiveGroundTruth } = require("../util/webSearch");
+const { extractOfficialTelemetry } = require("../util/tinyFishAgent");
+const { verifyIncidentReport } = require("../util/aiVerifier");
 
 const router = express.Router();
 
@@ -75,9 +78,9 @@ function reportWithMedia(reportId, dbData = readDb()) {
 }
 
 // Create report
-router.post("/", requireAuth, upload.array("media", 5), (req, res) => {
+router.post("/", requireAuth, upload.array("media", 5), async (req, res) => {
   try {
-    const { title, description, category, severity, lat, lng } = req.body || {};
+    const { title, description, category, severity, lat, lng, location } = req.body || {};
     if (!title || !category || lat == null || lng == null) {
       return res.status(400).json({ error: "Title, category, latitude, and longitude are required" });
     }
@@ -115,6 +118,35 @@ router.post("/", requireAuth, upload.array("media", 5), (req, res) => {
       confirmations: 1,
       created_at: new Date().toISOString(),
     };
+
+    // 3-Layer AI Verification Pipeline Step (Scout, Inspector, Synthesizer)
+    // Layer 1 (The Scout - Tavily API)
+    const socialSnippets = await fetchLiveGroundTruth(newReport);
+
+    // Layer 2 (The Deep Inspector - TinyFish AI Agent / Official Telemetry)
+    let telemetry = null;
+    const highSeverityTypes = ["flood", "cyclone", "landslide", "dam leak", "dam_leak"];
+    const reportCategory = String(newReport.category || newReport.type || "").toLowerCase();
+    if (highSeverityTypes.some((t) => reportCategory.includes(t))) {
+      telemetry = await extractOfficialTelemetry(newReport);
+    }
+
+    let mainImagePath = null;
+    if (req.file && req.file.path) {
+      mainImagePath = req.file.path;
+    } else if (files.length > 0 && files[0].path) {
+      mainImagePath = files[0].path;
+    }
+
+    // Layer 3 (The Synthesizer - Gemini 2.0 Flash Multimodal)
+    const aiResult = await verifyIncidentReport({
+      reportData: newReport,
+      imagePath: mainImagePath,
+      searchSnippets: socialSnippets,
+      telemetryData: telemetry,
+    });
+
+    newReport.aiVerification = aiResult;
 
     dbData.reports.unshift(newReport);
 
