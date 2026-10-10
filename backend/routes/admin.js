@@ -411,4 +411,29 @@ router.get("/analytics", requireAuth, requireSeniorOrAdmin, (req, res) => {
   }
 });
 
+// ── NGO VERIFICATION ──
+router.get("/ngos", requireAuth, requireAdmin, (req, res) => {
+  const db = readDb();
+  const ngos = (db.ngo_profiles || []).map((n) => {
+    const u = (db.users || []).find((x) => x.id === n.user_id);
+    return { ...n, user_name: u ? u.name : n.org_name, user_email: u ? u.email : "" };
+  });
+  return res.json({ ngos });
+});
+
+function setNgoStatus(status) {
+  return (req, res) => {
+    const db = readDb();
+    const ngo = (db.ngo_profiles || []).find((n) => n.id === req.params.id);
+    if (!ngo) return res.status(404).json({ error: "NGO not found" });
+    ngo.verification_status = status;
+    ngo.verified_by = req.user.id;
+    ngo.verified_at = new Date().toISOString();
+    writeDb(db);
+    return res.json({ success: true, ngo });
+  };
+}
+router.post("/ngos/:id/approve", requireAuth, requireAdmin, setNgoStatus("approved"));
+router.post("/ngos/:id/reject", requireAuth, requireAdmin, setNgoStatus("rejected"));
+
 module.exports = router;

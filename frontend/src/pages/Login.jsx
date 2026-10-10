@@ -11,48 +11,48 @@ const DEMO_ACCOUNTS = [
     email: "admin@disasterconnect.org",
     pass: "password",
     badge: "Admin",
-    bg: "rgba(99,102,241,0.12)",
-    color: "#6366f1",
+    bg: "var(--purple-bg)",
+    color: "var(--purple)",
   },
   {
     role: "Senior Moderator",
     email: "senior.mod@disasterconnect.org",
     pass: "password",
     badge: "Senior Mod",
-    bg: "rgba(99,102,241,0.12)",
-    color: "#6366f1",
+    bg: "var(--purple-bg)",
+    color: "var(--purple)",
   },
   {
     role: "Student Moderator (Trusted)",
     email: "student_mod@disasterconnect.org",
     pass: "password",
     badge: "Student Mod",
-    bg: "rgba(16,185,129,0.12)",
-    color: "#10b981",
+    bg: "var(--primary-bg)",
+    color: "var(--primary)",
   },
   {
     role: "Student Moderator (Verified)",
     email: "priya.mod@disasterconnect.org",
     pass: "password",
     badge: "Student Mod",
-    bg: "rgba(20,184,166,0.12)",
-    color: "#14b8a6",
+    bg: "var(--primary-bg)",
+    color: "var(--primary)",
   },
   {
     role: "NGO / Relief Org",
     email: "ndrc-relief@disasterconnect.org",
     pass: "password",
     badge: "NGO",
-    bg: "rgba(245,158,11,0.12)",
-    color: "#f59e0b",
+    bg: "var(--amber-bg)",
+    color: "var(--amber)",
   },
   {
     role: "Citizen",
     email: "rahul.citizen@example.com",
     pass: "password",
     badge: "Citizen",
-    bg: "rgba(107,114,128,0.12)",
-    color: "#6b7280",
+    bg: "rgba(148, 163, 184, 0.12)",
+    color: "var(--text-muted)",
   },
 ];
 
@@ -141,7 +141,7 @@ export default function Login() {
               >
                 <div className="demo-card-role">
                   <span>{acc.role}</span>
-                  <span style={{ fontSize: "0.7rem", background: `${acc.color}20`, color: acc.color, padding: "1px 6px", borderRadius: "var(--radius-xs)" }}>
+                  <span style={{ fontSize: "0.7rem", background: acc.bg, color: acc.color, padding: "1px 6px", borderRadius: "var(--radius-xs)" }}>
                     {acc.badge}
                   </span>
                 </div>

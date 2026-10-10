@@ -60,11 +60,11 @@ router.post("/register", (req, res) => {
         service_lat: home_lat,
         service_lng: home_lng,
         service_radius_km: Number(service_radius_km) || 25,
-        verification_status: "approved",
-        upi_id: "relief-ngo@upi",
-        contact_phone: "+91-9876543210",
+        verification_status: "pending", // requires admin approval; no alerts or public listing until approved
+        upi_id: null,
+        contact_phone: null,
         contact_email: normalizedEmail,
-        focus_areas: "Flood Relief, Emergency Rescue & Medical Aid",
+        focus_areas: "",
         created_at: new Date().toISOString(),
       });
     }

@@ -15,6 +15,7 @@ import CrisisMap from "./pages/CrisisMap";
 import ModeratorDashboard from "./pages/ModeratorDashboard";
 import ModeratorApply from "./pages/ModeratorApply";
 import ModeratorTraining from "./pages/ModeratorTraining";
+import ModeratorWallet from "./pages/ModeratorWallet";
 import AdminApplications from "./pages/AdminApplications";
 import AdminModerators from "./pages/AdminModerators";
 import OfflineBanner from "./components/OfflineBanner";
@@ -62,6 +63,7 @@ export default function App() {
             <Route path="/moderator" element={<ModeratorDashboard />} />
             <Route path="/moderator/apply" element={<ModeratorApply />} />
             <Route path="/moderator/training" element={<ModeratorTraining />} />
+            <Route path="/moderator/wallet" element={<ModeratorWallet />} />
             <Route path="/admin/moderator-applications" element={<AdminApplications />} />
             <Route path="/admin/moderators" element={<AdminModerators />} />
           </Routes>

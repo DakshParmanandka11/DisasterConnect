@@ -21,7 +21,6 @@ export default function ReportDetail() {
   const [fundraiserData, setFundraiserData] = useState(null);
   const [voteError, setVoteError] = useState(null);
   const [voteBusy, setVoteBusy] = useState(false);
-  const [simBusy, setSimBusy] = useState(false);
   const [notice, setNotice] = useState(null);
   const { user } = useAuth();
   const geo = useGeolocation();
@@ -44,7 +43,7 @@ export default function ReportDetail() {
     function onFlagged(updated) {
       if (updated.id !== id) return;
       setReport(updated);
-      setNotice("This report crossed the 40% verification threshold and has been auto-flagged. Nearby NGOs have been notified.");
+      setNotice("Community verification threshold reached. Eligible nearby NGOs now have an in-app alert.");
     }
     socket.on("report:updated", onUpdate);
     socket.on("report:flagged", onFlagged);
@@ -63,7 +62,7 @@ export default function ReportDetail() {
       const data = await api.vote(id, { vote_type: voteType, lat: coords.lat, lng: coords.lng });
       setReport(data.report);
       if (data.flaggedNow) {
-        setNotice("This report crossed the 40% verification threshold and has been auto-flagged. Nearby NGOs have been notified.");
+        setNotice("Community verification threshold reached. Eligible nearby NGOs now have an in-app alert.");
       }
     } catch (err) {
       setVoteError(err.message);
@@ -72,32 +71,15 @@ export default function ReportDetail() {
     }
   }
 
-  async function runSimulation() {
-    setSimBusy(true);
-    setVoteError(null);
-    try {
-      const data = await api.simulateVotes(id);
-      setReport(data.report);
-      if (data.flaggedNow) {
-        setNotice("Simulated local votes pushed this report past 40% — it is now flagged, and nearby NGOs were notified.");
-      }
-    } catch (err) {
-      setVoteError(err.message);
-    } finally {
-      setSimBusy(false);
-    }
-  }
-
-  async function updateStatus(status) {
-    const data = await api.setStatus(id, status);
-    setReport(data.report);
-  }
-
   if (!report) {
     return <div className="container" style={{ paddingTop: 40, color: "var(--text-muted)" }}>Loading verification thread…</div>;
   }
 
-  const canVote = user && user.role === "citizen" && report.status === "pending";
+  const VOTABLE = ["APPROVED_BY_MODERATOR", "APPROVED_BY_SENIOR", "COMMUNITY_VERIFIED"];
+  const isVerified = report.moderation_status === "COMMUNITY_VERIFIED";
+  const votingOpen = VOTABLE.includes(report.moderation_status);
+  const canVote = user && user.role === "citizen" && votingOpen && report.user_id !== user.id;
+  const ver = report.verification;
 
   return (
     <div className="container" style={{ maxWidth: 840, paddingTop: 20, paddingBottom: 60 }}>
@@ -193,20 +175,15 @@ export default function ReportDetail() {
               </div>
             )}
 
-            {/* EXIF Authenticity Badge */}
-            {report.exif_status === "verified" && (
-              <div className="exif-badge exif-badge--ok">
-                EXIF verified — fresh photo, camera GPS match
-              </div>
-            )}
-            {report.exif_status === "suspicious" && (
-              <div className="exif-badge exif-badge--warn">
-                EXIF warning — photo timestamp stale (&gt;48h) or GPS mismatch
-              </div>
-            )}
-            {report.exif_status === "missing" && (
+            {/* Media / location evidence — we do not parse EXIF, so nothing here is "verified". */}
+            {report.exif_status === "not_checked" && (
               <div className="exif-badge exif-badge--missing">
-                EXIF geotag missing — web screenshot or app image
+                Media metadata not checked — an attached photo is not proof of time or place
+              </div>
+            )}
+            {report.location_evidence === "coordinates_supplied_unverified" && (
+              <div className="exif-badge exif-badge--missing">
+                Location: coordinates supplied by reporter, not independently verified
               </div>
             )}
 
@@ -296,8 +273,17 @@ export default function ReportDetail() {
               />
               
               <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 12, marginBottom: 0 }}>
-                {report.upvotes} upvotes · {report.downvotes} downvotes. Strictly limited to users within{" "}
-                <strong>{config?.voting_radius_km ?? 10} km</strong> of incident location.
+                {report.upvotes} local upvotes · {report.downvotes} local downvotes
+                {ver ? ` · ${ver.upvote_pct}% support` : ""}. Only votes from within{" "}
+                <strong>{config?.voting_radius_km ?? 10} km</strong> of the incident count.
+                {ver && (
+                  <>
+                    <br />
+                    Verification needs at least <strong>{ver.quorum}</strong> local votes and <strong>{ver.threshold_pct}%</strong> support
+                    {ver.quorum_met ? " (quorum met)." : ` — ${ver.votes_needed_for_quorum} more local vote${ver.votes_needed_for_quorum === 1 ? "" : "s"} needed.`}
+                    {report.remote_votes ? ` ${report.remote_votes} remote support signal${report.remote_votes === 1 ? "" : "s"} (not counted).` : ""}
+                  </>
+                )}
               </p>
 
               {voteError && <div className="error-banner" style={{ marginTop: 12 }}>{voteError}</div>}
@@ -311,21 +297,14 @@ export default function ReportDetail() {
                     ▼ Dispute / Doubtful (Downvote)
                   </button>
                 </div>
-              ) : report.status !== "pending" ? (
+              ) : (
                 <p style={{ fontSize: 13, marginTop: 12, color: "var(--text-muted)", fontStyle: "italic" }}>
-                  Voting is locked — this report has already crossed the threshold ({report.status.replace("_", " ")}).
+                  {!user ? "Sign in with a citizen account to vote."
+                    : user.id === report.user_id ? "You cannot vote on your own report."
+                    : user.role !== "citizen" ? "Only citizen accounts can cast community votes."
+                    : isVerified ? "This report has reached community verification. Further votes are still recorded."
+                    : "Voting is not open for this report."}
                 </p>
-              ) : null}
-
-              {user && report.status === "pending" && (
-                <div style={{ marginTop: 16, paddingTop: 12, borderTop: "1px dashed var(--border)" }}>
-                  <button className="btn btn-outline btn-sm" disabled={simBusy} onClick={runSimulation} style={{ borderColor: "var(--amber)", color: "var(--amber)" }}>
-                    {simBusy ? "Simulating…" : "Demo: Simulate Local Votes"}
-                  </button>
-                  <span style={{ fontSize: 11, color: "var(--text-muted)", marginLeft: 8 }}>
-                    Casts synthetic nearby votes to trigger auto-flagging and NGO alert.
-                  </span>
-                </div>
               )}
             </div>
 
@@ -390,18 +369,12 @@ export default function ReportDetail() {
               <MapPicker lat={report.lat} lng={report.lng} editable={false} radiusKm={config?.voting_radius_km} />
             </div>
 
-            {/* NGO Action Box */}
-            {user && (user.role === "ngo" || user.role === "admin") && report.status !== "pending" && (
-              <div style={{ padding: 16, borderRadius: "var(--radius-sm)", backgroundColor: "var(--intel-muted)", border: "1px solid rgba(0, 121, 211, 0.3)", marginTop: 20 }}>
-              <h4 style={{ margin: "0 0 10px 0", color: "var(--primary)", fontWeight: 600 }}>NGO Relief Dispatch Controls</h4>
-                <div style={{ display: "flex", gap: 10 }}>
-                  <button className="btn btn-blue btn-sm" onClick={() => updateStatus("under_review")}>
-                    Mark Under Review
-                  </button>
-                  <button className="btn btn-primary btn-sm" onClick={() => updateStatus("resolved")}>
-                    Mark Resolved
-                  </button>
-                </div>
+            {/* NGO response status (NGOs update it from their dashboard) */}
+            {report.response_status && (
+              <div style={{ padding: 14, borderRadius: "var(--radius-sm)", backgroundColor: "var(--intel-muted)", border: "1px solid rgba(0, 121, 211, 0.3)", marginTop: 20, fontSize: 13 }}>
+                <strong style={{ color: "var(--primary)" }}>Relief response:</strong>{" "}
+                <span style={{ textTransform: "capitalize" }}>{report.response_status}</span>
+                {report.response_updated_at ? ` · updated ${new Date(report.response_updated_at).toLocaleString()}` : ""}
               </div>
             )}
           </div>

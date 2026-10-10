@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { api } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import "./ModeratorDashboard.css";
+import EvidencePanel from "../components/EvidencePanel";
 
 const LEVEL_CONFIG = {
   trainee:  { label: "Trainee",  color: "#6b7280", limit: 10 },
@@ -370,7 +371,7 @@ function DecisionModal({ task, onConfirm, onClose }) {
         {err && <div className="error-banner">{err}</div>}
 
         <div style={{ background: "var(--primary-bg)", border: "1px solid var(--primary-border)", borderRadius: "var(--radius-sm)", padding: "8px 12px", marginBottom: 20, fontSize: "0.8rem", color: "var(--text-muted)" }}>
-          AI provides recommendations. Final verification is performed by a human moderator.
+          Your reason is recorded with this decision. Rule-based signals and external evidence are hints; the decision is yours.
         </div>
 
         <div style={{ display: "flex", gap: 12, justifyContent: "flex-end" }}>
@@ -384,6 +385,7 @@ function DecisionModal({ task, onConfirm, onClose }) {
             {busy ? "Submitting…" : `Confirm ${action.charAt(0).toUpperCase() + action.slice(1)}`}
           </button>
         </div>
+
       </div>
     </div>
   );
@@ -429,8 +431,11 @@ function ReportCard({ task, onDecision }) {
           {/* Location */}
           <div style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
             📍 Lat: {task.lat?.toFixed(4)}, Lng: {task.lng?.toFixed(4)}
-            {task.exif_status === "verified" && (
-              <span style={{ marginLeft: 10, background: "rgba(16,185,129,0.1)", color: "#10b981", padding: "2px 8px", borderRadius: "var(--radius-xs)", fontSize: "0.75rem", fontWeight: 600 }}>GPS Verified</span>
+            <span style={{ marginLeft: 10, background: "rgba(245,158,11,0.12)", color: "#b7791f", padding: "2px 8px", borderRadius: "var(--radius-xs)", fontSize: "0.75rem", fontWeight: 600 }}>
+              Coordinates supplied by reporter — not independently verified
+            </span>
+            {task.media && task.media.length > 0 && (
+              <span style={{ marginLeft: 8, color: "var(--text-muted)", fontSize: "0.75rem" }}>Media metadata not checked</span>
             )}
           </div>
 
@@ -451,8 +456,8 @@ function ReportCard({ task, onDecision }) {
           {/* AI Moderation Assist Panel */}
           <div className="assessment-box">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <div className="assessment-title" style={{ margin: 0 }}>AI MODERATION ASSIST</div>
-              <span style={{ fontSize: "0.75rem", background: "var(--primary-bg)", color: "var(--primary)", padding: "2px 8px", borderRadius: "var(--radius-xs)", fontWeight: 600 }}>HEURISTIC ANALYSIS</span>
+              <div className="assessment-title" style={{ margin: 0 }}>1 · RULE-BASED SCREENING</div>
+              <span style={{ fontSize: "0.75rem", background: "var(--primary-bg)", color: "var(--primary)", padding: "2px 8px", borderRadius: "var(--radius-xs)", fontWeight: 600 }}>KEYWORD & PATTERN RULES (NOT A TRAINED MODEL)</span>
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
@@ -462,19 +467,11 @@ function ReportCard({ task, onDecision }) {
               <ScoreBar label="Duplicate Probability" value={analysis.duplicateProbability || 0} color="#6366f1" invert />
             </div>
 
-            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, marginBottom: 12 }}>
-              <div style={{ fontSize: "0.82rem" }}>
-                <span style={{ color: "var(--text-muted)" }}>Location Confidence: </span>
-                <strong style={{ color: analysis.locationConfidence === "High" ? "#10b981" : "#f59e0b" }}>
-                  {analysis.locationConfidence || "Unknown"}
-                </strong>
-              </div>
-              <div style={{ fontSize: "0.82rem" }}>
-                <span style={{ color: "var(--text-muted)" }}>Overall Confidence: </span>
-                <strong style={{ color: (analysis.overallConfidence || 0) > 65 ? "#10b981" : "#f59e0b" }}>
-                  {analysis.overallConfidence || 0}%
-                </strong>
-              </div>
+            <div style={{ fontSize: "0.82rem", marginTop: 8, marginBottom: 12 }}>
+              <span style={{ color: "var(--text-muted)" }}>Location evidence: </span>
+              <strong style={{ color: "#b7791f" }}>
+                {analysis.locationEvidence === "none" ? "No coordinates" : "Coordinates supplied, unverified"}
+              </strong>
             </div>
 
             {analysis.flags && analysis.flags.length > 0 && (
@@ -493,11 +490,14 @@ function ReportCard({ task, onDecision }) {
             )}
 
             <div style={{ marginTop: 12, padding: "8px 12px", background: "var(--primary-bg)", borderRadius: "var(--radius-sm)", fontSize: "0.8rem", color: "var(--text-muted)", fontStyle: "italic" }}>
-              AI provides recommendations. Final verification is performed by a human moderator.
+              These rule-based signals are hints only. The decision is yours.
             </div>
           </div>
 
-          {/* Decision buttons */}
+          {/* 2 · Retrieved external evidence — separate from rule-based signals (1) and from your decision (3) */}
+          <EvidencePanel reportId={task.id} />
+
+          {/* 3 · Human moderator decision (never automated; community votes and final status come later) */}
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             <button
               className="btn btn-outline btn-sm"
@@ -723,6 +723,12 @@ export default function ModeratorDashboard() {
             </div>
           </div>
           <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+            <Link to="/moderator/wallet" className="btn btn-outline btn-sm" style={{ color: "#10b981", borderColor: "rgba(16,185,129,0.4)" }}>
+              💳 Moderator Wallet
+            </Link>
+            <Link to="/moderator/training" className="btn btn-outline btn-sm">
+              📚 Refresher Training
+            </Link>
             <span style={{ background: `${levelCfg.color}20`, color: levelCfg.color, padding: "3px 10px", borderRadius: "var(--radius-full)", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase" }}>
               {levelCfg.label}
             </span>

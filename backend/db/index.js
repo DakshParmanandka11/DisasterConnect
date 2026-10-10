@@ -3,9 +3,11 @@ const path = require("path");
 const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
 
-const DB_FILE = (process.env.VERCEL || process.env.NODE_ENV === "production")
-  ? path.join("/tmp", "disasterconnect_data.json")
-  : path.join(__dirname, "data.json");
+const DB_FILE = process.env.DC_DB_FILE
+  ? process.env.DC_DB_FILE
+  : (process.env.VERCEL || process.env.NODE_ENV === "production")
+    ? path.join("/tmp", "disasterconnect_data.json")
+    : path.join(__dirname, "data.json");
 
 const CLOUD_DB_URL = process.env.CLOUD_DB_URL || process.env.MONGODB_URI || null;
 

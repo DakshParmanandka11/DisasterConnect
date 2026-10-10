@@ -68,7 +68,7 @@
 
 .demo-card-btn:hover:not(:disabled) {
   border-color: var(--primary);
-  background: var(--primary-bg, rgba(16, 185, 129, 0.08));
+  background: var(--primary-bg);
 }
 
 .demo-card-btn:active:not(:disabled) {

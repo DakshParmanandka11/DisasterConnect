@@ -174,7 +174,7 @@
 
 .btn-donate-qr {
   width: 100%;
-  background: var(--green);
+  background: var(--primary);
   color: #fff;
   border: none;
   padding: 10px;
@@ -186,11 +186,11 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: opacity 0.15s;
+  transition: background-color var(--transition);
 }
 
 .btn-donate-qr:hover {
-  opacity: 0.9;
+  background: var(--primary-hover);
 }
 
 .ngo-modal-overlay {
@@ -294,7 +294,7 @@
 .ngo-upi-id {
   font-family: var(--font-mono);
   font-size: 14px;
-  color: var(--green);
+  color: var(--primary);
   font-weight: 600;
 }
 
@@ -320,13 +320,18 @@
 .btn-launch-upi {
   display: block;
   text-align: center;
-  background: var(--green);
+  background: var(--primary);
   color: #fff;
   text-decoration: none;
   font-weight: 600;
   padding: 10px;
   border-radius: var(--radius-sm);
   font-size: 13px;
+  transition: background-color var(--transition);
+}
+
+.btn-launch-upi:hover {
+  background: var(--primary-hover);
 }
 
 /* ── Mobile fixes ── */

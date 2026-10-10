@@ -58,11 +58,14 @@ export const api = {
   getReport: (id) => request(`/reports/${id}`),
   createReport: (formData) => request("/reports", { method: "POST", body: formData, isForm: true }),
   vote: (id, payload) => request(`/reports/${id}/vote`, { method: "POST", body: payload }),
-  setStatus: (id, status) => request(`/reports/${id}/status`, { method: "POST", body: { status } }),
-  simulateVotes: (id) => request(`/reports/${id}/simulate-votes`, { method: "POST" }),
+
+  // Evidence lookup (moderators). GET reads stored evidence only; POST runs/refreshes it server-side.
+  getEvidence: (reportId) => request(`/intelligence/reports/${reportId}/evidence`),
+  checkEvidence: (reportId, force = false) => request(`/intelligence/reports/${reportId}/evidence`, { method: "POST", body: { force } }),
 
   ngoNotifications: () => request("/ngo/notifications"),
   ackNotification: (id) => request(`/ngo/notifications/${id}/ack`, { method: "POST" }),
+  ngoSetResponse: (id, status, note) => request(`/ngo/notifications/${id}/status`, { method: "POST", body: { status, note } }),
 
   getPublicNgos: (userLat, userLng) => {
     const qs = userLat != null && userLng != null ? `?userLat=${userLat}&userLng=${userLng}` : "";

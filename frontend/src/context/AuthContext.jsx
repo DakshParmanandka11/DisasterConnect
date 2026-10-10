@@ -25,8 +25,14 @@ export function AuthProvider({ children }) {
             localStorage.setItem("dc_user", JSON.stringify(data.user));
           }
         })
-        .catch(() => {
-          // If server fails or offline, keep saved user from localStorage
+        .catch((err) => {
+          // Expired/invalid token: drop the stale session. Otherwise (server
+          // down / offline) keep the saved user from localStorage.
+          if (err && err.status === 401) {
+            localStorage.removeItem("dc_token");
+            localStorage.removeItem("dc_user");
+            setUser(null);
+          }
         })
         .finally(() => setLoading(false));
     } else {

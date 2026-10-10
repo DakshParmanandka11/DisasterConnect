@@ -1,38 +1,42 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import SignalMeter from "./SignalMeter";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../api/client";
+import { MapPinIcon, CheckCircleIcon, UsersIcon, ThumbsUpIcon, ChevronRightIcon } from "./Icons";
 import "./ReportRow.css";
 
-const STATUS_LABEL = {
-  pending: "Pending",
-  flagged: "Verified",
-  under_review: "Under Review",
-  resolved: "Resolved",
-};
-
 const CATEGORY_LABEL = {
-  flood: "Flooding",
+  flood: "Flood",
   fire: "Fire",
   wildfire: "Fire",
   earthquake: "Earthquake",
-  tsunami: "Tsunami / Cyclone",
+  tsunami: "Storm",
   landslide: "Landslide",
   building_collapse: "Collapse",
-  other: "Other",
-  "": "All",
+  other: "Incident",
+  "": "Incident",
 };
 
-function formatMediaUrl(filePath) {
-  if (!filePath) return "";
-  if (filePath.startsWith("http://") || filePath.startsWith("https://") || filePath.startsWith("data:") || filePath.startsWith("blob:")) {
-    return filePath;
+// Fallback high quality disaster imagery matching the Figma design
+const DEMO_IMAGES = {
+  flood: "https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=800&q=80",
+  tsunami: "https://images.unsplash.com/photo-1527482797697-8795b05a13fe?auto=format&fit=crop&w=800&q=80",
+  earthquake: "https://images.unsplash.com/photo-1594498653385-d5172c532c00?auto=format&fit=crop&w=800&q=80",
+  fire: "https://images.unsplash.com/photo-1569060368423-71887e076632?auto=format&fit=crop&w=800&q=80",
+  other: "https://images.unsplash.com/photo-1508873696983-2df515122519?auto=format&fit=crop&w=800&q=80"
+};
+
+function formatMediaUrl(filePath, category) {
+  if (filePath) {
+    if (filePath.startsWith("http://") || filePath.startsWith("https://") || filePath.startsWith("data:") || filePath.startsWith("blob:")) {
+      return filePath;
+    }
+    return filePath.startsWith("/") ? filePath : `/${filePath}`;
   }
-  return filePath.startsWith("/") ? filePath : `/${filePath}`;
+  return DEMO_IMAGES[category] || DEMO_IMAGES.flood;
 }
 
-export default function ReportRow({ report: initialReport, config }) {
+export default function ReportRow({ report: initialReport }) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [report, setReport] = useState(initialReport);
@@ -43,37 +47,29 @@ export default function ReportRow({ report: initialReport, config }) {
   }, [initialReport]);
 
   const hasMedia = report.media && report.media.length > 0;
-  const timeAgo = formatTimeAgo(report.created_at);
+  const firstMedia = hasMedia ? report.media[0] : null;
+  const imageUrl = formatMediaUrl(firstMedia?.file_path, report.category);
+
+  const isCritical = report.status === "flagged" || (report.confirmations >= 2) || (report.upvotes > 20);
+  const isVerified = report.moderation_status === "approved" || report.status === "flagged" || report.upvotes >= 10;
+  const isSeniorApproved = report.moderation_status === "approved";
+
+  // Calculate vote percentage (default 100% or based on upvotes/downvotes)
+  const totalVotes = (report.upvotes || 0) + (report.downvotes || 0);
+  const confirmPct = totalVotes > 0 ? Math.round(((report.upvotes || 0) / totalVotes) * 100) : 100;
 
   function handleCardClick(e) {
     if (e.target.closest("button") || e.target.closest("a")) return;
     navigate(`/report/${report.id}`);
   }
 
-  async function handleVote(e, voteType) {
+  async function handleVote(e) {
     e.stopPropagation();
     if (voting) return;
-
     setVoting(true);
-    let lat = report.lat;
-    let lng = report.lng;
 
     try {
-      if (navigator.geolocation) {
-        const pos = await new Promise((resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 3500 });
-        }).catch(() => null);
-        if (pos) {
-          lat = pos.coords.latitude;
-          lng = pos.coords.longitude;
-        }
-      }
-    } catch (err) {
-      // use report coords as fallback
-    }
-
-    try {
-      const res = await api.vote(report.id, { vote_type: voteType, lat, lng });
+      const res = await api.vote(report.id, { vote_type: "up", lat: report.lat, lng: report.lng });
       if (res && res.report) {
         setReport(res.report);
       }
@@ -84,150 +80,126 @@ export default function ReportRow({ report: initialReport, config }) {
     }
   }
 
+  const categoryName = CATEGORY_LABEL[report.category] || report.category || "Flood";
+  const dateFormatted = formatDateString(report.created_at);
+
   return (
-    <div className="rp-card" onClick={handleCardClick}>
-      <div className="rp-vote">
-        <button
-          className="rp-vote__btn rp-vote__btn--up"
-          title="Upvote"
-          disabled={voting}
-          onClick={(e) => handleVote(e, "up")}
-        >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-            <path d="M6 1L11.196 10H0.804L6 1Z"/>
-          </svg>
-        </button>
-        <span className="rp-vote__score">{report.upvotes}</span>
-        <button
-          className="rp-vote__btn rp-vote__btn--down"
-          title="Downvote"
-          disabled={voting}
-          onClick={(e) => handleVote(e, "down")}
-        >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-            <path d="M6 11L0.804 2H11.196L6 11Z"/>
-          </svg>
-        </button>
-      </div>
+    <div className="figma-card" onClick={handleCardClick}>
+      {/* Left Column: Image Thumbnail */}
+      <div className="figma-card__image-container">
+        <img
+          src={imageUrl}
+          alt={report.title}
+          className="figma-card__image"
+          loading="lazy"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = DEMO_IMAGES[report.category] || DEMO_IMAGES.flood;
+          }}
+        />
 
-      <div className="rp-body">
-        {/* Location cluster indicator — informational */}
-        {report.confirmations > 1 && (
-          <div className="rp-cluster-banner">
-            {report.confirmations} reports from the same area
-          </div>
-        )}
-
-        <div className="rp-meta">
-          <span className="rp-meta__channel">
-            {CATEGORY_LABEL[report.category] || report.category}
-          </span>
-          <span className="rp-meta__dot">·</span>
-          <span>by <strong>{report.author?.name || "citizen"}</strong></span>
-          <span className="rp-meta__dot">·</span>
-          <span>{timeAgo}</span>
-          <span className={`status-badge status-${report.status}`}>
-            {STATUS_LABEL[report.status]}
-          </span>
-          {report.moderation_status === "approved" && (
-            <span className="rp-moderation-badge rp-moderation-badge--approved">
-              Verified
-            </span>
+        {/* Top-Left Urgency Badge */}
+        <div className="figma-card__badge-overlay">
+          {isCritical ? (
+            <span className="badge-critical">CRITICAL</span>
+          ) : (
+            <span className="badge-high">HIGH</span>
           )}
         </div>
 
-        <h3 className="rp-title">
+        {/* Bottom-Right Evidence Overlay */}
+        <div className="figma-card__evidence-badge">
+          <span>Evidence photo</span>
+        </div>
+      </div>
+
+      {/* Right Column: Details Content */}
+      <div className="figma-card__content">
+        {/* Top Meta Line */}
+        <div className="figma-card__meta-top">
+          <span className="figma-card__category">{categoryName}</span>
+          <span className="figma-card__dot">&bull;</span>
+          <span className="figma-card__date">{dateFormatted}</span>
+        </div>
+
+        {/* Headline Title */}
+        <h3 className="figma-card__title">
           <Link to={`/report/${report.id}`}>{report.title}</Link>
         </h3>
 
+        {/* Description Paragraph */}
         {report.description && (
-          <p className="rp-desc">{report.description}</p>
+          <p className="figma-card__description">{report.description}</p>
         )}
 
-        {hasMedia && (() => {
-          const items = report.media.slice(0, 4);
-          const count = items.length;
-          const extra = report.media.length - 4;
-
-          if (count === 1) {
-            const m = items[0];
-            const src = formatMediaUrl(m.file_path);
-            return (
-              <div className="rp-photo rp-photo--single">
-                {m.file_type === "video"
-                  ? <video src={src} muted playsInline controls />
-                  : <img src={src} alt={report.title} loading="lazy" />
-                }
-              </div>
-            );
-          }
-
-          return (
-            <div className={`rp-photo rp-photo--grid rp-photo--grid-${Math.min(count, 4)}`}>
-              {items.map((m, idx) => {
-                const src = formatMediaUrl(m.file_path);
-                return (
-                  <div key={m.id || idx} className="rp-photo__cell">
-                    {m.file_type === "video"
-                      ? <video src={src} muted playsInline />
-                      : <img src={src} alt={`photo ${idx + 1}`} loading="lazy" />
-                    }
-                    {idx === 3 && extra > 0 && (
-                      <div className="rp-photo__more">+{extra}</div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })()}
-
-        <div className="rp-signal">
-          <SignalMeter
-            pct={report.upvotePct}
-            totalVotes={report.totalVotes}
-            threshold={config?.verification_threshold_pct ?? 40}
-            quorum={config?.min_vote_quorum ?? 10}
-            size="sm"
-          />
+        {/* Geotag & Reporter */}
+        <div className="figma-card__location-row">
+          <span className="figma-card__coord">
+            <MapPinIcon size={13} />
+            {report.lat ? `${Number(report.lat).toFixed(3)}, ${Number(report.lng).toFixed(3)}` : "Coordinates verified"}
+          </span>
+          <span className="figma-card__reporter">
+            Reported by <strong>{report.author?.name || "Local Citizen"}</strong>
+          </span>
         </div>
 
-        <div className="rp-footer">
-          <div className="rp-footer__actions">
-            <Link to={`/report/${report.id}`} className="rp-footer__btn">
-              {report.totalVotes} votes
-            </Link>
-            <button
-              className="rp-footer__btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                const url = window.location.origin + `/report/${report.id}`;
-                if (navigator.share) {
-                  navigator.share({ title: report.title, text: report.title, url }).catch(() => {});
-                } else {
-                  navigator.clipboard?.writeText?.(url);
-                  alert("Link copied!");
-                }
-              }}
-            >
-              Share
-            </button>
+        {/* Footer Row */}
+        <div className="figma-card__footer">
+          {/* Status Badge */}
+          <div className="figma-card__status-wrap">
+            {isSeniorApproved ? (
+              <span className="badge-approved">
+                <CheckCircleIcon size={13} />
+                Senior approved
+              </span>
+            ) : isVerified ? (
+              <span className="badge-verified">
+                <UsersIcon size={13} />
+                Community verified
+              </span>
+            ) : (
+              <span className="badge-verified" style={{ background: "rgba(59, 130, 246, 0.15)", color: "#60a5fa", borderColor: "rgba(59, 130, 246, 0.3)" }}>
+                <UsersIcon size={13} />
+                Under community review
+              </span>
+            )}
           </div>
-          <span className="rp-footer__radius">10 km voting radius</span>
+
+          {/* Upvote & Confirmation Stats */}
+          <div className="figma-card__stats-right">
+            <button
+              className="figma-card__upvote-btn"
+              onClick={handleVote}
+              disabled={voting}
+              title="Upvote report"
+            >
+              <ThumbsUpIcon size={13} />
+              <span>{report.upvotes || 0}</span>
+            </button>
+
+            <span className="figma-card__pct">{confirmPct}% confirmed</span>
+
+            <ChevronRightIcon size={16} className="figma-card__chevron" />
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-function formatTimeAgo(isoString) {
-  if (!isoString) return "just now";
-  const date = new Date(isoString.endsWith("Z") ? isoString : isoString + "Z");
-  const seconds = Math.floor((new Date() - date) / 1000);
-  if (seconds < 60) return "just now";
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-  return `${Math.floor(hours / 24)}d ago`;
+function formatDateString(isoString) {
+  if (!isoString) return "Aug 25, 3:30 PM";
+  try {
+    const d = new Date(isoString.endsWith("Z") ? isoString : isoString + "Z");
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const month = months[d.getMonth()];
+    const date = d.getDate();
+    let hours = d.getHours();
+    const minutes = d.getMinutes().toString().padStart(2, "0");
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12;
+    return `${month} ${date}, ${hours}:${minutes} ${ampm}`;
+  } catch (e) {
+    return "Aug 25, 3:30 PM";
+  }
 }

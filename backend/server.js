@@ -1,4 +1,6 @@
-require("dotenv").config();
+// Load backend/.env (never committed) without adding a dependency. Node >= 20.12.
+try { process.loadEnvFile(require("path").join(__dirname, ".env")); } catch (_) { /* no .env file: rely on real environment */ }
+
 const app = require("./app");
 const path = require("path");
 const express = require("express");

@@ -4,7 +4,8 @@
   "description": "DisasterConnect Backend API Server",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "node --test test/*.test.js"
   },
   "dependencies": {
     "@google/genai": "latest",
