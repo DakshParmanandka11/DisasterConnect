@@ -1,3 +1,4 @@
+import { useAuth } from "../context/AuthContext";
 import { SearchIcon, FilterIcon, ShieldIcon } from "./Icons";
 import "./SidebarLeft.css";
 
@@ -16,6 +17,9 @@ const VERIFICATION_STATUSES = [
 ];
 
 export default function SidebarLeft({ activeCategory, onSelectCategory, activeStatus, onSelectStatus, searchQuery, onSearchChange }) {
+  const { user } = useAuth();
+  const isModOrAdmin = user && ["admin", "moderator", "student_moderator", "senior_moderator"].includes(user.role);
+
   return (
     <aside className="reddit-sidebar-left">
       <div className="sidebar-card">
@@ -51,38 +55,42 @@ export default function SidebarLeft({ activeCategory, onSelectCategory, activeSt
           </div>
         </div>
 
-        {/* Verification Section */}
-        <div className="sidebar-group">
-          <div className="sidebar-group__label">VERIFICATION</div>
-          <div className="sidebar-group__list">
-            {VERIFICATION_STATUSES.map((item) => {
-              const isSelected = activeStatus === item.id;
-              return (
-                <button
-                  key={item.id}
-                  className={`sidebar-radio-item ${isSelected ? "active" : ""}`}
-                  onClick={() => onSelectStatus(item.id)}
-                >
-                  <span className={`sidebar-radio-circle ${isSelected ? "selected" : ""}`}>
-                    {isSelected && <span className="sidebar-radio-inner" />}
-                  </span>
-                  <span className="sidebar-radio-label">{item.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        {/* Verification Section — Only visible to Moderators and Admin profiles */}
+        {isModOrAdmin && (
+          <>
+            <div className="sidebar-group">
+              <div className="sidebar-group__label">VERIFICATION</div>
+              <div className="sidebar-group__list">
+                {VERIFICATION_STATUSES.map((item) => {
+                  const isSelected = activeStatus === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      className={`sidebar-radio-item ${isSelected ? "active" : ""}`}
+                      onClick={() => onSelectStatus(item.id)}
+                    >
+                      <span className={`sidebar-radio-circle ${isSelected ? "selected" : ""}`}>
+                        {isSelected && <span className="sidebar-radio-inner" />}
+                      </span>
+                      <span className="sidebar-radio-label">{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
-        {/* How Verification Works CTA */}
-        <div className="sidebar-cta-container">
-          <button
-            className="sidebar-cta-btn"
-            onClick={() => alert("Verification Pipeline:\n\n1. Reports geotagged within 10 km.\n2. Community members upvote/downvote.\n3. >40% upvotes (min 10 votes) triggers Community Verified status.\n4. Senior Moderators & Relief NGOs verify and dispatch assistance.")}
-          >
-            <ShieldIcon size={16} />
-            <span>How verification works</span>
-          </button>
-        </div>
+            {/* How Verification Works CTA */}
+            <div className="sidebar-cta-container">
+              <button
+                className="sidebar-cta-btn"
+                onClick={() => alert("Verification Pipeline:\n\n1. Reports geotagged within 10 km.\n2. Community members upvote/downvote.\n3. >40% upvotes (min 10 votes) triggers Community Verified status.\n4. Senior Moderators & Relief NGOs verify and dispatch assistance.")}
+              >
+                <ShieldIcon size={16} />
+                <span>How verification works</span>
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </aside>
   );

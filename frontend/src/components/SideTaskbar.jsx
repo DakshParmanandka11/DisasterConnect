@@ -88,26 +88,28 @@ export default function SideTaskbar({ isOpen, onClose, activeCategory, onSelectC
             </div>
           </div>
 
-          {/* Status */}
-          <div className="taskbar-section">
-            <div className="taskbar-section-title">Status</div>
-            <div className="taskbar-btn-group">
-              {[
-                { val: "", label: "All Active" },
-                { val: "flagged", label: "High Priority" },
-                { val: "pending", label: "Pending Verification" },
-                { val: "under_review", label: "Under Review" },
-              ].map(({ val, label }) => (
-                <button
-                  key={val}
-                  className={`taskbar-btn ${activeStatus === val ? "active" : ""}`}
-                  onClick={() => { onSelectStatus(val); onClose(); }}
-                >
-                  {label}
-                </button>
-              ))}
+          {/* Status — Only visible to Moderators and Admin profiles */}
+          {(role === "admin" || role === "moderator" || role === "student_moderator" || role === "senior_moderator") && (
+            <div className="taskbar-section">
+              <div className="taskbar-section-title">Status</div>
+              <div className="taskbar-btn-group">
+                {[
+                  { val: "", label: "All Active" },
+                  { val: "flagged", label: "High Priority" },
+                  { val: "pending", label: "Pending Verification" },
+                  { val: "under_review", label: "Under Review" },
+                ].map(({ val, label }) => (
+                  <button
+                    key={val}
+                    className={`taskbar-btn ${activeStatus === val ? "active" : ""}`}
+                    onClick={() => { onSelectStatus(val); onClose(); }}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Categories */}
           <div className="taskbar-section">

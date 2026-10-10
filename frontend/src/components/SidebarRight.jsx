@@ -167,14 +167,16 @@ export default function SidebarRight({ config }) {
         </h4>
         <Link
           to="/ngos"
-          className="btn btn-outline"
+          className="btn btn-primary"
           style={{
-            background: "rgba(255, 255, 255, 0.08)",
-            color: "#ffffff",
-            borderColor: "rgba(255, 255, 255, 0.2)",
-            borderRadius: 8,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            padding: "9px 18px",
+            borderRadius: "var(--radius-sm)",
             fontSize: 13,
-            padding: "8px 14px"
+            fontWeight: 600,
+            textDecoration: "none"
           }}
         >
           Find support &rsaquo;

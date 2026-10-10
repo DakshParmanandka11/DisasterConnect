@@ -88,8 +88,32 @@ export default function NGONetwork() {
                   <span className="ngo-field__val">{ngo.focus_areas || "Emergency food, medical aid, rescue"}</span>
                 </div>
                 <div className="ngo-field">
+                  <span className="ngo-field__label">Location / Base</span>
+                  <span className="ngo-field__val">{ngo.base_location || ngo.address || "Regional Response Command"}</span>
+                </div>
+                {ngo.contact_phone && (
+                  <div className="ngo-field">
+                    <span className="ngo-field__label">Helpline / Phone</span>
+                    <span className="ngo-field__val">
+                      <a href={`tel:${ngo.contact_phone}`} style={{ color: "var(--primary)", textDecoration: "underline", fontWeight: 700 }}>
+                        {ngo.contact_phone}
+                      </a>
+                    </span>
+                  </div>
+                )}
+                {(ngo.contact_email || ngo.user_email) && (
+                  <div className="ngo-field">
+                    <span className="ngo-field__label">Email</span>
+                    <span className="ngo-field__val">
+                      <a href={`mailto:${ngo.contact_email || ngo.user_email}`} style={{ color: "var(--text-body)" }}>
+                        {ngo.contact_email || ngo.user_email}
+                      </a>
+                    </span>
+                  </div>
+                )}
+                <div className="ngo-field">
                   <span className="ngo-field__label">Coverage</span>
-                  <span className="ngo-field__val">{ngo.service_radius_km} km radius</span>
+                  <span className="ngo-field__val">{ngo.service_radius_km || 25} km radius</span>
                 </div>
                 {ngo.distanceKm != null && (
                   <div className="ngo-field">
@@ -109,9 +133,18 @@ export default function NGONetwork() {
                 </div>
               </div>
 
-              <div className="ngo-card__footer">
-                <button className="btn-donate-qr" onClick={() => setSelectedNgo(ngo)}>
-                  Donate via UPI
+              <div className="ngo-card__footer" style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                {ngo.contact_phone && (
+                  <a
+                    href={`tel:${ngo.contact_phone}`}
+                    className="btn btn-outline btn-sm"
+                    style={{ flex: 1, textAlign: "center", textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4 }}
+                  >
+                    📞 Call
+                  </a>
+                )}
+                <button className="btn-donate-qr" style={{ flex: 1 }} onClick={() => setSelectedNgo(ngo)}>
+                  💳 Donate UPI
                 </button>
               </div>
             </div>
