@@ -199,6 +199,53 @@ export default function ReportDetail() {
               )}
             </div>
 
+            {/* ── TOP VOTING STRIP (COMPACT ARROW PILLS MATCHING FIGMA WIREFRAME) ── */}
+            <div style={{ background: "var(--bg-card-alt)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: "14px 18px", marginBottom: 20 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+                <div className="vote-pill-bar">
+                  <button
+                    className="vote-pill vote-pill--up"
+                    disabled={!canVote || voteBusy}
+                    onClick={() => castVote("up")}
+                    title="Confirm Incident (Upvote)"
+                  >
+                    <span className="vote-pill__arrow">↑</span>
+                    <span>{report.upvotes || 0}</span>
+                  </button>
+
+                  <button
+                    className="vote-pill vote-pill--down"
+                    disabled={!canVote || voteBusy}
+                    onClick={() => castVote("down")}
+                    title="Dispute Incident (Downvote)"
+                  >
+                    <span className="vote-pill__arrow">↓</span>
+                    <span>{report.downvotes || 0}</span>
+                  </button>
+
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-muted)", marginLeft: 6 }}>
+                    {report.upvotePct ? Math.round(report.upvotePct) : 100}% Confirmed
+                  </span>
+                </div>
+
+                <div style={{ fontSize: 12, fontWeight: 700, color: isVerified ? "var(--green)" : "var(--primary)" }}>
+                  {isVerified ? "✓ Community Verified" : "⏳ Verification Pending"}
+                </div>
+              </div>
+
+              {voteError && <div className="error-banner" style={{ marginTop: 10, marginBottom: 0 }}>{voteError}</div>}
+
+              {!canVote && (
+                <p style={{ fontSize: 12, margin: "8px 0 0 0", color: "var(--text-muted)", fontStyle: "italic" }}>
+                  {!user ? "Sign in to vote."
+                    : user.id === report.user_id ? "You cannot vote on your own report."
+                    : user.role !== "citizen" ? "Only citizen accounts can cast community votes."
+                    : isVerified ? "Report is community verified. Votes are still recorded."
+                    : "Voting is closed."}
+                </p>
+              )}
+            </div>
+
             {/* Spatial cluster auto-verified alert */}
             {report.spatial_density_score >= 3 && (
               <div style={{ background: "rgba(220, 38, 38, 0.10)", color: "var(--red)", border: "1px solid rgba(220, 38, 38, 0.25)", padding: "10px 14px", borderRadius: "var(--radius-sm)", fontSize: 13, fontWeight: 600, marginBottom: 16 }}>
@@ -286,26 +333,6 @@ export default function ReportDetail() {
                 )}
               </p>
 
-              {voteError && <div className="error-banner" style={{ marginTop: 12 }}>{voteError}</div>}
-
-              {canVote ? (
-                <div style={{ display: "flex", gap: 10, marginTop: 14, flexWrap: "wrap" }}>
-                  <button className="btn btn-signal btn-sm" disabled={voteBusy} onClick={() => castVote("up")}>
-                    ▲ Confirm Incident (Upvote)
-                  </button>
-                  <button className="btn btn-outline btn-sm" disabled={voteBusy} onClick={() => castVote("down")}>
-                    ▼ Dispute / Doubtful (Downvote)
-                  </button>
-                </div>
-              ) : (
-                <p style={{ fontSize: 13, marginTop: 12, color: "var(--text-muted)", fontStyle: "italic" }}>
-                  {!user ? "Sign in with a citizen account to vote."
-                    : user.id === report.user_id ? "You cannot vote on your own report."
-                    : user.role !== "citizen" ? "Only citizen accounts can cast community votes."
-                    : isVerified ? "This report has reached community verification. Further votes are still recorded."
-                    : "Voting is not open for this report."}
-                </p>
-              )}
             </div>
 
             {/* ─── GROUND RELIEF FUNDRAISER (UPI QR CODE) ─── */}

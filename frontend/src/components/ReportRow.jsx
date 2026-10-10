@@ -63,13 +63,28 @@ export default function ReportRow({ report: initialReport }) {
     navigate(`/report/${report.id}`);
   }
 
-  async function handleVote(e) {
+  async function handleVoteUp(e) {
     e.stopPropagation();
     if (voting) return;
     setVoting(true);
-
     try {
       const res = await api.vote(report.id, { vote_type: "up", lat: report.lat, lng: report.lng });
+      if (res && res.report) {
+        setReport(res.report);
+      }
+    } catch (err) {
+      alert(err.message || "Vote failed.");
+    } finally {
+      setVoting(false);
+    }
+  }
+
+  async function handleVoteDown(e) {
+    e.stopPropagation();
+    if (voting) return;
+    setVoting(true);
+    try {
+      const res = await api.vote(report.id, { vote_type: "down", lat: report.lat, lng: report.lng });
       if (res && res.report) {
         setReport(res.report);
       }
@@ -165,19 +180,31 @@ export default function ReportRow({ report: initialReport }) {
             )}
           </div>
 
-          {/* Upvote & Confirmation Stats */}
+          {/* Upvote & Downvote Arrow Pills */}
           <div className="figma-card__stats-right">
-            <button
-              className="figma-card__upvote-btn"
-              onClick={handleVote}
-              disabled={voting}
-              title="Upvote report"
-            >
-              <ThumbsUpIcon size={13} />
-              <span>{report.upvotes || 0}</span>
-            </button>
+            <div className="vote-pill-bar">
+              <button
+                className="vote-pill vote-pill--up"
+                style={{ padding: "4px 10px", fontSize: 12 }}
+                onClick={handleVoteUp}
+                disabled={voting}
+                title="Confirm Incident (Upvote)"
+              >
+                <span className="vote-pill__arrow">↑</span>
+                <span>{report.upvotes || 0}</span>
+              </button>
 
-            <span className="figma-card__pct">{confirmPct}% confirmed</span>
+              <button
+                className="vote-pill vote-pill--down"
+                style={{ padding: "4px 10px", fontSize: 12 }}
+                onClick={handleVoteDown}
+                disabled={voting}
+                title="Dispute Incident (Downvote)"
+              >
+                <span className="vote-pill__arrow">↓</span>
+                <span>{report.downvotes || 0}</span>
+              </button>
+            </div>
 
             <ChevronRightIcon size={16} className="figma-card__chevron" />
           </div>

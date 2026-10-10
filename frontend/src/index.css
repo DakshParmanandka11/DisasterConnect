@@ -239,6 +239,63 @@ textarea:focus-visible, select:focus-visible {
   color: var(--text-primary);
 }
 
+/* ─── Compact Arrow Voting Pills ─── */
+.vote-pill-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.vote-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all var(--transition);
+  user-select: none;
+}
+
+.vote-pill:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.vote-pill--up {
+  background: var(--green-bg);
+  color: var(--green);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.vote-pill--up:hover:not(:disabled) {
+  background: rgba(16, 185, 129, 0.25);
+  border-color: var(--green);
+  transform: translateY(-1px);
+}
+
+.vote-pill--down {
+  background: var(--red-bg);
+  color: var(--red);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.vote-pill--down:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: var(--red);
+  transform: translateY(-1px);
+}
+
+.vote-pill__arrow {
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1;
+}
+
 .btn-sm { padding: 5px 12px; font-size: 12px; }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
