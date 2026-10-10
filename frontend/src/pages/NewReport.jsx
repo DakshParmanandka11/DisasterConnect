@@ -17,6 +17,8 @@ export default function NewReport() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("flood");
+  const [customType, setCustomType] = useState("");
+  const [customTypeError, setCustomTypeError] = useState("");
   const [severity, setSeverity] = useState("moderate");
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
@@ -34,6 +36,13 @@ export default function NewReport() {
   useEffect(() => {
     return () => previews.forEach((url) => URL.revokeObjectURL(url));
   }, [previews]);
+
+  function handleCategoryChange(c) {
+    setCategory(c);
+    if (c !== "other" && c !== "Other" && c !== "others") {
+      setCustomTypeError("");
+    }
+  }
 
   function handleCameraCapture(e) {
     const incoming = Array.from(e.target.files || []);
@@ -57,6 +66,7 @@ export default function NewReport() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
+    setCustomTypeError("");
 
     if (!geo.coords) {
       setError("Device GPS location is required. Please enable location access.");
@@ -67,12 +77,23 @@ export default function NewReport() {
       return;
     }
 
+    if (category === "other" || category === "Other" || category === "others") {
+      if (!customType.trim()) {
+        setCustomTypeError("Please specify the calamity type before submitting.");
+        return;
+      }
+    }
+
+    const resolvedType = (category === "other" || category === "Other" || category === "others")
+      ? customType.trim()
+      : category;
+
     setBusy(true);
 
     if (!navigator.onLine) {
       try {
         await savePendingReport({
-          title, description, category, severity,
+          title, description, category: resolvedType, type: resolvedType, severity,
           lat: geo.coords.lat, lng: geo.coords.lng, files,
         });
         setOfflineNotice(true);
@@ -88,7 +109,8 @@ export default function NewReport() {
       const fd = new FormData();
       fd.append("title", title);
       fd.append("description", description);
-      fd.append("category", category);
+      fd.append("category", resolvedType);
+      fd.append("type", resolvedType);
       fd.append("severity", severity);
       fd.append("lat", geo.coords.lat);
       fd.append("lng", geo.coords.lng);
@@ -254,12 +276,43 @@ export default function NewReport() {
                 key={c}
                 type="button"
                 className={`nr-category-tile${category === c ? " active" : ""}`}
-                onClick={() => setCategory(c)}
+                onClick={() => handleCategoryChange(c)}
               >
                 <span>{CATEGORY_LABELS[c]}</span>
               </button>
             ))}
           </div>
+
+          {(category === "other" || category === "Other" || category === "others") && (
+            <div className="custom-calamity-field animate-slide-down">
+              <label htmlFor="customType" className="custom-calamity-label">
+                Specify Hazard / Calamity Type <span className="required-star">*</span>
+              </label>
+              <div className="custom-calamity-input-wrapper">
+                <span className="custom-calamity-icon">⚠️</span>
+                <input
+                  type="text"
+                  id="customType"
+                  name="customType"
+                  value={customType}
+                  onChange={(e) => {
+                    setCustomType(e.target.value);
+                    if (customTypeError) setCustomTypeError("");
+                  }}
+                  placeholder="e.g., Chemical Gas Leak, Bridge Collapse, Stampede"
+                  className={`custom-calamity-input ${customTypeError ? "input-error" : ""}`}
+                  maxLength={60}
+                  autoFocus
+                />
+              </div>
+              {customTypeError && (
+                <span className="custom-calamity-error-text">{customTypeError}</span>
+              )}
+              <p className="custom-calamity-hint">
+                Be concise. This tag directly steers automated NDRF search and ground-truth verification.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Severity */}
